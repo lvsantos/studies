@@ -59,7 +59,32 @@ specify version</code></pre>
   <pre><code>specify init meu-projeto --integration copilot</code></pre>
   <p>Para usar a pasta atual:</p>
   <pre><code>specify init --here --integration copilot</code></pre>
-  <p>Em uma pasta existente e não vazia, use <code>--force</code> somente depois de conferir o que será mesclado.</p>
+
+  <h3>Adotando o Spec Kit em um projeto existente</h3>
+  <p>Em repositórios já existentes e não vazios, execute o comando especificando a integração do seu agente (ex: <code>copilot</code>):</p>
+  <pre><code>specify init --here --force --integration copilot</code></pre>
+
+  <div class="panel">
+    <strong>Cuidados fundamentais com o <code>--force</code>:</strong>
+    <ul>
+      <li><strong>Crie uma linha de base (baseline) no Git:</strong> Faça commit ou stash de todas as alterações antes de executar o comando e crie uma nova branch para a adoção. Isso garante que cada arquivo gerado pelo Spec Kit fique visível no <code>git diff</code>.</li>
+      <li><strong>O que o <code>--force</code> faz:</strong> Permite inicializar em pastas com arquivos existentes e pode sobrescrever arquivos conflitantes apenas em caminhos gerenciados pelo Spec Kit (como a pasta <code>.specify/</code> e arquivos de skills/instruções do agente). <em>Ele não apaga nem reescreve o código da sua aplicação.</em></li>
+      <li><strong>Revise o <code>git diff</code> imediatamente:</strong> Após rodar o comando, inspecione a diferença de arquivos para confirmar a inclusão dos arquivos de integração do Copilot e da estrutura <code>.specify/</code>.</li>
+      <li><strong>Não cria especificações retroativas:</strong> O Spec Kit não analisa ou reescreve o comportamento antigo do seu sistema; ele apenas estabelece o ambiente para a próxima mudança delimitada.</li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <strong>Dicas para os Project Guardrails (Constituição):</strong>
+    <p>Defina as regras e restrições fundamentais do repositório executando <code>/speckit.constitution</code>:</p>
+    <ul>
+      <li><strong>Evidências reais do repositório:</strong> Use o <code>README.md</code>, guias de contribuição (<code>CONTRIBUTING.md</code>), registros de arquitetura (ADRs) e configurações de CI como evidência. Não invente padrões apenas para preencher o modelo.</li>
+      <li><strong>Evite regras irrealistas:</strong> A constituição orienta análises e planejamentos futuros. Regras inventadas ou irrealistas geram ruído em vez de restrições úteis.</li>
+      <li><strong>Acelere a geração com o Copilot:</strong> Peça ao agente para ler seu <code>README</code> e pipeline de CI atual para propor os rascunhos dos guardrails inegociáveis (ex: suíte de testes obrigatória, compatibilidade de APIs e rollback em migrations).</li>
+      <li><strong>Mantenha os princípios verificáveis:</strong> Escolha regras concisas que a IA e os revisores consigam validar objetivamente durante o `git diff`.</li>
+    </ul>
+    <p class="small"><em>Nota: teremos uma lição dedicada e aprofundada sobre a construção da Constituição do Projeto no futuro.</em></p>
+  </div>
 
   <h2>Recuperação antes de executar</h2>
   <p>Sem olhar acima: qual comando instala o CLI? E qual comando prepara um projeto para o Copilot?</p>

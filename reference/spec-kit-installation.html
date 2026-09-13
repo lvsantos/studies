@@ -27,8 +27,9 @@ specify self upgrade</code></pre>
   <pre><code>UV_TOOL_BIN_DIR=$HOME/.local/bin uv tool install specify-cli --force</code></pre>
   <h2>Inicializar um projeto</h2>
   <pre><code>specify init meu-projeto --integration copilot
-# ou, dentro de uma pasta existente:
-specify init --here --integration copilot</code></pre>
+# em pasta existente:
+specify init --here --force --integration copilot</code></pre>
+  <p><strong>Em projeto existente:</strong> faça commit/stash antes do <code>--force</code>, revise o <code>git diff</code> e defina guardrails com <code>/speckit.constitution</code>.</p>
   <p><strong>Modelo mental:</strong> instalação coloca o executável no ambiente; inicialização cria os arquivos do Spec Kit no projeto.</p>
   <p><a href="https://github.github.io/spec-kit/installation.html">Documentação oficial de instalação</a> · <a href="https://github.github.io/spec-kit/quickstart.html">Quickstart oficial</a></p>
 </main>
