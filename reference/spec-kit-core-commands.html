@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Comandos centrais do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>Comandos centrais e o papel do Git</h1>
+  <p class="lede">Um mapa para escolher a próxima etapa sem confundir intenção, arquitetura, tarefas e validação.</p>
+
+  <h2>Comandos</h2>
+  <table>
+    <thead><tr><th>Etapa</th><th>Comando no Copilot</th><th>Artefato ou efeito</th></tr></thead>
+    <tbody>
+      <tr><td>Princípios</td><td><code>/speckit-constitution</code></td><td>Atualiza <code>.specify/memory/constitution.md</code>.</td></tr>
+      <tr><td>Necessidade</td><td><code>/speckit-specify</code></td><td>Cria ou refina <code>spec.md</code>.</td></tr>
+      <tr><td>Ambiguidades</td><td><code>/speckit-clarify</code></td><td>Resolve dúvidas e incorpora respostas na spec.</td></tr>
+      <tr><td>Abordagem</td><td><code>/speckit-plan</code></td><td>Cria <code>plan.md</code> com decisões técnicas.</td></tr>
+      <tr><td>Qualidade dos requisitos</td><td><code>/speckit-checklist</code></td><td>Cria checklist revisável; não substitui testes de código.</td></tr>
+      <tr><td>Execução</td><td><code>/speckit-tasks</code></td><td>Cria <code>tasks.md</code> ordenado por dependência.</td></tr>
+      <tr><td>Consistência</td><td><code>/speckit-analyze</code></td><td>Analisa spec, plan e tasks sem modificar arquivos.</td></tr>
+      <tr><td>Construção</td><td><code>/speckit-implement</code></td><td>Executa as tarefas e valida a implementação.</td></tr>
+      <tr><td>Completude</td><td><code>/speckit-converge</code></td><td>Compara código e artefatos; adiciona tarefas pendentes.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Dois caminhos</h2>
+  <dl>
+    <dt>Feature pequena</dt>
+    <dd><code>specify</code> &rarr; <code>plan</code> &rarr; <code>tasks</code> &rarr; <code>implement</code> &rarr; <code>converge</code>.</dd>
+    <dt>Feature de produção</dt>
+    <dd><code>constitution</code> &rarr; <code>specify</code> &rarr; <code>clarify</code> &rarr; <code>plan</code> &rarr; <code>checklist</code> &rarr; <code>tasks</code> &rarr; <code>analyze</code> &rarr; <code>implement</code> &rarr; <code>converge</code>.</dd>
+  </dl>
+
+  <h2>Git: benefícios da extensão</h2>
+  <p>A extensão de Git é opcional e pode criar branches numerados para features. Seu valor principal é organizacional:</p>
+  <ul>
+    <li>isola cada feature do trabalho principal;</li>
+    <li>facilita revisar spec, plan, tasks e código juntos em um pull request;</li>
+    <li>cria uma trilha de commits entre intenção, decisão e implementação;</li>
+    <li>torna comparação, pausa e reversão menos arriscadas.</li>
+  </ul>
+  <p><strong>Atenção:</strong> a feature ativa é resolvida pelo estado em <code>.specify/feature.json</code> (ou pela variável de ambiente correspondente), não apenas pelo branch atual. Git organiza a mudança; o estado do Spec Kit diz qual pasta os comandos devem usar.</p>
+
+  <div class="panel">
+    <strong>Formas equivalentes</strong>
+    <p>Este projeto usa skills do Copilot, por isso os comandos aparecem com hífens: <code>/speckit-specify</code>. A documentação oficial também mostra a forma com pontos, <code>/speckit.specify</code>. O nome visual depende do agente; a etapa é a mesma.</p>
+  </div>
+
+  <p><a href="../lessons/0004-comandos-centrais-do-spec-kit.html">Voltar para a lição 4</a> · <a href="./spec-kit-pos-init.html">Mapa pós-init</a> · <a href="https://github.github.io/spec-kit/quickstart.html">Quickstart oficial</a></p>
+  <footer>Material de referência do curso de Spec Kit com GitHub Copilot.</footer>
+</main>
+</body>
+</html>

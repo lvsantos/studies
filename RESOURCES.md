@@ -3,9 +3,11 @@
 ## Knowledge
 
 - [Spec Kit: installation guide](https://github.github.io/spec-kit/installation.html)
-  Fonte primaria para pre-requisitos, instalacao do `specify-cli` e canais oficiais de distribuicao.
+  Fonte primaria para pre-requisitos, instalacao do `specify-cli` e canais oficiais de distribuicao; confirma que Git e opcional no Spec Kit basico e necessario quando a extensao de Git esta habilitada.
 - [Spec Kit: quickstart](https://github.github.io/spec-kit/quickstart.html)
   Fonte primaria para instalar o CLI e inicializar um projeto, incluindo o fluxo com GitHub Copilot.
+- [Spec Kit: Agentic SDD reference](https://github.github.io/spec-kit/reference/agentic-sdd.html)
+  Referencia detalhada dos comandos, artefatos, argumentos e relacoes entre as etapas do fluxo.
 - [GitHub Spec Kit repository](https://github.com/github/spec-kit)
   Codigo-fonte, releases e documentacao mantidos pelo projeto; use para conferir mudancas e versoes.
 - [Spec Persistence Models](https://github.github.io/spec-kit/concepts/spec-persistence.html)
