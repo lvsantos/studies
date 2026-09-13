@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spec Kit: instalação rápida</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida</p>
+  <h1>Instalação do Spec Kit</h1>
+  <p class="lede">O pacote instalado é <code>specify-cli</code>. O comando criado é <code>specify</code>.</p>
+  <h2>Pré-requisitos</h2>
+  <ul>
+    <li>Python 3.11 ou superior</li>
+    <li><code>uv</code> (recomendado) ou <code>pipx</code></li>
+    <li>Um agente compatível, como GitHub Copilot</li>
+  </ul>
+  <h2>Instalar o CLI</h2>
+  <pre><code>uv tool install specify-cli
+specify version</code></pre>
+  <h2>Inicializar um projeto</h2>
+  <pre><code>specify init meu-projeto --integration copilot
+# ou, dentro de uma pasta existente:
+specify init --here --integration copilot</code></pre>
+  <p><strong>Modelo mental:</strong> instalação coloca o executável no ambiente; inicialização cria os arquivos do Spec Kit no projeto.</p>
+  <p><a href="https://github.github.io/spec-kit/installation.html">Documentação oficial de instalação</a> · <a href="https://github.github.io/spec-kit/quickstart.html">Quickstart oficial</a></p>
+</main>
+</body>
+</html>

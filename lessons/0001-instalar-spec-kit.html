@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 1 · Instalar o Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 01 · 5 minutos</p>
+  <h1>Instalar o Spec Kit sem misturar as duas etapas</h1>
+  <p class="lede">Vitória de hoje: deixar o comando <code>specify</code> disponível e saber quando inicializar um projeto.</p>
+
+  <div class="panel">
+    <strong>A ideia central</strong>
+    <p>Spec Kit tem dois momentos diferentes:</p>
+    <ol>
+      <li><strong>Instalar o CLI:</strong> instala o pacote <code>specify-cli</code> uma vez no seu ambiente.</li>
+      <li><strong>Inicializar um projeto:</strong> usa <code>specify init</code> para criar a estrutura e a integração do agente naquele projeto.</li>
+    </ol>
+  </div>
+
+  <h2>1. Instale e verifique</h2>
+  <p>Com Python 3.11+ e <code>uv</code> disponíveis:</p>
+  <pre><code>uv tool install specify-cli
+specify version</code></pre>
+  <p>Se o segundo comando mostrar uma versão, a instalação do CLI terminou. A documentação oficial também descreve <code>pipx install specify-cli</code> como alternativa.</p>
+
+  <h2>2. Inicialize para o Copilot</h2>
+  <p>Para criar um novo diretório:</p>
+  <pre><code>specify init meu-projeto --integration copilot</code></pre>
+  <p>Para usar a pasta atual:</p>
+  <pre><code>specify init --here --integration copilot</code></pre>
+  <p>Em uma pasta existente e não vazia, use <code>--force</code> somente depois de conferir o que será mesclado.</p>
+
+  <h2>Recuperação antes de executar</h2>
+  <p>Sem olhar acima: qual comando instala o CLI? E qual comando prepara um projeto para o Copilot?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Instalação:</strong> <code>uv tool install specify-cli</code></p>
+    <p><strong>Projeto:</strong> <code>specify init meu-projeto --integration copilot</code></p>
+  </div>
+
+  <h2>Seu próximo passo</h2>
+  <ol>
+    <li>Execute a instalação e confirme com <code>specify version</code>.</li>
+    <li>Escolha uma pasta de teste e execute o <code>specify init</code>.</li>
+    <li>Observe quais arquivos o comando criou antes de começar a primeira especificação.</li>
+  </ol>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.github.io/spec-kit/quickstart.html">Quickstart oficial do Spec Kit</a>. Ele mostra o caminho completo após a instalação.</p>
+  </div>
+
+  <p class="small">A missão desta lição é provisória: instalar o Spec Kit para uso com GitHub Copilot. Diga ao professor qual projeto real você pretende inicializar; isso define a próxima lição.</p>
+  <p><a href="../reference/spec-kit-installation.html">Abrir a referência rápida</a></p>
+  <footer>Uma dúvida ou erro de terminal é material para a próxima conversa. Traga a mensagem exata e seguimos a partir dela.</footer>
+</main>
+</body>
+</html>
