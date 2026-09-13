@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 05 · Comandos centrais e catálogo de integrações</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 05 · 10 minutos</p>
+  <h1>Além do setup: extensões, presets e diagnóstico útil</h1>
+  <p class="lede">Vitória de hoje: relembrar o mínimo do setup e aprender os comandos que tornam o fluxo mais útil sem repetir a mesma ideia da instalação inicial.</p>
+
+  <div class="panel">
+    <strong>Resumo rápido do que já vimos</strong>
+    <p>Dois comandos básicos já ficaram claros: <code>uv tool install specify-cli</code> instala o CLI e <code>specify init --here --integration copilot</code> prepara o projeto. Depois disso, o ambiente costuma ser validado com <code>specify check</code> e a versão com <code>specify version</code>. O importante é não confundir <strong>instalar</strong> com <strong>inicializar</strong>: o primeiro prepara o executável; o segundo prepara o projeto.</p>
+  </div>
+
+  <h2>1. Quando o projeto precisa de mais “camadas”</h2>
+  <p>Depois que o projeto já existe, nem sempre a próxima ação é “escrever uma feature”. Às vezes você quer deixar o ambiente mais útil, mais alinhado ao seu workflow ou mais explícito para a IA. Nessa zona entram as extensões e os presets.</p>
+
+  <div class="panel">
+    <strong>Extensões</strong>
+    <p>Extensões são módulos que adicionam comportamento ao Spec Kit. O caso mais importante aqui é a extensão de Git, que cria o suporte de branches e workflow de feature:</p>
+    <pre><code>specify extension list
+specify extension add git
+specify extension remove git</code></pre>
+    <p>Se a sua pergunta é “quero que o processo de feature fique mais organizado no Git?”, a extensão é a resposta. Ela não substitui a lógica de projeto; ela apenas conecta o Spec Kit ao seu fluxo de versionamento.</p>
+  </div>
+
+  <h3>Quando a extensão vale a pena</h3>
+  <ul>
+    <li>quando você quer branch e feature mais explícitos;</li>
+    <li>quando o projeto precisa de rastreabilidade entre intenção e implementação;</li>
+    <li>quando sua equipe usa comandos de feature no mesmo estilo de fluxo de PR.</li>
+  </ul>
+
+  <p>Em outras palavras, a extensão é útil quando o problema deixa de ser “o Spec Kit funciona?” e passa a ser “o Spec Kit conversa bem com o modo como meu time trabalha”.</p>
+
+  <h2>2. Presets: reduzir a fricção do setup</h2>
+  <p>Preset é um pacote de escolhas prontas para configurar um projeto. Em vez de você repetir uma decisão manual toda vez, o preset aplica uma configuração base já pensada.</p>
+
+  <pre><code>specify preset list
+specify preset add compliance
+specify preset use compliance</code></pre>
+
+  <p>O valor do preset não é “inventar um workflow”. Ele é “aplicar um conjunto de convenções que vocês já decidiram usar”. Isso é útil em equipes que querem manter regras e padrões constantes entre vários projetos.</p>
+
+  <div class="panel">
+    <strong>Regra de bolso</strong>
+    <p>Extensão resolve <em>como o fluxo toca o Git</em>. Preset resolve <em>qual padrão inicial o projeto já deve seguir</em>. Não são a mesma coisa, mas funcionam juntos quando você quer velocidade sem perder consistência.</p>
+  </div>
+
+  <h2>3. Diagnóstico sem mexer no código</h2>
+  <p>Às vezes a melhor ação não é criar ou alterar arquivos. É simplesmente verificar se o ambiente está forte o suficiente para seguir em frente.</p>
+
+  <pre><code>specify integration status
+specify integration list
+specify integration info copilot</code></pre>
+
+  <p>Esses comandos servem para responder perguntas como:</p>
+  <ul>
+    <li>qual agente está ativo neste projeto?</li>
+    <li>houve alguma inconsistência na integração?</li>
+    <li>qual é a configuração atual do projeto e do agente?</li>
+  </ul>
+
+  <p>Esse tipo de comando é valioso porque remove suposição. Em vez de “acho que o projeto está usando Copilot”, você confirma. Em vez de “talvez a integração esteja pronta”, você verifica o estado real.</p>
+
+  <h2>4. Environment variables que fazem diferença</h2>
+  <p>As variáveis de ambiente do Spec Kit são úteis quando você quer controlar o contexto do projeto sem depender de “dar um nome certo” manualmente. Elas parecem avançadas, mas a ideia é simples: elas descrevem <em>onde está o projeto</em> e <em>qual feature está ativa</em>.</p>
+
+  <table>
+    <thead>
+      <tr><th>Variável</th><th>Função principal</th><th>Quando usar</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>SPECKIT_INTEGRATION_DEFAULT</code></td><td>Define a integração padrão usada quando o comando <code>specify init</code> não recebe <code>--integration</code>.</td><td>Em sessões headless, CI ou quando você quer padronizar o agente sem digitar o argumento explicitamente.</td></tr>
+      <tr><td><code>SPECIFY_INIT_DIR</code></td><td>Define a pasta do projeto que o Spec Kit deve resolver, útil em monorepos ou quando o projeto não está no diretório atual.</td><td>Quando você quer apontar para um projeto em outro diretório sem fazer <code>cd</code>.</td></tr>
+      <tr><td><code>SPECIFY_FEATURE_DIRECTORY</code></td><td>Define a feature ativa dentro do projeto, sobrescrevendo o valor em <code>.specify/feature.json</code>.</td><td>Quando você precisa selecionar uma feature fora do fluxo normal de uso.</td></tr>
+      <tr><td><code>SPECIFY_FEATURE</code></td><td>Define o rótulo da feature que o shell/ajuda do Spec Kit deve reportar.</td><td>Em scripts, automação e shell customizado, especialmente quando o fluxo não depende do Git para identificar o estado.</td></tr>
+      <tr><td><code>SPECKIT_INTEGRATION_CATALOG_URL</code></td><td>Define um catálogo de integrações alternativo para a resolução de agentes e plugins.</td><td>Quando você quer usar um catálogo externo ou personalizado em vez do catálogo padrão.</td></tr>
+    </tbody>
+  </table>
+
+  <p>O detalhe mais importante é que o Spec Kit separa dois tipos de contexto:</p>
+
+  <ol>
+    <li><strong>Projeto:</strong> definido por <code>SPECIFY_INIT_DIR</code> e pela pasta que contém <code>.specify/</code>;</li>
+    <li><strong>Feature ativa:</strong> definida por <code>SPECIFY_FEATURE_DIRECTORY</code> ou por <code>.specify/feature.json</code>.</li>
+  </ol>
+
+  <p>Essa separação evita um erro comum: achar que “o branch atual” é a única fonte de verdade. O comando e o projeto têm um estado lógico próprio, e as variáveis ajudam a controlar esse estado de maneira previsível.</p>
+
+  <p>Na prática, você normalmente não precisa definir todas essas variáveis no dia a dia. Mas quando o ambiente fica menos direto — monorepo, scripts, CI, vários projetos em paralelo — elas passam a ser uma ferramenta muito útil para evitar confusão.</p>
+
+  <div class="panel">
+    <strong>NOTE · Por que <code>feature.json</code> fica fora do Git?</strong>
+    <p>O Spec Kit mantém o estado da feature em <code>.specify/feature.json</code> fora do Git por uma razão de contexto, não de segurança. Esse arquivo descreve qual feature está ativa no projeto em um dado momento; ele é um ponteiro local de trabalho, não uma regra de negócio do projeto.</p>
+    <p>Se ele fosse versionado, cada pessoa, máquina ou branch acabaria “puxando” um estado de feature diferente e isso conflitaria com a ideia de que a feature ativa deve ser uma escolha local do ambiente atual. O Git cuida do código e dos artefatos compartilhados; o arquivo <code>feature.json</code> ajuda o Spec Kit a saber em qual contexto cada pessoa está trabalhando agora.</p>
+    <p>Por isso, a documentação do projeto também deixa esse estado em um espaço que fica fora do controle de versionamento compartilhado, junto com outros arquivos de máquina-local e infraestrutura do tooling. O objetivo é separar o “estado de execução do fluxo” do “estado produto do repositório”.</p>
+  </div>
+
+  <h2>5. O “molde” mental que vale guardar</h2>
+  <p>Depois dessa viagem, o mapa fica assim:</p>
+
+  <ul>
+    <li><strong>Instalação:</strong> <code>uv tool install specify-cli</code> e <code>specify version</code>.</li>
+    <li><strong>Projeto:</strong> <code>specify init --here --integration copilot</code>.</li>
+    <li><strong>Fluxo de feature:</strong> <code>specify</code>, <code>plan</code>, <code>tasks</code>, <code>implement</code>.</li>
+    <li><strong>Ambiente e suporte:</strong> <code>extension</code>, <code>preset</code>, <code>integration status</code>.</li>
+  </ul>
+
+  <p>É fácil achar que “o Spec Kit é só sobre especificações”. Mas o que o torna confiável na prática é a camada de infraestrutura: projeto correto, agente correto, extensão correta e diagnóstico correto.</p>
+
+  <div class="panel">
+    <strong>Prática rápida</strong>
+    <p>Sem olhar a documentação, responda em voz alta: “Se eu quiser confirmar se a integração do projeto está saudável sem alterar arquivos, qual comando usar?”</p>
+    <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+    <div id="answer" class="answer panel">
+      <p><strong><code>specify integration status</code></strong>. Esse comando faz uma verificação do estado atual da integração do projeto e ajuda a detectar inconsistências antes de você iniciar uma nova feature.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>As referências mais úteis continuam sendo <a href="https://github.github.io/spec-kit/reference/core.html">Core Commands</a> e <a href="https://github.github.io/spec-kit/reference/integrations.html">Supported AI Coding Agent Integrations</a>. Essas páginas são a fonte direta para o que é usado em setup, integração e diagnóstico. </p>
+  </div>
+
+  <p class="small">Na próxima sessão, vale escolher um comando concreto do grupo de extensões/presets e testar no projeto real para ver como a organização do workflow muda.</p>
+  <footer>
+    <a href="./0004-comandos-centrais-do-spec-kit.html">Lição anterior</a> ·
+    <a href="../reference/spec-kit-core-commands.html">Referência de comandos</a> ·
+    <a href="../reference/spec-kit-persistence-models.html">Padrões de persistência</a><br>
+    Pergunte ao agente sobre qualquer comando que pareça ambíguo: ele pode te mostrar o contexto exato em que você vai usar cada um.
+  </footer>
+</main>
+</body>
+</html>
