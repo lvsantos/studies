@@ -8,6 +8,14 @@
   Fonte primaria para instalar o CLI e inicializar um projeto, incluindo o fluxo com GitHub Copilot.
 - [GitHub Spec Kit repository](https://github.com/github/spec-kit)
   Codigo-fonte, releases e documentacao mantidos pelo projeto; use para conferir mudancas e versoes.
+- [Spec Persistence Models](https://github.github.io/spec-kit/concepts/spec-persistence.html)
+  Fonte primaria para os tres modelos de mutacao de artefatos (flow-back, flow-forward, living spec).
+- [Evolving Specs in Existing Projects](https://github.github.io/spec-kit/guides/evolving-specs.html)
+  Fonte primaria para o loop operacional de cada modelo de persistencia no dia a dia.
+- [Adopting Spec Kit in an Existing Project](https://github.github.io/spec-kit/guides/existing-projects.html)
+  Fonte primaria para quando e como essa decisao aparece pela primeira vez em um projeto ja existente.
+- [Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl (Birgitta Bockeler, martinfowler.com)](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
+  Analise independente que define os tres niveis de SDD (spec-first, spec-anchored, spec-as-source) e traz uma visao critica sobre limitacoes praticas do Spec Kit.
 
 ## Wisdom
 

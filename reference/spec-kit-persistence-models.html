@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Modelos de persistência de spec</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>O que fazer com artefatos de uma feature concluída</h1>
+  <p class="lede">Duas perguntas independentes, três modelos de mutação, e como isso se encaixa nos três níveis de "spec-driven development".</p>
+
+  <h2>Duas perguntas separadas</h2>
+  <dl>
+    <dt>1. Por quanto tempo a spec importa?</dt>
+    <dd>Pergunta sobre o ciclo de vida geral do método (níveis de SDD, ver abaixo).</dd>
+    <dt>2. O que acontece com <code>spec.md</code>, <code>plan.md</code> e <code>tasks.md</code> quando os requisitos mudam?</dt>
+    <dd>Pergunta sobre a estratégia de mutação dos artefatos dentro do Spec Kit &mdash; os três modelos de persistência.</dd>
+  </dl>
+
+  <h2>Os três níveis de SDD (Birgitta Böckeler, Martin Fowler)</h2>
+  <table>
+    <thead><tr><th>Nível</th><th>O que significa</th><th>O que acontece com a spec após a feature</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Spec-first</strong></td><td>Escreve-se a spec antes de codificar.</td><td>Pode ser descartada; não existe compromisso de mantê-la.</td></tr>
+      <tr><td><strong>Spec-anchored</strong></td><td>A spec continua existindo depois da implementação.</td><td>Usada para evoluir e manter a feature no futuro.</td></tr>
+      <tr><td><strong>Spec-as-source</strong></td><td>A spec é a única fonte editada por humanos.</td><td>Código é gerado/regenerado a partir dela; humano não toca no código.</td></tr>
+    </tbody>
+  </table>
+  <p class="small">Fonte: <a href="https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html">Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl</a>. O artigo observa que o Spec Kit cria uma pasta por spec e um branch por mudança &mdash; o que aponta mais para "spec-first" por padrão, a menos que a equipe adote deliberadamente uma disciplina de manutenção.</p>
+
+  <h2>Os três modelos de persistência do Spec Kit</h2>
+  <table>
+    <thead><tr><th>Modelo</th><th>Regra de mutação</th><th>Vantagens</th><th>Desvantagens</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Flow-back spec</strong></td>
+        <td>Edita-se qualquer artefato primeiro (spec, plan, tasks ou o próprio código) e depois se reconcilia o conjunto.</td>
+        <td>Iteração rápida; aproveita descobertas feitas durante a implementação; bom para times pequenos e próximos.</td>
+        <td>Risco de <em>divergência silenciosa</em>: se ninguém devolve a descoberta para <code>spec.md</code>, futuros colaboradores não sabem em qual artefato confiar.</td>
+      </tr>
+      <tr>
+        <td><strong>Flow-forward spec</strong></td>
+        <td>Artefatos concluídos são imutáveis. Uma mudança de requisito cria uma <strong>nova pasta de feature</strong> em vez de alterar a antiga.</td>
+        <td>Trilha de auditoria clara; cada pasta é um registro histórico; fácil explicar como o projeto chegou onde está.</td>
+        <td>Duplicação: decisões relacionadas ficam espalhadas em várias pastas; exige convenção de nomes e links para manter a linhagem legível.</td>
+      </tr>
+      <tr>
+        <td><strong>Living spec</strong></td>
+        <td><code>spec.md</code> é o contrato. Edita-se a spec primeiro, depois se regenera ou revisa <code>plan.md</code> e <code>tasks.md</code> a partir dela.</td>
+        <td>Consistência forte entre requisito e implementação; <code>spec.md</code> como fonte única de verdade.</td>
+        <td>Risco de perder racional de implementação valioso se os artefatos derivados forem descartados sem preservar decisões importantes em outro lugar.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Correlação entre os dois eixos</h2>
+  <table>
+    <thead><tr><th>Modelo de persistência</th><th>Nível de SDD que ele tende a realizar</th></tr></thead>
+    <tbody>
+      <tr><td>Flow-back, sem disciplina de reconciliação</td><td>Na prática vira <strong>spec-first</strong>: o arquivo existe, mas ninguém confia nele.</td></tr>
+      <tr><td>Flow-back, com reconciliação disciplinada</td><td><strong>Spec-anchored</strong>: a spec continua confiável porque é atualizada a cada descoberta.</td></tr>
+      <tr><td>Flow-forward</td><td><strong>Spec-anchored por feature</strong>, não por capacidade: cada pasta é um âncora histórico, mas decisões relacionadas se fragmentam entre pastas.</td></tr>
+      <tr><td>Living spec</td><td>A realização mais completa de <strong>spec-anchored</strong>; aproxima-se de <strong>spec-as-source</strong> para <code>plan.md</code>/<code>tasks.md</code> (que passam a ser derivados), mas o código em si ainda é editado por humanos &mdash; diferente de ferramentas como o Tessl.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Duas perguntas para decidir o modelo do seu time</h2>
+  <ol>
+    <li>As pastas de feature concluídas devem ser registros históricos ou áreas de trabalho editáveis?</li>
+    <li><code>spec.md</code> é a única fonte de verdade, ou <code>plan.md</code>/<code>tasks.md</code> podem virar fontes co-iguais?</li>
+  </ol>
+  <p>O modelo é uma <strong>convenção de time</strong>, não uma flag de CLI. Depois de decidir, documente a escolha na constitution do projeto ou nas notas de onboarding.</p>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p><a href="https://github.github.io/spec-kit/concepts/spec-persistence.html">Spec Persistence Models</a> (conceito) &middot; <a href="https://github.github.io/spec-kit/guides/evolving-specs.html">Evolving Specs</a> (como operar cada modelo no dia a dia) &middot; <a href="https://github.github.io/spec-kit/guides/existing-projects.html">Adopting Spec Kit in an Existing Project</a> (quando decidir isso pela primeira vez) &middot; <a href="https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html">Understanding Spec-Driven-Development</a> (os três níveis de SDD e uma visão crítica sobre eles).</p>
+  </div>
+
+  <p><a href="../lessons/0003-gerenciar-artefatos-de-features-concluidas.html">Voltar para a lição 3</a> · <a href="./spec-kit-pos-init.html">Mapa pós-init</a></p>
+  <footer>Material de referência do curso de Spec Kit com GitHub Copilot.</footer>
+</main>
+</body>
+</html>

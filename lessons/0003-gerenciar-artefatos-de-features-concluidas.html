@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 3 · Gerenciando artefatos de features concluídas</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 03 · 10 minutos</p>
+  <h1>Uma feature terminou. E agora, o que fazer com a spec?</h1>
+  <p class="lede">Vitória de hoje: parar de deixar essa decisão acontecer por acidente e escolher, de propósito, um modelo de persistência para <code>spec.md</code>, <code>plan.md</code> e <code>tasks.md</code>.</p>
+
+  <div class="panel">
+    <strong>O mapa mental</strong>
+    <p>Existem <strong>duas perguntas independentes</strong>. A primeira é filosófica: por quanto tempo uma spec deveria importar? A segunda é operacional: quando os requisitos mudam, o que acontece com os arquivos que já existem?</p>
+    <p>A lição 2 te ensinou o ciclo completo até <code>/speckit-converge</code>. Esta lição cobre o que ninguém pergunta: o dia seguinte ao <code>converge</code>.</p>
+  </div>
+
+  <h2>1. A pergunta filosófica: os três níveis de SDD</h2>
+  <p>Birgitta Böckeler (Thoughtworks), no artigo <a href="https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html">Understanding Spec-Driven-Development</a>, observa que "spec-driven development" esconde três compromissos bem diferentes:</p>
+  <table>
+    <thead><tr><th>Nível</th><th>Compromisso</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Spec-first</strong></td><td>A spec existe só para guiar a codificação. Depois, pode ser esquecida.</td></tr>
+      <tr><td><strong>Spec-anchored</strong></td><td>A spec sobrevive à implementação e é usada de novo quando a feature evolui.</td></tr>
+      <tr><td><strong>Spec-as-source</strong></td><td>A spec é a única coisa editada por humanos; o código é gerado a partir dela.</td></tr>
+    </tbody>
+  </table>
+  <p>A autora nota algo importante sobre o Spec Kit especificamente: ele cria uma <strong>pasta nova por spec</strong> e (com a extensão de git) um <strong>branch por mudança</strong> &mdash; um sinal de que, por padrão, ele trata a spec como algo válido para a duração de uma mudança, não necessariamente da vida inteira da feature. Ou seja: <strong>o Spec Kit te dá a ferramenta, mas não escolhe o nível por você.</strong></p>
+
+  <h2>2. A pergunta operacional: os três modelos de persistência do Spec Kit</h2>
+  <p>A <a href="https://github.github.io/spec-kit/concepts/spec-persistence.html">documentação oficial de Spec Persistence Models</a> nomeia três convenções possíveis para quando os requisitos mudam:</p>
+  <table>
+    <thead><tr><th>Modelo</th><th>Regra</th><th>Vantagem</th><th>Risco</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Flow-back</strong></td><td>Edite qualquer artefato (ou o código) primeiro, depois reconcilie tudo.</td><td>Rápido; aproveita descobertas do próprio trabalho de implementação.</td><td>Divergência silenciosa se ninguém reconciliar.</td></tr>
+      <tr><td><strong>Flow-forward</strong></td><td>Artefatos concluídos são imutáveis; requisito novo = pasta de feature nova.</td><td>Trilha de auditoria; histórico claro.</td><td>Duplicação e contexto fragmentado entre pastas.</td></tr>
+      <tr><td><strong>Living spec</strong></td><td><code>spec.md</code> é o contrato; <code>plan.md</code>/<code>tasks.md</code> são regenerados a partir dela.</td><td>Consistência forte; uma fonte única de verdade.</td><td>Racional de implementação pode se perder ao regenerar.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3. Como as duas perguntas se conectam</h2>
+  <p>O modelo de persistência que você escolhe <strong>determina, na prática</strong>, qual nível de SDD sua equipe realmente vive &mdash; independentemente do que a documentação promete:</p>
+  <ul>
+    <li><strong>Flow-back sem disciplina</strong> de reconciliar vira <em>spec-first</em> disfarçado: o arquivo continua no disco, mas ninguém mais confia nele.</li>
+    <li><strong>Flow-back com reconciliação séria</strong> (rodando <code>/speckit-analyze</code> depois de cada descoberta) é uma forma real de <em>spec-anchored</em>.</li>
+    <li><strong>Flow-forward</strong> é <em>spec-anchored por feature</em>: cada pasta individual é um bom âncora histórico, mas decisões de uma mesma capacidade se espalham por várias pastas ao longo do tempo.</li>
+    <li><strong>Living spec</strong> é a versão mais completa de <em>spec-anchored</em>, e chega perto de <em>spec-as-source</em> para plan/tasks &mdash; mas o código ainda é escrito e revisado por humanos, então não é spec-as-source de verdade (isso é o que ferramentas como o Tessl tentam fazer).</li>
+  </ul>
+
+  <div class="panel">
+    <strong>As duas perguntas para decidir o modelo do seu time</strong>
+    <p>1. Pastas de feature concluídas devem ser <em>registros históricos</em> ou <em>áreas de trabalho editáveis</em>?</p>
+    <p>2. <code>spec.md</code> é a única fonte de verdade, ou <code>plan.md</code>/<code>tasks.md</code> podem virar fontes co-iguais?</p>
+    <p class="small">O modelo é uma convenção de time, não uma flag de CLI. Depois de decidir, documente a escolha em <code>.specify/memory/constitution.md</code>.</p>
+  </div>
+
+  <h2>4. Pratique: escolha o modelo certo para o cenário</h2>
+  <p><strong>Cenário A:</strong> um time de 2 pessoas, mudando rápido, onde a maior parte do aprendizado acontece durante a implementação e todo mundo conversa o dia inteiro.</p>
+  <button type="button" onclick="document.querySelector('#answer-a').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer-a" class="answer panel">
+    <p><strong>Flow-back.</strong> Time pequeno consegue notar e reconciliar divergência rapidamente; o custo de reconciliar é menor que o custo de burocratizar cada descoberta.</p>
+  </div>
+
+  <p><strong>Cenário B:</strong> um produto regulado, onde auditores precisam ver exatamente quais requisitos existiam quando cada mudança foi aprovada.</p>
+  <button type="button" onclick="document.querySelector('#answer-b').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer-b" class="answer panel">
+    <p><strong>Flow-forward.</strong> Cada pasta de feature vira prova histórica imutável; a duplicação é um custo aceitável frente à necessidade de auditoria.</p>
+  </div>
+
+  <p><strong>Cenário C:</strong> uma feature central do produto, revisitada com frequência, onde o time quer que qualquer pessoa nova leia um único <code>spec.md</code> e confie que ele reflete o comportamento atual.</p>
+  <button type="button" onclick="document.querySelector('#answer-c').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer-c" class="answer panel">
+    <p><strong>Living spec.</strong> A spec é o contrato; plan e tasks são recriados a cada mudança para continuarem consistentes com ela.</p>
+  </div>
+
+  <h2>5. Uma visão crítica que vale guardar</h2>
+  <p>O mesmo artigo de Böckeler questiona se times realmente conseguem seguir qualquer um desses modelos com disciplina: ela observa que, na prática, agentes de IA frequentemente ignoram partes da spec ou seguem instruções longe demais, e que revisar markdown extenso pode ser mais cansativo do que revisar código. Isso não invalida os modelos &mdash; reforça que <strong>a escolha do modelo é só metade do trabalho; a outra metade é a disciplina de reconciliar e revisar</strong>.</p>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia <a href="https://github.github.io/spec-kit/concepts/spec-persistence.html">Spec Persistence Models</a> e, para o passo a passo de cada modelo no dia a dia, <a href="https://github.github.io/spec-kit/guides/evolving-specs.html">Evolving Specs in Existing Projects</a>. Para quando essa decisão aparece pela primeira vez (adotando o Spec Kit num projeto existente), veja <a href="https://github.github.io/spec-kit/guides/existing-projects.html">Adopting Spec Kit in an Existing Project</a>. Para uma crítica externa e independente do GitHub, leia <a href="https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html">Understanding Spec-Driven-Development</a> de Birgitta Böckeler.</p>
+  </div>
+
+  <p class="small">Esta lição continua a missão provisória de aprender a instalar e usar o Spec Kit com GitHub Copilot. Na próxima sessão, decida qual modelo faz sentido para o seu próprio projeto e registre essa escolha.</p>
+  <footer>O professor pode explicar qualquer etapa, interpretar seus artefatos ou revisar uma especificação. Pergunte com o comando e a mensagem exata que você encontrou.</footer>
+</main>
+</body>
+</html>
