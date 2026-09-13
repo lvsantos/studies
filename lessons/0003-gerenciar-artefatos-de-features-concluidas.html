@@ -31,7 +31,43 @@
   <p>A autora nota algo importante sobre o Spec Kit especificamente: ele cria uma <strong>pasta nova por spec</strong> e (com a extensão de git) um <strong>branch por mudança</strong> &mdash; um sinal de que, por padrão, ele trata a spec como algo válido para a duração de uma mudança, não necessariamente da vida inteira da feature. Ou seja: <strong>o Spec Kit te dá a ferramenta, mas não escolhe o nível por você.</strong></p>
 
   <h2>2. A pergunta operacional: os três modelos de persistência do Spec Kit</h2>
-  <p>A <a href="https://github.github.io/spec-kit/concepts/spec-persistence.html">documentação oficial de Spec Persistence Models</a> nomeia três convenções possíveis para quando os requisitos mudam:</p>
+  <p>A <a href="https://github.github.io/spec-kit/concepts/spec-persistence.html">documentação oficial de Spec Persistence Models</a> nomeia três convenções possíveis para quando os requisitos mudam. A <a href="https://github.github.io/spec-kit/guides/evolving-specs.html">guia Evolving Specs</a> é o melhor complemento porque ela mostra o <strong>fluxo operacional real</strong> de cada modelo no dia a dia:</p>
+
+  <h3>Flow-forward: cada mudança vira uma nova feature</h3>
+  <p>Use este modelo quando cada pasta de feature deve permanecer como um registro histórico. O guia oficial diz que, quando surge outra feature ou uma mudança substancial, o certo é criar <strong>uma nova pasta em <code>specs/</code></strong> e continuar pela sequência padrão:</p>
+  <ol>
+    <li>rodar <code>/speckit-specify</code> para criar a nova feature;</li>
+    <li>rodar <code>/speckit-plan</code> para definir a abordagem de implementação;</li>
+    <li>rodar <code>/speckit-tasks</code> para dividir o trabalho;</li>
+    <li>rodar <code>/speckit-implement</code> e revisar o diff de código e artefatos;</li>
+    <li>rodar <code>/speckit-converge</code> para validar a conclusão e gerar tarefas pendentes.</li>
+  </ol>
+  <p>O ponto importante é este: <strong>a feature antiga continua intacta</strong>. Ela vira referência histórica, comparação ou explicação de como o projeto chegou ao estado atual. Em termos práticos, a vantagem é que você nunca se pergunta “qual versão da spec é a correta?” Depois, a desvantagem é que o projeto pode começar a acumular contextos e decisões repetidas e espalhadas.</p>
+
+  <h3>Living spec: a spec é o contrato, os outros artefatos são derivativos</h3>
+  <p>Use este modelo quando <code>spec.md</code> deve ser a fonte de verdade da mudança. O guia instrui a seguir este fluxo:</p>
+  <ol>
+    <li>trabalhar em uma árvore limpa ou em uma branch dedicada para que cada mudança seja revisável;</li>
+    <li>atualizar <code>spec.md</code> primeiro, seja com <code>/speckit-clarify</code> ou por edição manual;</li>
+    <li>rodar <code>/speckit-plan</code> (ou editar <code>plan.md</code>) para que a abordagem técnica reflita a nova spec;</li>
+    <li>rodar <code>/speckit-tasks</code> (ou editar <code>tasks.md</code>) para refletir o novo plano;</li>
+    <li>rodar <code>/speckit-analyze</code> antes de retomar a implementação;</li>
+    <li>rodar <code>/speckit-implement</code> e revisar diff do código e dos artefatos;</li>
+    <li>rodar <code>/speckit-converge</code> para confirmar lacunas e anexar tarefas.</li>
+  </ol>
+  <p>A chave aqui é que <strong>o contrato muda antes de tudo o resto</strong>. Isso funciona bem para features que continuam ativas e precisam evoluir sem explorar o histórico em paralelo. O risco é quem vai manter o “racional da implementação”: se o time regenerar plan/tasks e descartar decisões valiosas sem preservá-las em outro lugar, a semântica da mudança pode ficar menos clara.</p>
+
+  <h3>Flow-back: a descoberta pode começar em qualquer artefato</h3>
+  <p>Use este modelo quando a implementação ou uma revisão do trabalho revela um problema e o time aceita que a correção comece onde o insight de fato apareceu. A recomendação do guia é:</p>
+  <ol>
+    <li>capturar a descoberta no artefato mais próximo do trabalho: <code>tasks.md</code>, <code>plan.md</code>, <code>spec.md</code> ou até mesmo o código;</li>
+    <li>decidir se a descoberta muda o comportamento pretendido, a estratégia técnica, a decomposição de tarefas ou apenas o código;</li>
+    <li>atualizar os demais artefatos que agora discordam;</li>
+    <li>rodar <code>/speckit-analyze</code> para confirmar que <code>spec.md</code>, <code>plan.md</code> e <code>tasks.md</code> continuam consistentes;</li>
+    <li>continuar a implementação só quando o conjunto de artefatos descreve a direção que a equipe quer que futuros colaboradores sigam.</li>
+  </ol>
+  <p>Esse é o modelo mais flexível, mas exige disciplina: se o time muda o código ou o plano sem devolver a decisão para <code>spec.md</code>, a base de decisão fica inconsistente. Em outras palavras, ele é ótimo para times pequenos e em troca de feedback rápido, ruim quando a equipe precisa de uma trilha clara de mudanças e decisões históricas.</p>
+
   <table>
     <thead><tr><th>Modelo</th><th>Regra</th><th>Vantagem</th><th>Risco</th></tr></thead>
     <tbody>
