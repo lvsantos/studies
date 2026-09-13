@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Spec Kit pós-init</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit 1.0.6</p>
+  <h1>Depois do <code>specify init</code></h1>
+  <p class="lede">Um mapa de pastas e do ciclo Spec-Driven Development para GitHub Copilot.</p>
+
+  <h2>As duas pastas</h2>
+  <dl>
+    <dt><code>.github/skills/</code></dt>
+    <dd>Interface do agente. Cada subpasta contém um <code>SKILL.md</code> que descreve um comando, seus pré-requisitos, artefatos e critérios de conclusão.</dd>
+    <dt><code>.specify/</code></dt>
+    <dd>Infraestrutura do método. Contém templates, scripts auxiliares, memória, workflows, configuração e manifestos de integração.</dd>
+  </dl>
+
+  <h2>Artefatos principais</h2>
+  <table>
+    <thead><tr><th>Local</th><th>Função</th></tr></thead>
+    <tbody>
+      <tr><td><code>.specify/memory/constitution.md</code></td><td>Princípios e regras de governança do projeto.</td></tr>
+      <tr><td><code>.specify/templates/</code></td><td>Estruturas iniciais para spec, plan, tasks, checklist e constitution.</td></tr>
+      <tr><td><code>.specify/scripts/</code></td><td>Scripts usados para preparar contexto, localizar features e validar pré-requisitos.</td></tr>
+      <tr><td><code>.specify/workflows/</code></td><td>Registro dos fluxos instalados, como o ciclo completo do Spec Kit.</td></tr>
+      <tr><td><code>.specify/integration.json</code></td><td>Integração ativa, versão do Spec Kit e modo usado pelo Copilot.</td></tr>
+      <tr><td><code>specs/&lt;feature&gt;/</code></td><td>Artefatos de uma feature: <code>spec.md</code>, <code>plan.md</code>, <code>tasks.md</code> e documentos de design.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Fluxo de trabalho</h2>
+  <ol>
+    <li><code>/speckit-constitution</code> &rarr; princípios</li>
+    <li><code>/speckit-specify</code> &rarr; necessidade em <code>spec.md</code></li>
+    <li><code>/speckit-clarify</code> &rarr; ambiguidades resolvidas</li>
+    <li><code>/speckit-plan</code> &rarr; desenho técnico</li>
+    <li><code>/speckit-checklist</code> &rarr; revisão de qualidade</li>
+    <li><code>/speckit-tasks</code> &rarr; tarefas ordenadas</li>
+    <li><code>/speckit-analyze</code> &rarr; consistência entre artefatos</li>
+    <li><code>/speckit-implement</code> &rarr; execução e validação</li>
+    <li><code>/speckit-converge</code> &rarr; lacunas restantes viram tarefas</li>
+  </ol>
+
+  <div class="panel">
+    <strong>Regra de diagnóstico</strong>
+    <p>Se a dúvida é “como o agente executa este comando?”, procure em <code>.github/skills</code>. Se a dúvida é “quais arquivos, templates ou scripts sustentam o processo?”, procure em <code>.specify</code>.</p>
+  </div>
+
+  <p><a href="../lessons/0002-entender-o-pos-init-do-spec-kit.html">Voltar para a lição 2</a> · <a href="https://github.github.io/spec-kit/quickstart.html">Quickstart oficial</a></p>
+  <footer>Material de referência do curso de Spec Kit com GitHub Copilot.</footer>
+</main>
+</body>
+</html>

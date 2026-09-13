@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 2 · Depois do init do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 02 · 8 minutos</p>
+  <h1>O que nasceu depois do <code>specify init</code>?</h1>
+  <p class="lede">Vitória de hoje: olhar para <code>.github/skills</code> e <code>.specify</code> e saber qual peça usar em cada etapa do desenvolvimento.</p>
+
+  <div class="panel">
+    <strong>O mapa mental</strong>
+    <p><code>.github/skills</code> é a superfície que o GitHub Copilot lê para oferecer os comandos do método. <code>.specify</code> é o kit de suporte: templates, memória do projeto, workflows e metadados da integração.</p>
+    <p>Em uma frase: <strong>skills dizem ao agente como agir; <code>.specify</code> organiza o processo e seus artefatos.</strong></p>
+  </div>
+
+  <h2>1. Reconheça as duas pastas</h2>
+  <table>
+    <thead><tr><th>Pasta</th><th>O que guarda</th><th>Você mexe quando...</th></tr></thead>
+    <tbody>
+      <tr><td><code>.github/skills/</code></td><td>Uma pasta por comando, cada uma com <code>SKILL.md</code>.</td><td>Quer entender ou personalizar o comportamento de uma etapa.</td></tr>
+      <tr><td><code>.specify/</code></td><td>Templates, constituição, scripts, workflows e configuração.</td><td>Quer configurar o método, criar artefatos ou diagnosticar o fluxo.</td></tr>
+    </tbody>
+  </table>
+  <p>No seu projeto, <code>.specify/integration.json</code> confirma a integração com Copilot, e <code>.specify/workflows/workflow-registry.json</code> registra o ciclo instalado.</p>
+
+  <h2>2. Siga o ciclo, uma decisão por vez</h2>
+  <ol>
+    <li><strong>Constitution:</strong> define princípios e limites do projeto em <code>.specify/memory/constitution.md</code>. Faça primeiro quando o projeto ainda não tem regras compartilhadas.</li>
+    <li><strong>Specify:</strong> transforma uma ideia em <code>spec.md</code>: usuários, cenários, requisitos testáveis e critérios de sucesso.</li>
+    <li><strong>Clarify:</strong> resolve ambiguidades importantes e devolve as respostas para a especificação.</li>
+    <li><strong>Plan:</strong> transforma a especificação em uma decisão técnica documentada, incluindo pesquisa, modelo de dados e guia rápido.</li>
+    <li><strong>Checklist:</strong> cria ou usa uma lista de revisão para encontrar lacunas antes de construir.</li>
+    <li><strong>Tasks:</strong> quebra o plano em tarefas executáveis, ordenadas por dependência.</li>
+    <li><strong>Analyze:</strong> compara especificação, plano e tarefas para encontrar contradições antes da implementação.</li>
+    <li><strong>Implement:</strong> executa <code>tasks.md</code>, valida o resultado e marca as tarefas concluídas.</li>
+    <li><strong>Converge:</strong> verifica o código contra os artefatos e acrescenta tarefas para qualquer parte ainda não construída.</li>
+  </ol>
+
+  <pre><code>/speckit-constitution
+/speckit-specify "descreva a necessidade"
+/speckit-clarify
+/speckit-plan
+/speckit-checklist
+/speckit-tasks
+/speckit-analyze
+/speckit-implement
+/speckit-converge</code></pre>
+  <p>Nem todo ajuste precisa de todos os portões. Para uma feature de produção, o caminho completo é o mais seguro; para explorar uma ideia, comece por <code>specify</code> e avance conforme o risco.</p>
+
+  <h2>3. Pratique: escolha a próxima peça</h2>
+  <p>Você recebeu uma ideia vaga: “quero permitir que usuários exportem seus estudos”. A especificação ainda não existe. Qual comando vem primeiro?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong><code>/speckit-specify</code>.</strong> Primeiro transforme a intenção em cenários, requisitos e critérios de sucesso. <code>plan</code> só faz sentido depois que existe algo suficientemente claro para planejar.</p>
+  </div>
+
+  <h2>4. Verifique no próprio projeto</h2>
+  <pre><code>find .github/skills -name SKILL.md | sort
+find .specify -maxdepth 2 -type f | sort
+cat .specify/integration.json
+cat .specify/workflows/workflow-registry.json</code></pre>
+  <p>O resultado esperado é uma coleção de skills em <code>.github/skills</code> e, dentro de <code>.specify</code>, arquivos como <code>templates/</code>, <code>memory/</code>, <code>scripts/</code>, <code>workflows/</code> e os arquivos de integração.</p>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.github.io/spec-kit/quickstart.html">Quickstart oficial do Spec Kit</a>, especialmente a seção <em>Full path</em>. Para dúvidas sobre o que foi instalado, compare com o <a href="../reference/spec-kit-pos-init.html">mapa rápido pós-init</a>.</p>
+  </div>
+
+  <p class="small">Esta lição continua a missão provisória de aprender a instalar e usar o Spec Kit com GitHub Copilot. Traga uma feature real na próxima sessão; ela será o material para praticar <code>specify</code> e <code>clarify</code>.</p>
+  <footer>O professor pode explicar qualquer etapa, interpretar seus artefatos ou revisar uma especificação. Pergunte com o comando e a mensagem exata que você encontrou.</footer>
+</main>
+</body>
+</html>
