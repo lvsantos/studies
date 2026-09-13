@@ -27,6 +27,33 @@
 specify version</code></pre>
   <p>Se o segundo comando mostrar uma versão, a instalação do CLI terminou. A documentação oficial também descreve <code>pipx install specify-cli</code> como alternativa.</p>
 
+  <div class="panel">
+    <strong>Se aparecer “Executable already exists: specify”</strong>
+    <p>Esse aviso significa que já existe um executável <code>specify</code> no seu ambiente. Não é necessário reinstalar para continuar: execute:</p>
+    <pre><code>specify version</code></pre>
+    <p>Se o comando mostrar o quadro <em>Specify CLI Information</em> e uma versão, o CLI já está instalado e funcionando. Só use <code>--force</code> se você realmente quiser substituir a instalação existente.</p>
+  </div>
+
+  <h2>Como saber se está atualizado</h2>
+  <p><code>specify version</code> mostra apenas a versão instalada. Para consultar se existe uma versão mais nova, use o comando somente leitura:</p>
+  <pre><code>specify self check</code></pre>
+  <p>O resultado informa <code>Up to date</code> quando não há atualização ou mostra algo como <code>Update available: versão-atual → versão-nova</code> quando há uma versão disponível.</p>
+  <p>Para visualizar o plano de atualização sem alterar nada:</p>
+  <pre><code>specify self upgrade --dry-run</code></pre>
+  <p>Para instalar a versão estável mais recente:</p>
+  <pre><code>specify self upgrade</code></pre>
+  <p>Depois, confirme novamente com <code>specify version</code>. O comando <code>self upgrade</code> identifica se a instalação foi feita com <code>uv</code> ou <code>pipx</code>.</p>
+
+  <div class="panel">
+    <strong>Solução de problemas: “Verification failed” ou PATH incorreto (VS Code Snap)</strong>
+    <p>Se após o <code>specify self upgrade</code> você receber o aviso de que o diretório não está no <code>PATH</code> (ex: <code>~/snap/code/.../.local/bin</code>) e a versão continuar antiga no terminal, isso ocorre porque o VS Code rodando via Snap instala os binários no diretório de sandbox do Snap, enquanto seu terminal prioriza <code>~/.local/bin</code>.</p>
+    <p>Para resolver e forçar a instalação no diretório padrão do usuário (<code>~/.local/bin</code>):</p>
+    <pre><code>UV_TOOL_BIN_DIR=$HOME/.local/bin uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git@v1.0.6</code></pre>
+    <p>Ou para versões estáveis do PyPI:</p>
+    <pre><code>UV_TOOL_BIN_DIR=$HOME/.local/bin uv tool install specify-cli --force</code></pre>
+    <p>Em seguida, execute <code>specify version</code> para confirmar a versão atualizada.</p>
+  </div>
+
   <h2>2. Inicialize para o Copilot</h2>
   <p>Para criar um novo diretório:</p>
   <pre><code>specify init meu-projeto --integration copilot</code></pre>

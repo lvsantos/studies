@@ -20,6 +20,11 @@
   <h2>Instalar o CLI</h2>
   <pre><code>uv tool install specify-cli
 specify version</code></pre>
+  <h2>Atualizar e verificar</h2>
+  <pre><code>specify self check
+specify self upgrade</code></pre>
+  <p><strong>Aviso de PATH (VS Code via Snap):</strong> Se o <code>specify version</code> continuar antigo após o upgrade, insira o executável diretamente em <code>~/.local/bin</code>:</p>
+  <pre><code>UV_TOOL_BIN_DIR=$HOME/.local/bin uv tool install specify-cli --force</code></pre>
   <h2>Inicializar um projeto</h2>
   <pre><code>specify init meu-projeto --integration copilot
 # ou, dentro de uma pasta existente:
