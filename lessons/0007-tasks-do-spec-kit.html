@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 7 · Tasks do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 07 · 8 minutos</p>
+  <h1>Tasks: transformar o plano em trabalho executável</h1>
+  <p class="lede">Vitória de hoje: reconhecer uma boa tarefa, entender suas dependências e enxergar como o plano vira uma sequência de execução.</p>
+
+  <div class="panel">
+    <strong>A ideia central</strong>
+    <p><strong>Plan decide como construir; Tasks organiza o trabalho necessário para construir.</strong> O comando lê a especificação, o plano e os artefatos de design para gerar um <code>tasks.md</code> acionável.</p>
+    <p>Uma tarefa não é um desejo genérico. Ela precisa apontar o que fazer, onde fazer e de que trabalho anterior depende.</p>
+  </div>
+
+  <h2>1. O que o comando faz</h2>
+  <p>No GitHub Copilot, use a skill com hífens:</p>
+  <pre><code>/speckit-tasks</code></pre>
+  <p>A documentação também mostra <code>/speckit.tasks</code>. A forma depende do agente; a etapa é a mesma.</p>
+  <p>O resultado principal é <code>tasks.md</code>, normalmente dentro da pasta da feature. Ele não substitui <code>spec.md</code> ou <code>plan.md</code>: transforma esses documentos em trabalho ordenado.</p>
+
+  <h2>2. Como uma tarefa fica acionável</h2>
+  <table>
+    <thead><tr><th>Elemento</th><th>O que informa</th></tr></thead>
+    <tbody>
+      <tr><td><strong>ID</strong></td><td>Permite referenciar a tarefa, como <code>T001</code>.</td></tr>
+      <tr><td><strong>História</strong></td><td>Liga a tarefa a uma entrega de usuário, como <code>US1</code>.</td></tr>
+      <tr><td><strong>Ação</strong></td><td>Descreve uma mudança concreta, não “implementar a feature”.</td></tr>
+      <tr><td><strong>Caminho</strong></td><td>Indica o arquivo ou diretório que será criado ou alterado.</td></tr>
+      <tr><td><strong>Dependência</strong></td><td>Explica o que precisa terminar antes.</td></tr>
+    </tbody>
+  </table>
+  <p>Compare:</p>
+  <pre><code>- [ ] T001 Implementar exportação
+- [ ] T002 [US1] Adicionar serialização CSV em src/export/csv.ts
+- [ ] T003 [US1] Criar teste de exportação em tests/export/csv.test.ts (depende de T002)</code></pre>
+  <p>A segunda e a terceira tarefas são melhores porque delimitam a ação e apontam os arquivos envolvidos. A terceira também deixa explícita sua dependência.</p>
+
+  <h2>3. Fases e ordem de execução</h2>
+  <p>O template organiza o trabalho em fases para tornar as dependências visíveis. A diferença mais importante é esta:</p>
+  <div class="panel">
+    <strong>Setup prepara o terreno; Foundational constrói a fundação.</strong>
+    <p><strong>Setup</strong> reúne tarefas iniciais e compartilhadas: criar a estrutura de diretórios, instalar dependências e configurar linting ou formatação. São preparativos para o projeto conseguir começar.</p>
+    <p><strong>Foundational</strong> implementa a infraestrutura que toda história de usuário precisa: banco e migrações, autenticação, roteamento, modelos-base, tratamento de erros ou configuração de ambiente. Enquanto essa fase não termina, nenhuma história deve começar.</p>
+  </div>
+  <table>
+    <thead><tr><th>Fase</th><th>Pergunta</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Setup</strong></td><td>O projeto está preparado para receber o trabalho?</td><td>Criar diretórios e instalar a dependência de CSV.</td></tr>
+      <tr><td><strong>Foundational</strong></td><td>Existe uma base funcional para todas as histórias?</td><td>Configurar autenticação e o serviço comum de exportação.</td></tr>
+    </tbody>
+  </table>
+  <ol>
+    <li><strong>Setup:</strong> prepara a estrutura inicial e as dependências compartilhadas.</li>
+    <li><strong>Foundational:</strong> constrói a infraestrutura que bloqueia as histórias de usuário.</li>
+    <li><strong>User stories:</strong> fatias independentes do valor entregue, normalmente em prioridade P1, P2 e P3.</li>
+    <li><strong>Polish:</strong> documentação, limpeza, segurança ou validações transversais.</li>
+  </ol>
+  <p>Uma regra rápida: se a tarefa apenas deixa o projeto pronto para começar, é <strong>Setup</strong>; se sem ela várias histórias não conseguem funcionar, é <strong>Foundational</strong>. Depois da fase fundacional, histórias independentes podem ser executadas em paralelo quando houver capacidade.</p>
+
+  <h2>4. O que a marca <code>[P]</code> significa</h2>
+  <p>Uma tarefa marcada com <code>[P]</code> pode ser feita em paralelo porque trabalha em arquivos diferentes e não depende de outra tarefa ainda pendente. A marca não significa “mais importante” nem “pode começar sem ler o plano”.</p>
+  <p>Mesmo tarefas paralelas precisam respeitar a fase e os pré-requisitos da história de usuário. A independência é uma propriedade da execução, não um atalho para ignorar dependências.</p>
+
+  <h2>5. O que Tasks não faz</h2>
+  <ul>
+    <li>não inventa requisitos que não estão na especificação;</li>
+    <li>não substitui o plano técnico;</li>
+    <li>não implementa o código;</li>
+    <li>não transforma automaticamente uma lista em aprovação de qualidade.</li>
+  </ul>
+  <p>Se a lista revelar uma lacuna ou uma contradição, volte ao artefato que possui o problema: <code>specify</code>, <code>clarify</code> ou <code>plan</code>. Não esconda uma decisão importante dentro de uma tarefa.</p>
+
+  <h2>6. Pratique: encontre a melhor tarefa</h2>
+  <p>Qual item está mais pronto para entrar em <code>tasks.md</code>?</p>
+  <ol>
+    <li>“Fazer a exportação funcionar.”</li>
+    <li>“[US1] Adicionar endpoint CSV em <code>backend/src/orders/export.py</code>, preservando os filtros da página.”</li>
+  </ol>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>O segundo.</strong> Ele identifica a história, a ação, o caminho e uma restrição importante. Ainda pode precisar de uma dependência ou teste, mas já é executável.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.github.io/spec-kit/quickstart.html#step-6-speckit-tasks--break-the-work-down">passo Tasks no Quickstart</a> e o <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html#speckittasks">detalhamento do comando</a>.</p>
+  </div>
+
+  <p><a href="./0006-plan-do-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-core-commands.html">Referência de comandos</a></p>
+  <p class="small">Na próxima aula, vamos estudar como revisar a consistência entre a especificação, o plano e as tarefas.</p>
+  <footer>O professor pode revisar uma tarefa, uma dependência ou a divisão por histórias de usuário. Pergunte com o contexto exato da feature.</footer>
+</main>
+</body>
+</html>
