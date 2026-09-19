@@ -32,6 +32,12 @@
   Guia oficial para instalar a extensao de bug fix, reproduzir o fluxo assess → fix → test e avaliar quando ela e apropriada.
 - [Spec Kit Agentic Bug Fix reference](https://github.github.io/spec-kit/reference/agentic-bugfix.html)
   Referencia oficial dos comandos `/speckit.bug.assess`, `/speckit.bug.fix` e `/speckit.bug.test`, incluindo o contrato de artefatos e o significado de verified, partial e failed.
+- [Spec Kit Idea Assessment Quickstart](https://github.github.io/spec-kit/guides/assessment.html)
+  Guia oficial para instalar e usar a extensao assess, validando se uma ideia merece investimento antes de entrar no fluxo de especificacao.
+- [Spec Kit Agentic Idea Assessment reference](https://github.github.io/spec-kit/reference/agentic-assessment.html)
+  Referencia oficial dos comandos `/speckit.assess.*`, dos artefatos em `.specify/assessments/<slug>/` e das regras de go, needs-clarification e kill.
+- [Spec Kit assess extension README](https://github.com/github/spec-kit/blob/main/extensions/assess/README.md)
+  Documento da propria extensao que detalha a pipeline, os artefatos, as guardrails e a relacao entre assessment e especificacao.
 - [Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl (Birgitta Bockeler, martinfowler.com)](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
   Analise independente que define os tres niveis de SDD (spec-first, spec-anchored, spec-as-source) e traz uma visao critica sobre limitacoes praticas do Spec Kit.
 

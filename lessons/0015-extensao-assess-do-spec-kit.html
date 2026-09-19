@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 15 · Extensão assess do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 15 · 15 minutos</p>
+  <h1>Idea Assessment: antes de construir, vale a pena?</h1>
+  <p class="lede">Vitória de hoje: entender a extensão assess como a etapa de decisão antes da especificação, e usar a mesma lógica da aula anterior para distinguir diagnóstico de ideia, correção de bug e entrega de feature.</p>
+
+  <div class="panel">
+    <strong>O mapa mental</strong>
+    <p>Essa extensão responde a uma pergunta diferente da de bug fix: <strong>“vale a pena investir nesta ideia?”</strong></p>
+    <p><strong>Também é uma extensão oficial do Spec Kit, não da comunidade.</strong> Ela é “bundled, opt-in”, então precisa ser instalada explicitamente antes de usar.</p>
+  </div>
+
+  <h2>1. Qual é o problema que ela resolve?</h2>
+  <p>O problema de <strong>idea assessment</strong> é a tendência de começar a construir antes de validar a ideia. Isso gera custo, retrabalho e excesso de confiança.</p>
+  <p>A extensão resolve isso com um fluxo de cinco etapas:</p>
+  <ol>
+    <li><strong>Intake:</strong> capturar a ideia em texto, URL, ticket ou apontamento de código;</li>
+    <li><strong>Research:</strong> reunir evidências a favor e contra a ideia;</li>
+    <li><strong>Define:</strong> descrever o problema, usuários, metas, não-objetivos e métricas;</li>
+    <li><strong>Shape:</strong> comparar opções conceituais e trade-offs;</li>
+    <li><strong>Decide:</strong> registrar um veredito: <strong>go</strong>, <strong>needs-clarification</strong> ou <strong>kill</strong>.</li>
+  </ol>
+  <p>É um processo de <strong>descoberta</strong>, não de implementação. Ele precede a especificação e a entrega.</p>
+
+  <h2>2. Quando usar</h2>
+  <p>Use essa extensão quando a situação tiver este formato:</p>
+  <ul>
+    <li>a ideia ainda não está validada;</li>
+    <li>há vontade de investir tempo em uma solução, mas o time ainda não sabe se vale a pena;</li>
+    <li>é preciso separar “boa ideia” de “ideia com evidência insuficiente”;</li>
+    <li>o objetivo é decidir antes de entrar no fluxo de feature do Spec Kit.</li>
+  </ul>
+  <p>Ela é especialmente útil para <strong>ideias incipientes</strong>, projetos de produto, propostas de feature ou tentativas de transformar uma necessidade em solução.</p>
+
+  <h2>3. Como instalar</h2>
+  <p>A instalação é direta:</p>
+  <pre><code>specify extension add assess</code></pre>
+  <p>Isso instala a extensão <strong>oficial</strong> do Spec Kit. Ela é opt-in, ou seja, não vira automática no projeto; você precisa ativá-la explicitamente.</p>
+  <p>Como na extensão de bug fix, o comando de terminal é só o setup. Os comandos reais são executados pelo agente dentro do chat em “skills” do tipo <code>/speckit-assess-*</code> (ou a convenção equivalente do agente em uso).</p>
+
+  <h2>4. Como usar</h2>
+  <p>O fluxo usa um <strong>slug</strong> para identificar cada ideia. A pasta fica em <code>.specify/assessments/&lt;slug&gt;/</code>.</p>
+  <p>O fluxo principal é:</p>
+  <pre><code>/speckit.assess.intake "Let users work offline and sync when they reconnect." slug=offline-mode
+/speckit.assess.research slug=offline-mode
+/speckit.assess.define slug=offline-mode
+/speckit.assess.shape slug=offline-mode
+/speckit.assess.decide slug=offline-mode</code></pre>
+  <p>Em GitHub Copilot, a forma mais comum é:</p>
+  <pre><code>/speckit-assess-intake "Let users work offline and sync when they reconnect." slug=offline-mode
+/speckit-assess-research slug=offline-mode
+/speckit-assess-define slug=offline-mode
+/speckit-assess-shape slug=offline-mode
+/speckit-assess-decide slug=offline-mode</code></pre>
+  <p>Os artefatos ficam assim:</p>
+  <pre><code>.specify/assessments/offline-mode/
+├── intake.md
+├── research.md
+├── problem.md
+├── concept.md
+└── decision.md</code></pre>
+
+  <h2>5. O que cada etapa faz</h2>
+
+  <h3>Intake</h3>
+  <p>A etapa de <strong>intake</strong> captura a ideia em forma normalizada: texto, URL, ticket ou referência a um projeto existente. Não é a solução; é o input bruto do problema.</p>
+
+  <h3>Research</h3>
+  <p>A etapa de <strong>research</strong> reúne provas a favor e contra a ideia. Isso é fundamental porque a extensão tenta evitar um viés de confirmação. A documentação enfatiza que evidência sem origem não vale como fato, e que a etapa deve “desafiar” a ideia, não apenas defendê-la.</p>
+  <p>O objetivo não é confirmar a ideia. O objetivo é medir se ela tem suporte.</p>
+
+  <h3>Define</h3>
+  <p>A etapa de <strong>define</strong> transforma a ideia em problema claro: usuários, dor, objetivo, não-objetivos, métricas e custo de não agir.</p>
+  <p>Essa etapa é o ponto em que a ideia deixa de ser “intuição” e passa a ser “problema de negócio/uso com critérios”.</p>
+
+  <h3>Shape</h3>
+  <p>A etapa de <strong>shape</strong> compare opções conceituais. Ela não entra em arquitetura detalhada, não decide tarefas nem implementa nada. Ela provoca a pergunta: <strong>quais são as formas plausíveis de resolver este problema, e qual faz mais sentido no limite de recursos?</strong></p>
+
+  <h3>Decide</h3>
+  <p>A etapa de <strong>decide</strong> produz um veredito: <strong>go</strong>, <strong>needs-clarification</strong> ou <strong>kill</strong>.</p>
+  <p>O resultado honesto é importante: uma ideia pode e deve ser descartada com uma justificativa clara. Isso não é fracasso; é uma decisão bem documentada.</p>
+
+  <h2>6. Como ela resolve o problema</h2>
+  <p>Ela resolve a lacuna entre <strong>“tenho uma ideia”</strong> e <strong>“tenho uma decisão com evidência”</strong>.</p>
+  <p>O fluxo aplica a mesma disciplina da aula anterior, mas em outro contexto:</p>
+  <ol>
+    <li><strong>Diagnóstico em vez de improviso:</strong> antes de construir, a equipe avalia a ideia;</li>
+    <li><strong>Escopo intelectual controlado:</strong> não se entra em arquitetura ou implementação antes de decidir se a ideia vale o investimento;</li>
+    <li><strong>Evidência em vez de entusiasmo:</strong> a decisão é baseada em pesquisa, métrica e comparação de alternativas.</li>
+  </ol>
+  <p>É um mecanismo de <strong>filtragem inteligente</strong> antes do fluxo de especificação.</p>
+
+  <h2>7. Oficial x comunidade</h2>
+  <p><strong>Esta é uma extensão oficial do Spec Kit.</strong> A documentação a trata como <strong>bundled, opt-in</strong>, e não como contribuição externa do catálogo comunitário.</p>
+  <p>Então a distinção continua a mesma da aula anterior:</p>
+  <ul>
+    <li><strong>Extensão oficial do Spec Kit:</strong> instalada com <code>specify extension add assess</code> e documentada no site oficial.</li>
+    <li><strong>Extensão da comunidade:</strong> descoberta em catálogos, repositórios e sites de comunidade, com revisão obrigatória antes da instalação.</li>
+  </ul>
+
+  <h2>8. Prática: ideia vale a pena?</h2>
+  <p>Você tem uma proposta de funcionalidade interessante, mas ainda não sabe se ela resolve um problema real, se a dor existe e se vale o custo. O que você deveria fazer antes de abrir a feature?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Você deveria usar a extensão assess.</strong> Isso separa “uma boa ideia” de “uma ideia com evidência suficiente para construir”. Se a decisão vier como <strong>kill</strong> ou <strong>needs-clarification</strong>, isso é um resultado útil e evita desperdício.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o guia oficial de <a href="https://github.github.io/spec-kit/guides/assessment.html">Idea Assessment Quickstart</a>, a referência de <a href="https://github.github.io/spec-kit/reference/agentic-assessment.html">Agentic Idea Assessment</a> e o README da extensão em <a href="https://github.com/github/spec-kit/blob/main/extensions/assess/README.md">extensions/assess</a>. Juntos, eles mostram o fluxo completo de decisão antes da especificação.</p>
+  </div>
+
+  <p><a href="./0014-extensao-bugfix-do-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-pos-init.html">Mapa pós-init</a></p>
+  <p class="small">A próxima aula pode contrastar assess, bug fix e feature workflow em um mapa de decisão: quando usar cada um e qual pergunta cada processo responde.</p>
+  <footer>O professor pode ajudar a decidir se uma ideia vale investimento, revisar o trade-off entre conceitos ou transformar um “go” em um handoff seguro para `/speckit.specify`. Pergunte com o caso exato.</footer>
+</main>
+</body>
+</html>
