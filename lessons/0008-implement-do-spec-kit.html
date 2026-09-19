@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 8 · Implement do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 08 · 8 minutos</p>
+  <h1>Implement: executar o plano com controle</h1>
+  <p class="lede">Vitória de hoje: entender como o agente transforma <code>tasks.md</code> em código, valida cada etapa e sabe quando parar.</p>
+
+  <div class="panel">
+    <strong>A ideia central</strong>
+    <p><strong>Implement não decide o que construir nem cria a ordem do trabalho.</strong> Ele executa as tarefas já definidas, respeitando o plano, as dependências e os critérios do projeto.</p>
+    <p>O comando é a passagem dos artefatos para o código, mas continua sendo um processo revisável: cada fase deve ser validada antes da próxima.</p>
+  </div>
+
+  <h2>1. Antes de implementar</h2>
+  <p>No GitHub Copilot, use a skill com hífens:</p>
+  <pre><code>/speckit-implement</code></pre>
+  <p>A documentação também mostra <code>/speckit.implement</code>. A forma depende do agente; a etapa é a mesma.</p>
+  <p>Antes de executar, o agente lê o contexto da feature:</p>
+  <ul>
+    <li><code>spec.md</code> para a intenção e os requisitos;</li>
+    <li><code>plan.md</code> para arquitetura e decisões técnicas;</li>
+    <li><code>tasks.md</code> para a ordem concreta do trabalho;</li>
+    <li>Constitution e artefatos auxiliares, quando existirem.</li>
+  </ul>
+
+  <h2>2. Checklist é um gate</h2>
+  <p>Se a feature tiver checklists, o comando verifica o estado deles antes de construir. Itens não marcados indicam que a qualidade dos requisitos ainda não foi aprovada.</p>
+  <p>O agente deve informar a situação e pedir confirmação antes de prosseguir quando houver itens pendentes. Ele não deve marcar o checklist por conta própria: a aprovação da qualidade pertence ao revisor.</p>
+  <p>Essa regra evita que uma lista de requisitos ainda incompleta seja tratada como autorização silenciosa para implementar.</p>
+
+  <h2>3. Execute por fases</h2>
+  <ol>
+    <li><strong>Setup:</strong> prepara estrutura, dependências e configurações iniciais.</li>
+    <li><strong>Foundational:</strong> implementa a infraestrutura que desbloqueia as histórias.</li>
+    <li><strong>User stories:</strong> constrói e valida cada entrega de usuário na ordem definida.</li>
+    <li><strong>Polish:</strong> executa documentação, limpeza e validações transversais.</li>
+  </ol>
+  <p>Em uma feature pequena, execute tudo de uma vez. Em uma feature grande, peça uma fase por vez:</p>
+  <pre><code>/speckit-implement Implement only the Setup and Foundational phases. Stop before the user stories.</code></pre>
+  <p>Depois de cada fase, confirme que os testes e as verificações passaram antes de avançar.</p>
+
+  <h2>4. O que acontece quando há um erro</h2>
+  <p>Uma tarefa sequencial que falha bloqueia as seguintes, porque continuar poderia produzir código apoiado em uma base incompleta. O erro deve ser reportado com contexto, e a causa deve ser corrigida antes de retomar.</p>
+  <p>Tarefas marcadas com <code>[P]</code> podem ser executadas em paralelo quando não compartilham dependências ou arquivos. Uma falha paralela não deve ser escondida: registre-a e valide o que conseguiu terminar.</p>
+
+  <h2>5. Marque o trabalho concluído</h2>
+  <p>Quando uma tarefa realmente terminar e tiver sido validada, ela deve ser marcada como concluída em <code>tasks.md</code>. A marca não significa apenas “o código foi escrito”; significa que a tarefa e suas verificações foram executadas.</p>
+  <p>Ao final, confira se:</p>
+  <ul>
+    <li>todas as tarefas esperadas foram executadas;</li>
+    <li>os testes e comandos de validação passaram;</li>
+    <li>a implementação segue a especificação e o plano;</li>
+    <li>as tarefas concluídas estão marcadas corretamente.</li>
+  </ul>
+  <p>Essa verificação prepara o próximo comando: <code>converge</code> compara a implementação com os artefatos e procura o que ainda ficou de fora.</p>
+
+  <h2>6. Pratique: quando parar?</h2>
+  <p>Uma tarefa fundacional falhou, mas duas tarefas de uma história posterior parecem independentes. O agente deve continuar?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Não.</strong> A fase fundacional bloqueia as histórias. Corrija a falha, valide a fundação e só então continue; independência paralela não elimina uma dependência de fase.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.github.io/spec-kit/quickstart.html#step-8-speckit-implement--build-it">passo Implement no Quickstart</a> e o <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html#speckitimplement">detalhamento do comando</a>.</p>
+  </div>
+
+  <p><a href="./0007-tasks-do-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-core-commands.html">Referência de comandos</a></p>
+  <p class="small">Na próxima aula, vamos estudar <code>converge</code>: a verificação final entre código, intenção e artefatos.</p>
+  <footer>O professor pode ajudar a interpretar uma falha de tarefa, ordenar uma execução por fases ou revisar o estado de <code>tasks.md</code>. Pergunte com o contexto exato.</footer>
+</main>
+</body>
+</html>
