@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 14 · Extensão bug fix do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 14 · 15 minutos</p>
+  <h1>Bug fix: quando o problema já existe e precisa de diagnóstico</h1>
+  <p class="lede">Vitória de hoje: saber quando usar a extensão de bug fix, como instalá-la, como executar o fluxo assess → fix → test e como distinguir uma extensão oficial do Spec Kit de uma extensão da comunidade.</p>
+
+  <div class="panel">
+    <strong>O mapa mental</strong>
+    <p>Essa extensão não é para criar uma feature nova; ela é para <strong>reparar o que já está quebrado</strong>.</p>
+    <p><strong>É uma extensão oficial do Spec Kit, não da comunidade.</strong> Ela é “bundled, opt-in” — vem junto como parte do kit, mas precisa ser instalada explicitamente antes de usar.</p>
+  </div>
+
+  <h2>1. O que ela resolve?</h2>
+  <p>O problema que ela resolve é o clássico de “o sistema está quebrado e o time precisa de um processo objetivo para descobrir a causa, corrigir a causa e verificar a correção sem improviso.”</p>
+  <p>Em vez de ir direto para patch, ela institucionaliza três passos:</p>
+  <ol>
+    <li><strong>Assess:</strong> diagnosticar se o relato é um bug real, localizar a área suspeita e propor uma remediação;</li>
+    <li><strong>Fix:</strong> aplicar a correção avaliada e registrar o que mudou;</li>
+    <li><strong>Test:</strong> reproduzir o problema e validar que a correção funcionou, sem afirmar mais do que a evidência suporta.</li>
+  </ol>
+  <p>Ela funciona bem quando o trabalho não é “nova funcionalidade”, mas “reparo de comportamento quebrado”.</p>
+
+  <h2>2. Quando usar</h2>
+  <p>Use essa extensão quando a situação tiver este formato:</p>
+  <ul>
+    <li>há um bug reportado, stack trace, URL de issue ou reprodução conhecida;</li>
+    <li>o objetivo é localizar e corrigir a causa raiz, não só esconder o sintoma;</li>
+    <li>há necessidade de registrar evidência do diagnóstico e da correção em arquivos do projeto;</li>
+    <li>o time quer separar claramente “diagnóstico”, “correção” e “verificação”.</li>
+  </ul>
+  <p>Ela não substitui o fluxo de feature do Spec Kit. Ela é um fluxo dedicado para reparos, e a documentação oficial a apresenta como um processo separado do SDD de feature.</p>
+
+  <h2>3. Como instalar</h2>
+  <p>A instalação é simples e ocorre via CLI do Spec Kit:</p>
+  <pre><code>specify extension add bug</code></pre>
+  <p>Isso instala a extensão <strong>oficial</strong> do Spec Kit. Ela é opt-in, então o comando acima é o passo de ativação; depois disso, as skills do agente ficam disponíveis no ambiente do seu editor ou do session manager da integração.</p>
+  <p>Importante: o comando de terminal só instala a extensão. Os comandos reais de bug fix são executados pelo agente na conversa, e não diretamente em shell.</p>
+
+  <h2>4. Como usar</h2>
+  <p>O processo usa um único identificador para cada bug: o <strong>slug</strong>. Ele vira o diretório de artefatos em <code>.specify/bugs/&lt;slug&gt;/</code>.</p>
+  <p>O fluxo principal é:</p>
+  <pre><code>/speckit.bug.assess "Descreva o problema e a reprodução" slug=login-crash
+/speckit.bug.fix slug=login-crash
+/speckit.bug.test slug=login-crash</code></pre>
+  <p>Em agentes como GitHub Copilot, a forma costuma ser com hífen, por exemplo:</p>
+  <pre><code>/speckit-bug-assess "Descreva o problema e a reprodução" slug=login-crash
+/speckit-bug-fix slug=login-crash
+/speckit-bug-test slug=login-crash</code></pre>
+  <p>Os comandos geram artefatos como:</p>
+  <pre><code>.specify/bugs/login-crash/
+├── assessment.md
+├── fix.md
+└── test.md</code></pre>
+
+  <h2>5. O que cada etapa faz</h2>
+
+  <h3>Assess</h3>
+  <p>A etapa de <strong>assess</strong> é <strong>read-only</strong> em relação ao código fonte. Ela não modifica o código. O papel dela é:</p>
+  <ul>
+    <li>triagem do relato do bug;</li>
+    <li>decidir se o problema é um bug real;</li>
+    <li>localizar a área do código suspeita;</li>
+    <li>propor uma remediação plausível.</li>
+  </ul>
+  <p>Se o sistema recebe um bug report com stack trace ou issue, a etapa de assess usa isso como entrada. O resultado é um arquivo <code>assessment.md</code> que documenta a hipótese e a causa provável.</p>
+
+  <h3>Fix</h3>
+  <p>A etapa de <strong>fix</strong> é a única que <strong>edita código</strong>.</p>
+  <p>Ela aplica a correção descrita na assessment e registra o que foi alterado em <code>fix.md</code>. A documentação ressalta que a correção deve ficar dentro do escopo avaliado, e qualquer desvio precisa ser explicitado como “Deviation from Assessment”. Isso é importante porque evita correções que “aumentam o escopo” sem evidência.</p>
+
+  <h3>Test</h3>
+  <p>A etapa de <strong>test</strong> re-executa a reprodução e os testes relevantes. O resultado não é “simplesmente passou ou falhou”: a extensão usa três estados possíveis:</p>
+  <ul>
+    <li><strong>verified</strong>: tudo que foi necessário foi validado com sucesso;</li>
+    <li><strong>partial</strong>: alguma verificação faltou ou não pode ser concluída;</li>
+    <li><strong>failed</strong>: a correção ainda não resolveu o problema.</li>
+  </ul>
+  <p>O ponto importante é que ela nunca “exagera” a evidência. Se a reprodução original não foi de fato exercitada, o resultado é downgrade para <strong>partial</strong>, mesmo que a suíte tenha passado.</p>
+
+  <h2>6. Como ela resolve o problema</h2>
+  <p>A extensão resolve um problema clássico da engenharia de software com IA: a tendência de tentar corrigir rápido antes de diagnosticar corretamente ou de validar sem evidência.</p>
+  <p>Ela introduz disciplina em três camadas:</p>
+  <ol>
+    <li><strong>Rigor de diagnóstico:</strong> o agente primeiro investiga se o problema é real e qual é a causa provável.</li>
+    <li><strong>Escopo controlado:</strong> a correção é aplicada apenas sob a hipótese documentada.</li>
+    <li><strong>Evidência de verificação:</strong> a validação é reexecutada e registrada como prova, não como “parece que resolveu”.</li>
+  </ol>
+  <p>Em outras palavras, ela transforma um bug em um fluxo de <strong>diagnóstico → reparo → prova</strong>.</p>
+
+  <h2>7. Oficial x comunidade</h2>
+  <p><strong>Esta é uma extensão oficial do Spec Kit.</strong> Ela não é uma extensão da comunidade.</p>
+  <p>O texto oficial a descreve como <strong>bundled, opt-in extension</strong>, isto é, ela está disponível como parte do kit, mas precisa ser instalada explicitamente. Isso é diferente de uma extensão de terceiros listada no catálogo da comunidade, que exige revisão e costuma ser descoberta como “community extension”.</p>
+  <p>Então, a regra de classificação é simples:</p>
+  <ul>
+    <li><strong>Extensão oficial do Spec Kit:</strong> instalada com <code>specify extension add bug</code> e documentada no site oficial do projeto.</li>
+    <li><strong>Extensão da comunidade:</strong> encontrada em catálogos externos/contribuídos e exigindo revisão antes de instalação.</li>
+  </ul>
+
+  <h2>8. Prática: quando vale usar?</h2>
+  <p>Você tem uma falha real em produção ou em uma branch local. O bug é claro, a reprodução é reproducível e você precisa entregar correção com evidência. Qual fluxo faz mais sentido?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Use a extensão de bug fix.</strong> Se o objetivo é diagnosticar, corrigir e provar a correção sem “quebrar o escopo do trabalho”, esse fluxo é mais adequado do que abrir um novo processo de feature.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o guia oficial de <a href="https://github.github.io/spec-kit/guides/bugfix.html">Bug Fixing Quickstart</a> e a referência de <a href="https://github.github.io/spec-kit/reference/agentic-bugfix.html">Agentic Bug Fix</a>. Elas são a fonte direta para instalar, executar e interpretar cada etapa do processo.</p>
+  </div>
+
+  <p><a href="./0013-extensoes-da-comunidade-do-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-pos-init.html">Mapa pós-init</a></p>
+  <p class="small">A próxima aula pode contrastar bug fix com fluxos de feature e idea assessment, mostrando quando o problema é “reparo” e quando é “nova funcionalidade”.</p>
+  <footer>O professor pode ajudar a decidir se um problema é bug fix real ou mudança de feature, além de revisar se a correção respeitou a assessment e a prova de verificação. Pergunte com o caso concreto.</footer>
+</main>
+</body>
+</html>

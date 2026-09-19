@@ -28,6 +28,10 @@
   Catalogo bruto que mostra como as extensoes da comunidade sao descritas e organizadas antes da instalacao.
 - [Spec Kit community catalog website](https://speckit-community.github.io/extensions/all-extensions)
   Index web para navegar pelos pacotes comunitarios e localizar categorias, autores e atualizacoes.
+- [Spec Kit Bug Fixing Quickstart](https://github.github.io/spec-kit/guides/bugfix.html)
+  Guia oficial para instalar a extensao de bug fix, reproduzir o fluxo assess → fix → test e avaliar quando ela e apropriada.
+- [Spec Kit Agentic Bug Fix reference](https://github.github.io/spec-kit/reference/agentic-bugfix.html)
+  Referencia oficial dos comandos `/speckit.bug.assess`, `/speckit.bug.fix` e `/speckit.bug.test`, incluindo o contrato de artefatos e o significado de verified, partial e failed.
 - [Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl (Birgitta Bockeler, martinfowler.com)](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
   Analise independente que define os tres niveis de SDD (spec-first, spec-anchored, spec-as-source) e traz uma visao critica sobre limitacoes praticas do Spec Kit.
 
