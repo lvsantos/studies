@@ -20,6 +20,14 @@
   Fonte primaria para escolher entre extensoes, presets, overrides locais, workflows e bundles ao adaptar o Spec Kit.
 - [Spec Kit extensions reference](https://github.github.io/spec-kit/reference/extensions.html)
   Referencia primaria para ciclo de vida, catalogos, configuracao, hooks, prioridades e governanca de extensoes.
+- [Spec Kit Community Extensions](https://github.github.io/spec-kit/community/extensions.html)
+  Fonte primaria para a categoria de extensoes da comunidade, seu papel como catalogo de descoberta e os avisos de risco e manutencao do projeto.
+- [Spec Kit extensions README](https://github.com/github/spec-kit/blob/main/extensions/README.md)
+  Documento essencial para entender a diferenca entre catalogos proprios, catalogos comunitarios e instalacao por URL direta.
+- [Spec Kit community catalog](https://github.com/github/spec-kit/blob/main/extensions/catalog.community.json)
+  Catalogo bruto que mostra como as extensoes da comunidade sao descritas e organizadas antes da instalacao.
+- [Spec Kit community catalog website](https://speckit-community.github.io/extensions/all-extensions)
+  Index web para navegar pelos pacotes comunitarios e localizar categorias, autores e atualizacoes.
 - [Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl (Birgitta Bockeler, martinfowler.com)](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
   Analise independente que define os tres niveis de SDD (spec-first, spec-anchored, spec-as-source) e traz uma visao critica sobre limitacoes praticas do Spec Kit.
 

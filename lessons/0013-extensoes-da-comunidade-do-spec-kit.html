@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 13 · Extensões da comunidade do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 13 · 12 minutos</p>
+  <h1>Extensões da comunidade: procurar antes de instalar</h1>
+  <p class="lede">Vitória de hoje: usar o catálogo da comunidade para descobrir extensões úteis, validar risco e escolher uma instalação segura sem misturar descoberta com aprovação.</p>
+
+  <div class="panel">
+    <strong>O mapa mental</strong>
+    <p>O catálogo da comunidade não é a mesma coisa que uma extensão aprovada para uso imediato. Ele é um <strong>superfície de descoberta</strong>: você pesquisa, compara, lê a descrição e revisa a origem antes de instalar.</p>
+    <p><strong>Descoberta não é aprovação.</strong> Esse princípio é o que evita que a equipe instale uma extensão sem entender o que ela faz, nem o risco que ela traz.</p>
+  </div>
+
+  <h2>1. Onde procurar</h2>
+  <p>O Spec Kit separa claramente dois cenários:</p>
+  <table>
+    <thead><tr><th>Fonte</th><th>Uso</th><th>Regra de segurança</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Catálogo oficial</strong></td><td>Extensões aprovadas para sua organização.</td><td>Você ou a equipe decidem o que entra.</td></tr>
+      <tr><td><strong>Catálogo da comunidade</strong></td><td>Descoberta e pesquisa.</td><td>É útil para encontrar opções, mas não é um “sim automático”.</td></tr>
+      <tr><td><strong>Catálogo próprio da organização</strong></td><td>Curadoria interna e governança.</td><td>É um catálogo controlado pela equipe, não um ponto público de descoberta.</td></tr>
+      <tr><td><strong>URL direta</strong></td><td>Instalar um artefato específico.</td><td>Exige revisão da origem e do código antes do uso.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Importante:</strong> o catálogo próprio da organização não é uma “fonte pública de descoberta” como a comunidade. Ele é uma camada de governança: a equipe decide o que fica disponível internamente e, por isso, ele não aparece como um lugar de exploração aberta na mesma categoria do catálogo da comunidade.</p>
+  <p>Os lugares principais para descobrir extensões da comunidade são:</p>
+  <ul>
+    <li><a href="https://github.github.io/spec-kit/community/extensions.html">Página oficial da comunidade</a>;</li>
+    <li><a href="https://speckit-community.github.io/extensions/all-extensions">Catálogo completo da comunidade</a>;</li>
+    <li><a href="https://github.com/github/spec-kit/blob/main/extensions/catalog.community.json">Catalog JSON bruto</a>;</li>
+    <li><a href="https://github.com/github/spec-kit/blob/main/extensions/README.md">README de extensões do projeto</a>.</li>
+  </ul>
+
+  <h2>2. O comando que faz pesquisa</h2>
+  <p>Para olhar o que está disponível no catálogo que o CLI conhece, use:</p>
+  <pre><code>specify extension search
+specify extension search "jira"
+specify extension search --tag integration
+specify extension search --author github
+specify extension search --verified</code></pre>
+  <p>Algumas extensões aparecem com categoria, efeito e status. Isso ajuda a responder perguntas rápidas como:</p>
+  <ul>
+    <li>Ela é de <strong>docs</strong>, <strong>process</strong>, <strong>integration</strong> ou <strong>visibility</strong>?</li>
+    <li>Ela é <strong>read-only</strong> ou <strong>read-write</strong>?</li>
+    <li>Ela é marcada como <strong>verified</strong>?</li>
+  </ul>
+  <p>Essas respostas não eliminam o risco, mas ajudam a reduzir a quantidade de palpites de instalação.</p>
+
+  <h2>3. Informações detalhadas antes de instalar</h2>
+  <p>Depois de encontrar uma extensão, não instale na primeira tentativa. Primeiro veja os detalhes:</p>
+  <pre><code>specify extension info &lt;nome-da-extensao&gt;</code></pre>
+  <p>Esse comando mostra metadados úteis: nome, autor, categoria, efeito, versão, origem e descrição. Em outras palavras, ele te ajuda a responder:</p>
+  <ol>
+    <li>O que a extensão <strong>realmente faz</strong>?</li>
+    <li>Ela altera arquivos ou apenas lê informação?</li>
+    <li>Ela depende de ferramentas externas ou de um processo específico?</li>
+    <li>Ela é um ajuste do workflow ou uma automação forte com impacto no projeto?</li>
+  </ol>
+  <p>O objetivo é transformar a busca em uma decisão informada. A busca é descoberta; a inspeção é risco controlado.</p>
+
+  <h2>4. A regra de segurança mais importante</h2>
+  <p>O texto oficial do CLI deixa essa distinção explícita:</p>
+  <pre><code>specify extension catalog list</code></pre>
+  <p>O catálogo da comunidade é <strong>discovery-only</strong> por design: ele pode ser buscado, mas não deve ser tratado como uma fonte instalável sem revisão. O próprio comando lembra que <strong>nunca é para “sinalizar” um catálogo de descoberta como instalável</strong>.</p>
+  <p>Isso faz sentido por uma razão simples: a comunidade cria e mantém extensões independentemente; os mantenedores do projeto só validam que as entradas do catálogo estejam completas e formatadas corretamente. Isso não significa que o código foi revisado, auditado ou endossado.</p>
+
+  <h2>5. Como avançar com segurança</h2>
+  <p>O fluxo recomendado é:</p>
+  <ol>
+    <li><strong>Pesquisar</strong> no catálogo da comunidade com palavras-chave do problema.</li>
+    <li><strong>Filtrar</strong> por tag, autor ou tipo de efeito.</li>
+    <li><strong>Inspecionar</strong> os metadados com <code>specify extension info</code>.</li>
+    <li><strong>Revisar a origem</strong> no repositório da extensão e na documentação pública.</li>
+    <li><strong>Instalar</strong> só quando o impacto ficar claro e a conveniência for justificada.</li>
+  </ol>
+  <p>Se você encontrou algo na comunidade e decidiu que ele é útil, duas formas comuns de instalar são:</p>
+  <pre><code># a partir da sua própria catalog local, se a equipe a controlou
+specify extension add &lt;nome-da-extensao&gt;
+
+# via URL direta, após revisão manual da extensão
+specify extension add &lt;nome-da-extensao&gt; --from https://github.com/org/repo/archive/refs/tags/v1.0.0.zip</code></pre>
+  <p>Em outras palavras: <strong>curadoria local</strong> para ambientes em que a equipe quer decidir o que é aprovado; <strong>URL direta</strong> para casos específicos, com revisão explícita antes de usar.</p>
+
+  <h2>6. O que procurar na hora de escolher</h2>
+  <p>Ao decidir se uma extensão vale a pena, vale olhar esses quatro pontos:</p>
+  <ul>
+    <li><strong>Escopo:</strong> a extensão resolve um problema real do fluxo ou adiciona ruído?</li>
+    <li><strong>Impacto:</strong> ela só gera relatórios ou também altera arquivos e tarefas?</li>
+    <li><strong>Dependências:</strong> ela exige integrações, APIs, tokens, serviços externos ou ambientes específicos?</li>
+    <li><strong>Manutenção:</strong> ela tem atualização recente, documentação clara e origem confiável?</li>
+  </ul>
+  <p>Uma extensão de <strong>visibility</strong> pode ser um bom começo para acompanhar status do projeto. Uma de <strong>integration</strong> pode economizar tempo, mas exige mais governança. Uma de <strong>process</strong> pode adicionar automações, então merece revisão mais cuidadosa.</p>
+
+  <h2>7. Prática: como filtrar o ruído</h2>
+  <p>Você quer reduzir o esforço de descobrir uma extensão para Jira ou GitHub Issues sem instalar um monte de coisas “por curiosidade”. Qual sequência faz mais sentido?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>1)</strong> pesquisar por “jira” ou “issue”; <strong>2)</strong> filtrar por <code>integration</code>; <strong>3)</strong> inspecionar com <code>specify extension info</code>; <strong>4)</strong> revisar a origem e a documentação; <strong>5)</strong> instalar somente quando a funcionalidade e o risco tiverem ficado claros.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia a documentação oficial de <a href="https://github.github.io/spec-kit/community/extensions.html">Community Extensions</a> e o <a href="https://github.com/github/spec-kit/blob/main/extensions/README.md">README de extensions</a>. Eles mostram a fronteira correta entre descoberta e instalação — que é a parte mais importante para operar com segurança.</p>
+  </div>
+
+  <p><a href="./0012-extensions-do-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-pos-init.html">Mapa pós-init</a></p>
+  <p class="small">A próxima aula pode contrastar extensões da comunidade com presets e org catalogs, mostrando quando a equipe deve curar um catálogo em vez de instalar direto.</p>
+  <footer>O professor pode ajudar a comparar duas extensões, filtrar por categoria e avaliar se a instalação é segura no contexto do seu projeto. Pergunte com o problema exato e o que você quer automatizar.</footer>
+</main>
+</body>
+</html>
