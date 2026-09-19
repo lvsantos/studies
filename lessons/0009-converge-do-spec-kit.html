@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 9 · Converge do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 09 · 8 minutos</p>
+  <h1>Converge: verificar se a implementação chegou ao destino</h1>
+  <p class="lede">Vitória de hoje: comparar código, especificação, plano e tarefas, transformando lacunas reais em trabalho rastreável.</p>
+
+  <div class="panel">
+    <strong>A ideia central</strong>
+    <p><strong>Implement constrói; Converge confere.</strong> O comando avalia o estado atual do código contra a intenção registrada em <code>spec.md</code>, as decisões de <code>plan.md</code> e o trabalho descrito em <code>tasks.md</code>.</p>
+    <p>Ele não é uma inspeção de diferenças do Git. É uma verificação de completude baseada nos artefatos da feature.</p>
+  </div>
+
+  <h2>1. O que o comando faz</h2>
+  <p>No GitHub Copilot, use a skill com hífens:</p>
+  <pre><code>/speckit-converge</code></pre>
+  <p>A documentação também mostra <code>/speckit.converge</code>. A forma depende do agente; a etapa é a mesma.</p>
+  <p>Antes de avaliar, o comando precisa encontrar uma especificação, um plano e uma lista de tarefas completos. Ele deve ser executado depois de <code>implement</code>, não no lugar de <code>tasks</code> ou <code>implement</code>.</p>
+
+  <h2>2. O que é comparado</h2>
+  <table>
+    <thead><tr><th>Fonte</th><th>Pergunta</th></tr></thead>
+    <tbody>
+      <tr><td><code>spec.md</code></td><td>Os requisitos e cenários de aceitação foram atendidos?</td></tr>
+      <tr><td><code>plan.md</code></td><td>As decisões técnicas e os pontos de integração foram respeitados?</td></tr>
+      <tr><td><code>tasks.md</code></td><td>As tarefas estão concluídas e a implementação cobre o trabalho previsto?</td></tr>
+      <tr><td>Código atual</td><td>O comportamento construído corresponde aos artefatos?</td></tr>
+    </tbody>
+  </table>
+  <p>O comando também considera a Constitution como restrição de governança. Uma implementação que cumpre a funcionalidade, mas viola um princípio obrigatório, ainda tem uma lacuna.</p>
+
+  <h2>3. Dois resultados possíveis</h2>
+  <h3>Converged</h3>
+  <p>Se nada faltar, o comando informa que a implementação satisfaz os artefatos e deixa <code>tasks.md</code> byte a byte inalterado. A feature está pronta para a revisão final do time.</p>
+
+  <h3>Tasks appended</h3>
+  <p>Se encontrar uma lacuna, o comando acrescenta uma seção <code>Convergence</code> ao final de <code>tasks.md</code>. Cada item recebe um ID novo e uma referência à origem do trabalho pendente.</p>
+  <pre><code>## Phase 6: Convergence
+
+- [ ] T042 Adicionar teste do cenário de exportação por usuário (US1/AC2) (missing)</code></pre>
+  <p>O Converge não implementa essa tarefa e não altera os outros artefatos. Depois, execute <code>/speckit-implement</code> novamente e rode <code>/speckit-converge</code> até não restarem lacunas.</p>
+
+  <h2>4. O que Converge não faz</h2>
+  <ul>
+    <li>não modifica <code>spec.md</code> ou <code>plan.md</code>;</li>
+    <li>não corrige o código encontrado;</li>
+    <li>não apaga ou renumera tarefas existentes;</li>
+    <li>não usa o histórico do Git como fonte de intenção;</li>
+    <li>não deve ser executado antes de existir um <code>tasks.md</code> completo e uma implementação.</li>
+  </ul>
+  <p>Se o problema encontrado for uma especificação ambígua ou uma decisão técnica errada, a tarefa de convergência pode indicar a lacuna, mas a correção deve voltar ao artefato que possui a decisão.</p>
+
+  <h2>5. Pratique: qual é o próximo passo?</h2>
+  <p>O Converge encontrou duas tarefas pendentes e as anexou a <code>tasks.md</code>. O que fazer agora?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Executar <code>/speckit-implement</code> novamente</strong> para realizar as tarefas anexadas e depois rodar <code>/speckit-converge</code> outra vez. O ciclo termina quando o resultado for <strong>Converged</strong>.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.github.io/spec-kit/quickstart.html#step-9-speckit-converge--verify-completeness">passo Converge no Quickstart</a> e o <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html#speckitconverge">detalhamento do comando</a>.</p>
+  </div>
+
+  <p><a href="./0008-implement-do-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-persistence-models.html">Referência de persistência</a></p>
+  <p class="small">O ciclo central termina aqui. A aula 17 volta ao dia seguinte da feature para decidir como seus artefatos continuarão sendo mantidos.</p>
+  <footer>O professor pode ajudar a interpretar uma lacuna, rastrear uma tarefa até o requisito ou decidir qual artefato precisa ser corrigido. Pergunte com a evidência encontrada.</footer>
+</main>
+</body>
+</html>
