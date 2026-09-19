@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 10 · Gates e issues do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 10 · 10 minutos</p>
+  <h1>Os comandos de revisão e acompanhamento</h1>
+  <p class="lede">Vitória de hoje: saber quando usar <code>clarify</code>, <code>checklist</code>, <code>analyze</code> e <code>taskstoissues</code> sem confundir seus papéis.</p>
+
+  <div class="panel">
+    <strong>A ideia central</strong>
+    <p>Os três primeiros comandos são portões de qualidade que você adiciona quando a feature tem ambiguidade, risco ou necessidade de revisão. O quarto não revisa os artefatos: transforma tarefas em issues do GitHub para acompanhar a execução.</p>
+    <p>Uma sequência comum para uma feature de produção é <code>clarify → plan → checklist → tasks → analyze</code>. Os portões são deliberados; não precisam aparecer em toda mudança pequena.</p>
+  </div>
+
+  <h2>1. Clarify: resolver ambiguidades</h2>
+  <p>No GitHub Copilot:</p>
+  <pre><code>/speckit-clarify</code></pre>
+  <p><code>Clarify</code> faz perguntas direcionadas sobre a especificação atual e incorpora as respostas em <code>spec.md</code>. Ele é útil quando uma expressão como “arquivo legível”, “acesso permitido” ou “resposta rápida” ainda admite interpretações diferentes.</p>
+  <p>Use-o antes do <code>plan</code> quando uma decisão de comportamento puder mudar a solução técnica. Se a dúvida revelar um requisito errado ou incompleto, volte ao <code>specify</code>.</p>
+
+  <h2>2. Checklist: testar a qualidade dos requisitos</h2>
+  <pre><code>/speckit-checklist</code></pre>
+  <p>Um checklist é como um teste unitário escrito em linguagem natural: verifica se os requisitos são claros, completos, consistentes e cobrem os casos importantes.</p>
+  <p>Ele não testa se o código funciona. Pergunta, por exemplo, se a spec define estados de erro, regras de permissão ou comportamento para cada cenário.</p>
+  <div class="panel">
+    <strong>Quem revisa e quem decide?</strong>
+    <p>A IA pode <strong>gerar</strong> o checklist e, se você pedir explicitamente, <strong>ajudar a avaliar</strong> cada item. Mas um checklist personalizado é do revisor humano: a pessoa ou o time decide se o requisito está claro, completo e consistente e então marca o item como <code>[x]</code>.</p>
+    <p>O checklist está completo quando todos os critérios relevantes foram revisados e aprovados pelo responsável. Isso significa “os requisitos têm qualidade suficiente para seguir”, não “o código já foi implementado”. Itens não marcados continuam sendo lacunas de especificação.</p>
+    <p>Há também um checklist embutido de requisitos, mantido por <code>specify</code> e <code>clarify</code>. Ele acompanha a spec, mas a aprovação de um checklist personalizado continua sendo responsabilidade do revisor.</p>
+  </div>
+  <p>Portanto, no exemplo desta aula, depois de <code>clarify</code> a IA pode propor perguntas sobre permissões e erros; o usuário ou o revisor do time verifica se as respostas realmente cobrem os cenários e decide quando os itens estão satisfeitos.</p>
+  <h3>O arquivo e o momento</h3>
+  <p>O comando cria um arquivo dentro da pasta ativa da feature:</p>
+  <pre><code>specs/001-exportar-estudos/checklists/requirements.md
+specs/001-exportar-estudos/checklists/security.md
+specs/001-exportar-estudos/checklists/ux.md</code></pre>
+  <p>O checklist embutido <code>requirements.md</code> é criado ou mantido por <code>specify</code> e <code>clarify</code>. Já <code>/speckit-checklist</code> cria um checklist personalizado com um nome curto, como <code>security.md</code>, <code>api.md</code> ou <code>ux.md</code>. Se o arquivo já existir, a IA acrescenta novos itens sem apagar os anteriores.</p>
+  <p>Gere-o depois que a <code>spec.md</code> estiver suficientemente descrita e, em geral, antes de <code>tasks</code>. O revisor lê os itens, responde às lacunas na spec e marca <code>[x]</code> apenas quando considera o requisito satisfatório. Novos itens gerados continuam como <code>[ ]</code>.</p>
+  <p>Exemplos de pedidos ao agente:</p>
+  <pre><code>/speckit-checklist Focus on permissions, unauthorized access, and data exposure.
+/speckit-checklist Focus on API error responses, compatibility, and versioning.
+/speckit-checklist Focus on loading, empty, error, and keyboard-accessible states.</code></pre>
+  <p>Esses pedidos podem gerar, respectivamente, checklists de segurança, API e UX. A IA propõe os critérios; o revisor decide se cada critério está coberto pela especificação.</p>
+
+  <h2>3. Analyze: conferir a consistência dos artefatos</h2>
+  <pre><code>/speckit-analyze</code></pre>
+  <p><code>Analyze</code> compara <code>spec.md</code>, <code>plan.md</code> e <code>tasks.md</code> depois que as tarefas foram geradas. Ele procura conflitos, lacunas, duplicações e tarefas sem requisito correspondente.</p>
+  <p>É uma análise somente leitura. Se encontrar um problema, corrija o artefato que possui a decisão e rode a análise novamente antes de implementar.</p>
+  <table>
+    <thead><tr><th>Comando</th><th>Objeto da revisão</th><th>Modifica arquivos?</th></tr></thead>
+    <tbody>
+      <tr><td><code>clarify</code></td><td>Ambiguidades da spec</td><td>Sim, registra respostas em <code>spec.md</code></td></tr>
+      <tr><td><code>checklist</code></td><td>Qualidade dos requisitos</td><td>Gera checklist para revisão humana</td></tr>
+      <tr><td><code>analyze</code></td><td>Consistência entre spec, plan e tasks</td><td>Não, produz relatório</td></tr>
+    </tbody>
+  </table>
+
+  <h2>4. Taskstoissues: levar tarefas para o GitHub</h2>
+  <pre><code>/speckit-taskstoissues</code></pre>
+  <p>Esse comando converte as tarefas existentes em issues acionáveis, preservando o ID da tarefa no título para facilitar o rastreamento. Ele é opcional e exige um remoto <code>origin</code> apontando para um repositório GitHub.</p>
+  <p>Antes de criar issues, o comando procura IDs já existentes para evitar duplicação. Ele não substitui <code>tasks.md</code> nem implementa as tarefas: apenas cria uma camada externa de acompanhamento.</p>
+  <div class="panel">
+    <strong>Regra de segurança</strong>
+    <p>Se o remoto não for uma URL do GitHub, não crie issues. Confirme também se você quer transformar toda a lista de tarefas em acompanhamento externo antes de executar o comando.</p>
+  </div>
+
+  <h2>5. Como escolher</h2>
+  <table>
+    <thead><tr><th>Situação</th><th>Próximo comando</th></tr></thead>
+    <tbody>
+      <tr><td>O requisito admite mais de uma interpretação.</td><td><code>clarify</code></td></tr>
+      <tr><td>A spec parece incompleta ou difícil de revisar.</td><td><code>checklist</code></td></tr>
+      <tr><td>Spec, plano e tarefas podem estar divergentes.</td><td><code>analyze</code></td></tr>
+      <tr><td>As tarefas precisam virar acompanhamento no GitHub.</td><td><code>taskstoissues</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>6. Pratique: diferencie os portões</h2>
+  <p>A spec diz “exportar em formato legível”, mas não define qual formato. Depois de esclarecer isso, você quer verificar se todas as regras de permissão e erro foram descritas. Quais comandos usar?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong><code>clarify</code> primeiro e <code>checklist</code> depois.</strong> O primeiro resolve a ambiguidade e atualiza a spec; o segundo revisa se os requisitos ficaram completos e claros.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Consulte os passos de <a href="https://github.github.io/spec-kit/quickstart.html#step-3-speckit-clarify--resolve-ambiguities">Clarify</a>, <a href="https://github.github.io/spec-kit/quickstart.html#step-5-speckit-checklist--validate-the-spec">Checklist</a> e <a href="https://github.github.io/spec-kit/quickstart.html#step-7-speckit-analyze--check-consistency">Analyze</a> no Quickstart. Para detalhes, leia também as referências de <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html#speckitclarify">Clarify</a>, <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html#speckitchecklist">Checklist</a>, <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html#speckitanalyze">Analyze</a> e <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html#speckittaskstoissues">Taskstoissues</a>.</p>
+  </div>
+
+  <p><a href="./0009-converge-do-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-core-commands.html">Referência de comandos</a></p>
+  <p class="small">Com os comandos centrais e os portões de qualidade mapeados, a próxima revisão pode usar uma feature real do seu projeto.</p>
+  <footer>O professor pode ajudar a escolher o portão certo, formular perguntas de clarificação ou revisar a consistência entre seus artefatos. Pergunte com o contexto exato.</footer>
+</main>
+</body>
+</html>
