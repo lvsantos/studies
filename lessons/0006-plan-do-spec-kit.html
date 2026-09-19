@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 6 · Plan do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 06 · 8 minutos</p>
+  <h1>Plan: decidir como construir a feature</h1>
+  <p class="lede">Vitória de hoje: transformar uma <code>spec.md</code> em um plano técnico coerente com a Constituição e com o repositório existente.</p>
+
+  <div class="panel">
+    <strong>A ideia central</strong>
+    <p><strong>Specify responde “o que” e “por que”; Plan responde “como”.</strong> O comando parte da especificação e registra as decisões técnicas necessárias para implementá-la.</p>
+    <p>O plano não deve inventar uma arquitetura isolada. Ele pesquisa o repositório, reaproveita padrões existentes e torna as escolhas explícitas para as próximas etapas.</p>
+  </div>
+
+  <h2>1. O que o comando faz</h2>
+  <p>No GitHub Copilot, use a skill com hífens:</p>
+  <pre><code>/speckit-plan Use a stack já existente no projeto e preserve os padrões atuais de testes e integração.</code></pre>
+  <p>A documentação também mostra <code>/speckit.plan</code>. A forma depende do agente; a etapa é a mesma.</p>
+  <p>O resultado principal é <code>plan.md</code>. Dependendo da feature, o planejamento também pode produzir:</p>
+  <ul>
+    <li><code>research.md</code> para registrar descobertas e alternativas;</li>
+    <li><code>data-model.md</code> para entidades e relações;</li>
+    <li>arquivos de <code>contracts/</code> para interfaces ou APIs;</li>
+    <li><code>quickstart.md</code> para orientar a validação da solução.</li>
+  </ul>
+
+  <h2>2. O que entra no plano</h2>
+  <table>
+    <thead><tr><th>Decisão</th><th>Pergunta</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Contexto técnico</strong></td><td>Qual linguagem, plataforma, dependência e armazenamento já fazem sentido?</td></tr>
+      <tr><td><strong>Arquitetura</strong></td><td>Em quais módulos, serviços ou diretórios a mudança se encaixa?</td></tr>
+      <tr><td><strong>Dados e contratos</strong></td><td>Quais entidades, esquemas, APIs ou interfaces serão criados ou alterados?</td></tr>
+      <tr><td><strong>Testes</strong></td><td>Quais testes existentes e novos demonstram que a solução funciona?</td></tr>
+      <tr><td><strong>Riscos</strong></td><td>Quais restrições, dependências e alternativas precisam ser registradas?</td></tr>
+    </tbody>
+  </table>
+  <p>O plano deve explicar as escolhas, não apenas listar ferramentas. “Usar Postgres” é uma decisão incompleta; “reutilizar o Postgres já adotado pelo projeto para preservar o modelo de migrações existente” explica o motivo.</p>
+
+  <h2>3. A verificação da Constituição</h2>
+  <p>Antes da pesquisa e novamente depois do desenho técnico, o plano verifica os princípios do projeto. Essa etapa pergunta:</p>
+  <ul>
+    <li>a solução respeita os guardrails definidos?</li>
+    <li>alguma decisão viola uma regra existente?</li>
+    <li>se houver uma exceção, ela está justificada?</li>
+  </ul>
+  <p>Esse é o ponto de ligação entre as aulas: a Constitution estabelece limites, Specify descreve a mudança e Plan escolhe uma implementação dentro desses limites.</p>
+
+  <h2>4. O que Plan não faz</h2>
+  <ul>
+    <li>não substitui uma especificação incompleta;</li>
+    <li>não deve decidir silenciosamente requisitos que ainda estão ambíguos;</li>
+    <li>não cria a lista final de tarefas, que pertence a <code>tasks</code>;</li>
+    <li>não implementa o código.</li>
+  </ul>
+  <p>Se a equipe ainda discorda sobre o comportamento desejado, volte a <code>clarify</code> antes de escolher a solução técnica.</p>
+
+  <h2>5. Pratique: escolha a instrução útil</h2>
+  <p>Qual orientação ajuda o <code>plan</code> a produzir uma decisão técnica coerente?</p>
+  <ol>
+    <li>“Faça algo moderno e escalável.”</li>
+    <li>“Use os padrões de API, testes e armazenamento já adotados pelo projeto; registre qualquer exceção.”</li>
+  </ol>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>A segunda.</strong> Ela aponta para evidências do repositório e cria um critério para justificar desvios. A primeira é ampla demais para orientar uma decisão revisável.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.github.io/spec-kit/quickstart.html#step-4-speckit-plan--choose-the-tech-stack">passo Plan no Quickstart</a> e o <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html#speckitplan">detalhamento do comando</a>.</p>
+  </div>
+
+  <p><a href="./0005-specify-do-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-core-commands.html">Referência de comandos</a></p>
+  <p class="small">Na próxima aula, vamos estudar como revisar a qualidade dos requisitos antes de quebrar o plano em tarefas.</p>
+  <footer>O professor pode revisar seu plano e ajudar a separar uma decisão técnica de um requisito de usuário. Pergunte com o contexto exato da feature.</footer>
+</main>
+</body>
+</html>
