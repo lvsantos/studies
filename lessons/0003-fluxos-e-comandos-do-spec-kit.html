@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 3 · Fluxos e comandos do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 03 · 8 minutos</p>
+  <h1>Escolher o caminho do Spec Kit</h1>
+  <p class="lede">Vitória de hoje: distinguir o <em>Shorter path</em> do <em>Full path</em> e reconhecer o papel de cada comando antes de estudá-lo em profundidade.</p>
+
+  <div class="panel">
+    <strong>A ideia central</strong>
+    <p>Os dois caminhos começam com uma especificação e terminam com implementação e verificação. O <em>Full path</em> acrescenta pontos de revisão para features mais arriscadas. A constituição do projeto é uma preparação feita uma vez, antes do caminho escolhido.</p>
+  </div>
+
+  <h2>1. Dois caminhos</h2>
+  <table>
+    <thead><tr><th>Fluxo</th><th>Quando usar</th><th>Sequência</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Shorter path</strong></td><td>Feature pequena, clara e de baixo risco.</td><td><code>specify</code> → <code>plan</code> → <code>tasks</code> → <code>implement</code> → <code>converge</code></td></tr>
+      <tr><td><strong>Full path</strong></td><td>Feature de produção, ambígua ou com maior impacto.</td><td><code>specify</code> → <code>clarify</code> → <code>plan</code> → <code>checklist</code> → <code>tasks</code> → <code>analyze</code> → <code>implement</code> → <code>converge</code></td></tr>
+    </tbody>
+  </table>
+  <p>O caminho curto economiza etapas quando o risco é pequeno. O caminho completo investe em esclarecer requisitos e conferir a qualidade dos artefatos antes de construir.</p>
+
+  <h2>2. Os nove comandos, em uma frase</h2>
+  <ol>
+    <li><strong>Constitution:</strong> registra os princípios e limites compartilhados do projeto.</li>
+    <li><strong>Specify:</strong> transforma uma necessidade em usuários, cenários e requisitos.</li>
+    <li><strong>Clarify:</strong> resolve ambiguidades antes que elas contaminem o plano.</li>
+    <li><strong>Plan:</strong> escolhe a abordagem técnica para atender à especificação.</li>
+    <li><strong>Checklist:</strong> cria uma revisão da qualidade dos requisitos.</li>
+    <li><strong>Tasks:</strong> quebra o plano em tarefas ordenadas por dependência.</li>
+    <li><strong>Analyze:</strong> procura conflitos e lacunas entre spec, plan e tasks.</li>
+    <li><strong>Implement:</strong> executa as tarefas e valida o que foi construído.</li>
+    <li><strong>Converge:</strong> compara o resultado com os artefatos e registra o que falta.</li>
+  </ol>
+
+  <p>No GitHub Copilot, as skills aparecem com hífens, como <code>/speckit-specify</code>. Algumas referências usam pontos, como <code>/speckit.specify</code>; a etapa é a mesma. A <a href="https://github.github.io/spec-kit/quickstart.html#recommended-process">documentação do processo recomendado</a> e o <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html#command-overview">resumo oficial dos comandos</a> mostram as duas convenções.</p>
+
+  <h2>3. Pratique</h2>
+  <p>Você recebeu uma ideia vaga para uma feature de produção. Qual é a primeira etapa específica da feature?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong><code>/speckit-specify</code>.</strong> Primeiro descreva a necessidade. Depois, use <code>clarify</code> se ainda houver ambiguidades antes de planejar.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.github.io/spec-kit/quickstart.html#recommended-process">Recommended Process</a> e o <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html#command-overview">Command overview</a>. Eles são a referência para a sequência e o papel de cada skill.</p>
+  </div>
+
+  <p><a href="./0002-entender-o-pos-init-do-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-core-commands.html">Referência rápida</a></p>
+  <p class="small">Na próxima aula, estudaremos como lidar com os artefatos de uma feature depois que ela termina.</p>
+  <footer>O professor pode explicar qualquer etapa ou comando. Pergunte com o nome da skill e a dúvida exata.</footer>
+</main>
+</body>
+</html>
