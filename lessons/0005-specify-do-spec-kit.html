@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 5 · Specify do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 05 · 8 minutos</p>
+  <h1>Specify: transformar uma ideia em uma mudança clara</h1>
+  <p class="lede">Vitória de hoje: usar <code>/speckit-specify</code> para registrar o que construir, para quem e com quais critérios de sucesso.</p>
+
+  <div class="panel">
+    <strong>A ideia central</strong>
+    <p><strong>Specify responde “o que” e “por que”.</strong> Ele transforma uma descrição em linguagem natural em uma especificação de feature, normalmente uma <code>spec.md</code> dentro da pasta ativa de <code>specs/</code>.</p>
+    <p>A Constituição define os limites do projeto; <code>specify</code> define uma mudança concreta que cabe nesses limites.</p>
+  </div>
+
+  <h2>1. Comece pela necessidade</h2>
+  <p>No GitHub Copilot, use a skill com hífens:</p>
+  <pre><code>/speckit-specify Permitir que usuários exportem seus estudos em um formato legível, preservando título, conteúdo e data de atualização.</code></pre>
+  <p>A documentação também mostra a forma <code>/speckit.specify</code>. A diferença é apenas a convenção de invocação do agente.</p>
+  <p>Uma boa entrada descreve o resultado desejado, os usuários e as restrições importantes. Ela não precisa decidir banco de dados, framework ou arquitetura: essas decisões pertencem ao <code>plan</code>.</p>
+
+  <h2>2. Delimite a primeira mudança</h2>
+  <p>Em um projeto existente, escolha uma fatia que possa ser revisada sozinha. Não tente especificar todo o sistema antigo. Descreva também o que precisa continuar igual:</p>
+  <table>
+    <thead><tr><th>Parte</th><th>Exemplo de pergunta</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Resultado</strong></td><td>Qual capacidade nova o usuário terá?</td></tr>
+      <tr><td><strong>Usuário</strong></td><td>Quem precisa dessa capacidade e em qual situação?</td></tr>
+      <tr><td><strong>Comportamento</strong></td><td>Quais cenários devem funcionar?</td></tr>
+      <tr><td><strong>Compatibilidade</strong></td><td>Quais filtros, permissões ou APIs existentes não podem mudar?</td></tr>
+      <tr><td><strong>Sucesso</strong></td><td>Como reconheceremos que a mudança atende à necessidade?</td></tr>
+    </tbody>
+  </table>
+  <p>Exemplo de mudança bem delimitada:</p>
+  <pre><code>/speckit-specify Adicionar exportação CSV à página de pedidos. Preservar os filtros e as permissões atuais. Exportar apenas as linhas visíveis ao usuário autenticado e não alterar a resposta da API JSON existente.</code></pre>
+
+  <h2>3. O que nasce da skill</h2>
+  <p>O resultado esperado é uma especificação com:</p>
+  <ul>
+    <li>descrição do problema e do valor para o usuário;</li>
+    <li>cenários de uso e comportamento esperado;</li>
+    <li>requisitos funcionais e critérios de sucesso verificáveis;</li>
+    <li>limites, suposições e perguntas que ainda precisam de esclarecimento.</li>
+  </ul>
+  <p>Leia o arquivo produzido antes de seguir. Se uma frase puder ser interpretada de duas formas, a próxima etapa pode ser <code>/speckit-clarify</code>.</p>
+
+  <h2>4. O que Specify não faz</h2>
+  <ul>
+    <li>não escolhe a tecnologia da implementação;</li>
+    <li>não cria o plano técnico;</li>
+    <li>não quebra o trabalho em tarefas;</li>
+    <li>não transforma uma descrição vaga em permissão para construir qualquer coisa.</li>
+  </ul>
+  <p>A especificação é um acordo sobre a intenção da mudança. O plano virá depois, respeitando esse acordo e a Constituição do projeto.</p>
+
+  <h2>5. Pratique: reduza o escopo</h2>
+  <p>Qual pedido está mais pronto para <code>specify</code>?</p>
+  <ol>
+    <li>“Melhore toda a experiência do sistema.”</li>
+    <li>“Adicionar CSV à lista de pedidos, respeitando filtros e permissões existentes.”</li>
+  </ol>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>O segundo.</strong> Ele define uma capacidade concreta e já explicita limites de compatibilidade. O primeiro ainda precisa ser reduzido antes de virar uma especificação útil.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html#speckitspecify">detalhamento do comando Specify</a>. Para um projeto existente, veja <a href="https://github.github.io/spec-kit/guides/existing-projects.html#3-choose-a-bounded-first-change">Choose a Bounded First Change</a>.</p>
+  </div>
+
+  <p><a href="./0004-constitution-do-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-pos-init.html">Mapa pós-init</a></p>
+  <p class="small">Na próxima aula, vamos examinar como o comando <code>clarify</code> encontra ambiguidades antes do planejamento.</p>
+  <footer>O professor pode revisar sua frase de entrada e ajudar a separar requisito, restrição e decisão técnica. Pergunte com a mensagem exata que você quer especificar.</footer>
+</main>
+</body>
+</html>
