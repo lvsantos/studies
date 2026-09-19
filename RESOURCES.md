@@ -18,6 +18,8 @@
   Fonte primaria para quando e como essa decisao aparece pela primeira vez em um projeto ja existente.
 - [Spec Kit customization guide](https://github.github.io/spec-kit/guides/customization.html)
   Fonte primaria para escolher entre extensoes, presets, overrides locais, workflows e bundles ao adaptar o Spec Kit.
+- [Spec Kit extensions reference](https://github.github.io/spec-kit/reference/extensions.html)
+  Referencia primaria para ciclo de vida, catalogos, configuracao, hooks, prioridades e governanca de extensoes.
 - [Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl (Birgitta Bockeler, martinfowler.com)](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
   Analise independente que define os tres niveis de SDD (spec-first, spec-anchored, spec-as-source) e traz uma visao critica sobre limitacoes praticas do Spec Kit.
 

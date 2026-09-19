@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 12 · Extensions do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 12 · 12 minutos</p>
+  <h1>Extensions: adicionar capacidades ao Spec Kit</h1>
+  <p class="lede">Vitória de hoje: instalar, inspecionar, configurar e governar uma extensão sem confundi-la com um preset ou com o núcleo do Spec Kit.</p>
+
+  <div class="panel">
+    <strong>O mapa mental</strong>
+    <p>Uma extensão amplia o que o Spec Kit consegue fazer. Ela pode adicionar comandos, templates, scripts, hooks, fases de processo ou integrações externas.</p>
+    <p><strong>Preset muda como uma capacidade existente funciona; extension adiciona uma capacidade ou integração.</strong> Essa é a distinção que orienta todo o diagnóstico.</p>
+  </div>
+
+  <h2>1. O ciclo de vida de uma extensão</h2>
+  <p>As extensões exigem um projeto já inicializado com <code>specify init</code>. O ciclo básico é:</p>
+  <ol>
+    <li><strong>Descobrir:</strong> procurar no catálogo usando tags, autor ou status de verificação.</li>
+    <li><strong>Inspecionar:</strong> consultar descrição, versão, comandos, configuração e origem.</li>
+    <li><strong>Instalar:</strong> adicionar a extensão ao projeto e registrar seus comandos na integração ativa.</li>
+    <li><strong>Configurar:</strong> copiar o template de configuração e ajustar as opções necessárias.</li>
+    <li><strong>Verificar:</strong> listar a extensão, testar o comando e confirmar os efeitos nos arquivos.</li>
+    <li><strong>Atualizar ou remover:</strong> manter a versão ou retirar a extensão quando ela deixar de ser necessária.</li>
+  </ol>
+  <pre><code>specify extension search
+specify extension info &lt;name&gt;
+specify extension add &lt;name&gt;
+specify extension list
+specify extension update &lt;name&gt;
+specify extension remove &lt;name&gt;</code></pre>
+
+  <h2>2. De onde a extensão vem?</h2>
+  <p>O Spec Kit separa descoberta de instalação por uma razão de segurança:</p>
+  <table>
+    <thead><tr><th>Fonte</th><th>Uso</th><th>Confiança</th></tr></thead>
+    <tbody>
+      <tr><td><strong>default</strong></td><td>Catálogo oficial e instalável.</td><td>Fonte de instalação aprovada pelo projeto.</td></tr>
+      <tr><td><strong>community</strong></td><td>Descobrir extensões disponíveis.</td><td>Discovery-only: não é instalável automaticamente.</td></tr>
+      <tr><td><strong>catálogo próprio</strong></td><td>Distribuir extensões aprovadas pela organização.</td><td>Instalável apenas quando a equipe o mantém e avalia.</td></tr>
+      <tr><td><strong>URL direta</strong></td><td>Instalar um arquivo ou release específico.</td><td>Exige revisar a origem antes de usar.</td></tr>
+    </tbody>
+  </table>
+  <p>Para inspecionar os catálogos:</p>
+  <pre><code>specify extension catalog list
+specify extension info &lt;name&gt;
+specify extension add &lt;name&gt; --from &lt;archive-url&gt;</code></pre>
+  <p>Um catálogo público de comunidade é uma superfície de descoberta, não uma autorização para executar código de terceiros sem revisão.</p>
+
+  <h2>3. O que uma extensão instala</h2>
+  <p>Uma extensão pode entregar componentes diferentes:</p>
+  <ul>
+    <li><strong>Commands:</strong> novas skills ou comandos para o agente;</li>
+    <li><strong>Templates:</strong> novos artefatos ou alterações específicas de um domínio;</li>
+    <li><strong>Scripts:</strong> automações auxiliares executadas pelo processo;</li>
+    <li><strong>Hooks:</strong> ações oferecidas antes ou depois de comandos;</li>
+    <li><strong>Integrações:</strong> conexão com ferramentas como Git, Jira ou sistemas internos.</li>
+  </ul>
+  <p>O comando JSON ajuda a enxergar essa composição:</p>
+  <pre><code>specify extension list --json</code></pre>
+  <p>Além de nome, versão, autor e origem, o resultado informa quantos comandos, templates, scripts e hooks a extensão fornece.</p>
+
+  <h2>4. Configuração em camadas</h2>
+  <p>Extensões normalmente guardam sua configuração em <code>.specify/extensions/&lt;ext&gt;/</code>:</p>
+  <pre><code>.specify/extensions/&lt;ext&gt;/
+├── &lt;ext&gt;-config.template.yml
+├── &lt;ext&gt;-config.yml
+└── &lt;ext&gt;-config.local.yml</code></pre>
+  <p>A configuração é combinada nesta ordem, da base para a maior precedência:</p>
+  <ol>
+    <li>defaults definidos pela extensão;</li>
+    <li>configuração do projeto, versionada;</li>
+    <li>override local, normalmente ignorado pelo Git;</li>
+    <li>variáveis de ambiente <code>SPECKIT_&lt;EXT&gt;_*</code>.</li>
+  </ol>
+  <p>Para começar, copie o template fornecido pela própria extensão:</p>
+  <pre><code>cp .specify/extensions/&lt;ext&gt;/&lt;ext&gt;-config.template.yml \
+   .specify/extensions/&lt;ext&gt;/&lt;ext&gt;-config.yml</code></pre>
+  <p>A configuração compartilhável fica no arquivo do projeto; segredos, caminhos pessoais e ajustes de máquina ficam no override local ou em variáveis de ambiente.</p>
+
+  <h2>5. Hooks: pontos de extensão do processo</h2>
+  <p>Hooks conectam uma extensão a eventos como <code>before_implement</code>, <code>after_implement</code>, <code>before_tasks</code> ou <code>after_tasks</code>. Eles podem ser opcionais ou automáticos:</p>
+  <ul>
+    <li><strong>Hook opcional:</strong> o agente apresenta a ação e permite que o usuário decida se quer executá-la.</li>
+    <li><strong>Hook obrigatório:</strong> o processo o apresenta como uma etapa automática que precisa ser executada.</li>
+  </ul>
+  <p>O registro do projeto fica em <code>.specify/extensions.yml</code>. Um hook deve explicar seu comando, extensão, prioridade, condição e efeito. Quanto mais forte o efeito, maior a necessidade de revisão antes de habilitá-lo.</p>
+
+  <h2>6. Administrar sem perder o controle</h2>
+  <table>
+    <thead><tr><th>Ação</th><th>Comando</th><th>Cuidados</th></tr></thead>
+    <tbody>
+      <tr><td>Desabilitar</td><td><code>specify extension disable &lt;name&gt;</code></td><td>Remove os comandos da disponibilidade sem apagar a instalação.</td></tr>
+      <tr><td>Habilitar</td><td><code>specify extension enable &lt;name&gt;</code></td><td>Reativa os comandos instalados.</td></tr>
+      <tr><td>Priorizar</td><td><code>specify extension set-priority &lt;name&gt; &lt;N&gt;</code></td><td>Menor número vence quando extensões oferecem o mesmo comando.</td></tr>
+      <tr><td>Remover</td><td><code>specify extension remove &lt;name&gt;</code></td><td>Configurações são preservadas em backup por padrão.</td></tr>
+    </tbody>
+  </table>
+  <p>Depois de instalar ou habilitar uma extensão, o agente pode precisar ser reiniciado para carregar os novos comandos.</p>
+
+  <h2>7. Pratique: extensão ou preset?</h2>
+  <p>O time quer adicionar um comando que envia os resultados de <code>converge</code> para Jira. Também quer que todo <code>plan.md</code> tenha uma seção de risco. Qual escolha faz sentido?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Extensão para a integração com Jira; preset para a seção obrigatória de risco.</strong> A primeira adiciona uma capacidade externa. A segunda altera o formato esperado de um artefato existente.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia a referência oficial de <a href="https://github.github.io/spec-kit/reference/extensions.html">Extensions</a>, especialmente <a href="https://github.github.io/spec-kit/reference/extensions.html#extension-configuration">Extension Configuration</a>. A documentação é a fonte para comandos, catálogos, precedência, hooks e configuração.</p>
+  </div>
+
+  <p><a href="./0011-customizar-o-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-pos-init.html">Mapa pós-init</a></p>
+  <p class="small">A próxima aula poderá aprofundar presets, overrides e precedência de templates com exemplos de composição.</p>
+  <footer>O professor pode ajudar a avaliar a origem de uma extensão, revisar sua configuração ou distinguir um hook seguro de uma automação arriscada. Pergunte com o contexto exato.</footer>
+</main>
+</body>
+</html>
