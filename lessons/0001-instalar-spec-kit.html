@@ -47,8 +47,9 @@ specify version</code></pre>
   <div class="panel">
     <strong>Solução de problemas: “Verification failed” ou PATH incorreto (VS Code Snap)</strong>
     <p>Se após o <code>specify self upgrade</code> você receber o aviso de que o diretório não está no <code>PATH</code> (ex: <code>~/snap/code/.../.local/bin</code>) e a versão continuar antiga no terminal, isso ocorre porque o VS Code rodando via Snap instala os binários no diretório de sandbox do Snap, enquanto seu terminal prioriza <code>~/.local/bin</code>.</p>
-    <p>Para resolver e forçar a instalação no diretório padrão do usuário (<code>~/.local/bin</code>):</p>
-    <pre><code>UV_TOOL_BIN_DIR=$HOME/.local/bin uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git@v1.0.6</code></pre>
+    <p>Para resolver e forçar a instalação no diretório padrão do usuário (<code>~/.local/bin</code>), defina a versão do Spec Kit que você quer instalar. O valor <code>1.0.8</code> abaixo é apenas um exemplo: substitua-o pela versão desejada antes de executar:</p>
+    <pre><code>SPEC_KIT_VERSION=1.0.8
+  UV_TOOL_BIN_DIR=$HOME/.local/bin uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git@v$SPEC_KIT_VERSION</code></pre>
     <p>Ou para versões estáveis do PyPI:</p>
     <pre><code>UV_TOOL_BIN_DIR=$HOME/.local/bin uv tool install specify-cli --force</code></pre>
     <p>Em seguida, execute <code>specify version</code> para confirmar a versão atualizada.</p>
