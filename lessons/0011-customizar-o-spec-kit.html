@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 11 · Customizar o Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 11 · 8 minutos</p>
+  <h1>Como customizar o Spec Kit</h1>
+  <p class="lede">Vitória de hoje: escolher o ponto certo de customização sem alterar o núcleo do processo por acidente.</p>
+
+  <div class="panel">
+    <strong>A ideia central</strong>
+    <p>O Spec Kit já traz processos prontos, mas você pode adaptá-los ao domínio, à equipe e às ferramentas do projeto. A primeira decisão é identificar <strong>o que está mudando</strong>: capacidade, formato, processo local ou pacote de configuração.</p>
+    <p>Comece pequeno. Uma customização deve resolver uma necessidade real e ser fácil de revisar, remover ou substituir.</p>
+  </div>
+
+  <h2>1. Escolha o bloco certo</h2>
+  <table>
+    <thead><tr><th>Necessidade</th><th>Bloco provável</th><th>Ideia</th></tr></thead>
+    <tbody>
+      <tr><td>Adicionar um comando, integração ou fase nova</td><td><strong>Extension</strong></td><td>Amplia o que o Spec Kit consegue fazer.</td></tr>
+      <tr><td>Mudar o formato de spec, plan ou tasks</td><td><strong>Preset</strong></td><td>Altera templates e instruções sem criar uma capacidade nova.</td></tr>
+      <tr><td>Ajustar um único projeto</td><td><strong>Override local</strong></td><td>Aplica uma mudança em <code>.specify/templates/overrides/</code>.</td></tr>
+      <tr><td>Automatizar vários passos</td><td><strong>Workflow</strong></td><td>Encadeia comandos ou etapas de um processo.</td></tr>
+      <tr><td>Distribuir uma configuração completa</td><td><strong>Bundle</strong></td><td>Combina extensões, presets e workflows para um papel ou equipe.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2. Extensions: adicionar capacidade</h2>
+  <p>Uma extensão pode trazer comandos, templates, scripts, hooks ou integração com uma ferramenta externa. Exemplos possíveis: integração com Jira, revisão de código depois da implementação ou rastreabilidade de testes.</p>
+  <pre><code>specify extension search
+specify extension add &lt;extension-name&gt;</code></pre>
+  <p>Use extensão quando a pergunta for: <em>“o Spec Kit precisa fazer algo novo?”</em> Leia o código e a documentação da extensão antes de instalá-la.</p>
+
+  <h2>3. Presets: mudar como o processo funciona</h2>
+  <p>Um preset modifica templates ou comandos existentes para impor uma convenção. Pode acrescentar rastreabilidade regulatória, uma revisão de segurança ou uma ordem específica de testes.</p>
+  <pre><code>specify preset search
+specify preset add &lt;preset-name&gt;</code></pre>
+  <p>Use preset quando a pergunta for: <em>“o processo já serve, mas precisa falar ou exigir algo diferente?”</em> Presets podem ser combinados com prioridades, por isso a precedência importa.</p>
+
+  <h2>4. Overrides, workflows e bundles</h2>
+  <p><strong>Override local:</strong> para uma alteração específica deste projeto. É apropriado quando ainda não existe uma convenção reutilizável. A resolução padrão procura primeiro os overrides locais, depois presets, extensões e, por fim, os templates do núcleo.</p>
+  <p><strong>Workflow:</strong> para automatizar uma sequência de passos. Ele não é apenas um template diferente; descreve como várias ações se encadeiam.</p>
+  <p><strong>Bundle:</strong> para entregar uma configuração curada em uma instalação. Um bundle pode fixar versões e reunir os componentes necessários para um papel, como desenvolvedor, analista ou pesquisador de segurança.</p>
+
+  <h2>5. O que customizar primeiro</h2>
+  <ol>
+    <li>Confirme se uma skill ou processo existente já resolve o problema.</li>
+    <li>Se a mudança for local e experimental, use um override.</li>
+    <li>Se a regra precisar ser reutilizada, avalie um preset.</li>
+    <li>Se houver nova capacidade ou integração, avalie uma extensão.</li>
+    <li>Se várias escolhas precisarem viajar juntas, avalie um bundle.</li>
+  </ol>
+  <p>Não crie uma extensão para apenas trocar uma frase de um template. Não use um preset para esconder uma integração externa que deveria ser uma extensão.</p>
+
+  <h2>6. Pratique: escolha o bloco</h2>
+  <p>Uma equipe quer que todo <code>plan.md</code> inclua uma seção obrigatória de revisão de segurança em todos os projetos. Qual bloco parece mais adequado?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Um preset.</strong> A equipe quer mudar o formato e a exigência do processo existente. Se, além disso, fosse necessário integrar uma ferramenta externa de segurança, essa integração poderia ser uma extensão.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o guia oficial <a href="https://github.github.io/spec-kit/guides/customization.html">Customize Spec Kit</a>. Ele explica como escolher entre extensão, preset, override local, workflow e bundle, além da ordem de resolução.</p>
+  </div>
+
+  <p><a href="./0010-gates-e-issues-do-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-pos-init.html">Mapa pós-init</a></p>
+  <p class="small">Nas próximas aulas, cada bloco de customização poderá ser estudado com exemplos de instalação, composição e diagnóstico.</p>
+  <footer>O professor pode ajudar a classificar uma necessidade real e escolher a menor customização que resolve o problema. Pergunte com o contexto do seu projeto.</footer>
+</main>
+</body>
+</html>
