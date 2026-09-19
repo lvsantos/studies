@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 4 · Constitution do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 04 · 8 minutos</p>
+  <h1>Constitution: as regras que orientam o projeto</h1>
+  <p class="lede">Vitória de hoje: saber quando usar <code>/speckit-constitution</code> e transformar regras reais do repositório em guardrails verificáveis.</p>
+
+  <div class="panel">
+    <strong>A ideia central</strong>
+    <p>A Constitution registra princípios que orientam todas as etapas seguintes do Spec Kit. Ela não descreve uma feature específica e não substitui documentação técnica: define limites e critérios que devem continuar verdadeiros enquanto o projeto evolui.</p>
+    <p>Execute-a normalmente uma vez no início do projeto e atualize-a quando os princípios compartilhados mudarem.</p>
+  </div>
+
+  <h2>1. O que o comando faz</h2>
+  <p>No GitHub Copilot, use:</p>
+  <pre><code>/speckit-constitution Preserve public API compatibility. Require tests for behavior changes.</code></pre>
+  <p>O comando cria ou atualiza <code>.specify/memory/constitution.md</code>. A documentação também mostra a forma com pontos, <code>/speckit.constitution</code>; a etapa é a mesma, mas esta integração usa skills com hífens.</p>
+  <p>A constituição é lida pelas etapas posteriores. Por isso, uma regra escrita aqui pode influenciar o plano técnico, a decomposição de tarefas e a revisão da implementação.</p>
+
+  <h2>2. Escreva guardrails baseados em evidências</h2>
+  <p>Em um projeto existente, não invente princípios para preencher o modelo. Antes de executar o comando, procure evidências em:</p>
+  <ul>
+    <li><code>README.md</code> e guias de contribuição;</li>
+    <li>decisões de arquitetura e documentação de APIs;</li>
+    <li>configurações de CI e comandos de teste;</li>
+    <li>restrições de compatibilidade, segurança ou implantação já assumidas pelo time.</li>
+  </ul>
+  <p>Um guardrail bom é curto, observável e útil para decidir. “O código deve ser excelente” é vago. “Toda mudança de comportamento deve incluir testes automatizados” pode ser verificado durante a revisão.</p>
+
+  <table>
+    <thead><tr><th>Regra fraca</th><th>Guardrail útil</th></tr></thead>
+    <tbody>
+      <tr><td>Manter qualidade alta.</td><td>Toda mudança de comportamento deve incluir ou atualizar testes automatizados.</td></tr>
+      <tr><td>Preservar o sistema.</td><td>Alterações devem manter compatibilidade com os contratos públicos existentes.</td></tr>
+      <tr><td>Usar a arquitetura correta.</td><td>Novas funcionalidades devem reutilizar os limites e padrões arquiteturais documentados.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3. O que a Constitution não faz</h2>
+  <ul>
+    <li>não cria uma especificação de feature;</li>
+    <li>não escolhe a stack ou a arquitetura de uma mudança específica;</li>
+    <li>não descreve retroativamente todo o comportamento existente;</li>
+    <li>não substitui testes, revisão de código ou documentação detalhada.</li>
+  </ul>
+  <p>Ela funciona como uma camada de governança: as próximas decisões precisam respeitar os princípios ou explicar claramente por que uma alteração da própria constituição é necessária.</p>
+
+  <h2>4. Pratique: encontre um princípio real</h2>
+  <p>Imagine que o CI do projeto sempre executa testes unitários e de integração. Qual guardrail transforma essa evidência em uma regra útil?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>“Toda mudança deve executar e passar nas suítes unitária e de integração estabelecidas pelo projeto.”</strong> A regra é observável e conecta a constituição a uma verificação que já existe.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.github.io/spec-kit/quickstart.html#step-1-speckit-constitution--set-the-ground-rules">passo de Constitution no Quickstart</a>. Para projetos existentes, consulte <a href="https://github.github.io/spec-kit/guides/existing-projects.html#2-capture-project-guardrails">Capture Project Guardrails</a> e o <a href="https://github.github.io/spec-kit/reference/agentic-sdd.html#speckitconstitution">detalhamento do comando</a>.</p>
+  </div>
+
+  <p><a href="./0003-fluxos-e-comandos-do-spec-kit.html">Lição anterior</a> · <a href="../reference/spec-kit-pos-init.html">Mapa pós-init</a></p>
+  <p class="small">Na próxima aula, a Constituição já estabelecida servirá como limite para transformar uma necessidade em especificação.</p>
+  <footer>O professor pode revisar seus guardrails e ajudar a distinguir uma regra de governança de um requisito de feature. Pergunte com o texto exato que você está considerando.</footer>
+</main>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 ## Contexto
 
-A lição 5 apresentou os comandos centrais do Spec Kit usando a necessidade de exportar estudos como exemplo.
+A lição 3 apresentou os comandos centrais do Spec Kit usando a necessidade de exportar estudos como exemplo.
 
 ## Aprendizado
 
