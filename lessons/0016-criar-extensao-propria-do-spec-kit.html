@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 16 · Criar uma extensão própria do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 16 · 20 minutos</p>
+  <h1>Criar uma extensão própria do Spec Kit</h1>
+  <p class="lede">Vitória de hoje: entender o mínimo necessário para transformar uma automação útil em uma extensão reutilizável e instalarável em qualquer projeto Spec Kit.</p>
+
+  <div class="panel">
+    <strong>O mapa mental</strong>
+    <p>Uma extensão não é um “script solto”. Ela é um pacote com <strong>manifesto</strong>, <strong>comandos</strong>, <strong>configuração</strong> e <strong>regras de publicação/instalação</strong>.</p>
+    <p>O ponto central: <strong>você cria uma extensão quando quer que o Spec Kit reconheça novos comandos e hooks em projetos diferentes.</strong></p>
+  </div>
+
+  <h2>1. Quando vale criar uma extensão própria?</h2>
+  <p>Crie uma extensão quando a automação for:</p>
+  <ul>
+    <li>reutilizável em mais de um projeto;</li>
+    <li>ligada a uma ferramenta externa ou fluxo interno da empresa;</li>
+    <li>melhor expressa como comando do agente, e não como shell script manual;</li>
+    <li>algo que quer distribuir por catálogo, URL ou repositório interno.</li>
+  </ul>
+  <p>Se a “solução” for só para um único projeto, muitas vezes o melhor custo-benefício é um script local ou um preset. Se ela precisa ser <strong>instalada, encontrada e reutilizada</strong>, o modelo certo é uma extensão.</p>
+
+  <h2>2. Estrutura mínima</h2>
+  <p>O mínimo prático é assim:</p>
+  <pre><code>my-ext/
+├── extension.yml
+├── README.md
+├── LICENSE
+├── commands/
+│   └── hello.md
+├── scripts/
+│   └── helper.sh
+└── .extensionignore</code></pre>
+  <p>A extensão precisa de um arquivo de manifesto, e o padrão oficial exige que ele seja válido e siga semver.</p>
+
+  <h2>3. O manifesto é o “contrato” da extensão</h2>
+  <p>O arquivo <code>extension.yml</code> define identidade, compatibilidade, comandos e configuração. O modelo mínimo costuma ser assim:</p>
+  <pre><code>schema_version: "1.0"
+
+extension:
+  id: "my-ext"
+  name: "My Extension"
+  version: "1.0.0"
+  description: "My custom extension"
+  author: "Seu Nome"
+  repository: "https://github.com/voce/spec-kit-my-ext"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.1.0"
+
+provides:
+  commands:
+    - name: "speckit.my-ext.hello"
+      file: "commands/hello.md"
+      description: "Say hello"
+      aliases: ["speckit.my-ext.hi"]
+</code></pre>
+  <p>O mais importante aqui é a regra de nomenclatura: cada comando deve seguir o padrão <code>speckit.{extension-id}.{command}</code>.</p>
+
+  <h2>4. Cada comando é um arquivo Markdown</h2>
+  <p>Uma extensão expõe comando como um arquivo em Markdown, com frontmatter e corpo em instruções. O modelo é simples e universal:</p>
+  <pre><code>---
+description: "Say hello command"
+tools:
+  - 'some-tool/function'
+---
+
+# Hello Command
+
+## User Input
+
+$ARGUMENTS
+
+## Steps
+
+1. Greet the user
+2. Show extension is working
+
+```bash
+echo "Hello from my extension!"
+echo "Arguments: $ARGUMENTS"
+```</code></pre>
+  <p>A parte técnica interessante é que o Spec Kit reescreve caminhos e registra o comando para o agente certo, seja Claude, Copilot, Gemini ou outro suporte fornecido pelo projeto.</p>
+
+  <h2>5. Configuração e camada de resolução</h2>
+  <p>Extensões normalmente vêm com configuração em layers:</p>
+  <ol>
+    <li>defaults do próprio manifesto;</li>
+    <li>config do projeto em <code>.specify/extensions/my-ext/my-ext-config.yml</code>;</li>
+    <li>override local, se existir;</li>
+    <li>variáveis de ambiente do tipo <code>SPECKIT_MY_EXT_*</code>.</li>
+  </ol>
+  <p>Isso é importante porque a extensão deve ser fácil de usar em times diferentes sem duplicar arquivos ou colar segredos dentro do repositório.</p>
+
+  <h2>6. Como testar localmente</h2>
+  <p>O fluxo oficial de desenvolvimento é usar a instalação local:</p>
+  <pre><code>specify extension add --dev /caminho/para/minha-extensao</code></pre>
+  <p>Depois disso, verifique:</p>
+  <pre><code>specify extension list</code></pre>
+  <p>O comando deve mostrar a extensão e os comandos que ela registrou. Em seguida, teste a execução do agente com o comando novo, por exemplo:</p>
+  <pre><code>/speckit.my-ext.hello mundo</code></pre>
+  <p>Se o comando aparecer e funcionar, você já validou o ciclo básico de criação e instalação.</p>
+
+  <h2>7. O que a extensão ganha ao ser “de verdade”</h2>
+  <p>Uma extensão bem feita pode:</p>
+  <ul>
+    <li>registrar comandos no agente;</li>
+    <li>injetar hooks em eventos do workflow, como <code>after_tasks</code> ou <code>after_implement</code>;</li>
+    <li>carregar scripts e templates;</li>
+    <li>ser distribuída por catálogo, por URL ou em um repositório privado.</li>
+  </ul>
+  <p>Isso é a diferença entre “um script utilitário” e um “mecanismo de workflow do Spec Kit”.</p>
+
+  <h2>8. Dicas importantes</h2>
+  <ul>
+    <li>use ID em minúsculas e hífens: <code>my-ext</code>, não <code>MyExt</code>;</li>
+    <li>use versionamento semver: <code>1.0.0</code>;</li>
+    <li>não commite segredos: use variáveis de ambiente;</li>
+    <li>crie uma README e uma LICENSE antes de publicar;</li>
+    <li>evite acoplar a extensão a um único projeto. Faça-a genérica o suficiente para justificar ser extensão.</li>
+  </ul>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia a <a href="https://github.com/github/spec-kit/blob/main/extensions/EXTENSION-DEVELOPMENT-GUIDE.md">Extension Development Guide</a>, a <a href="https://github.com/github/spec-kit/blob/main/extensions/EXTENSION-API-REFERENCE.md">Extension API Reference</a> e o <a href="https://github.com/github/spec-kit/blob/main/extensions/RFC-EXTENSION-SYSTEM.md">RFC Extension System</a>. Eles mostram o modelo oficial, o contrato e os padrões exigidos pelo projeto.</p>
+  </div>
+
+  <p><a href="./0015-extensao-assess-do-spec-kit.html">Lição anterior</a> · <a href="./0017-publicar-extensao-do-spec-kit.html">Próxima aula</a></p>
+  <footer>O professor pode te ajudar a desenhar a extensão correta, validar o manifesto, ajustar nomes de comando e decidir se ela precisa entrar em catálogo público, privado ou continuar como instalação local.</footer>
+</main>
+</body>
+</html>

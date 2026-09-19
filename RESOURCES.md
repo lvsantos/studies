@@ -24,6 +24,16 @@
   Fonte primaria para a categoria de extensoes da comunidade, seu papel como catalogo de descoberta e os avisos de risco e manutencao do projeto.
 - [Spec Kit extensions README](https://github.com/github/spec-kit/blob/main/extensions/README.md)
   Documento essencial para entender a diferenca entre catalogos proprios, catalogos comunitarios e instalacao por URL direta.
+- [Spec Kit extension development guide](https://github.com/github/spec-kit/blob/main/extensions/EXTENSION-DEVELOPMENT-GUIDE.md)
+  Guia oficial para criar um manifesto, registrar comandos, estruturar a extensao e testar a instalacao local.
+- [Spec Kit extension API reference](https://github.com/github/spec-kit/blob/main/extensions/EXTENSION-API-REFERENCE.md)
+  Referencia tecnica do manifesto, hooks, config, registradores e layout de arquivos da extensao.
+- [Spec Kit extension publishing guide](https://github.com/github/spec-kit/blob/main/extensions/EXTENSION-PUBLISHING-GUIDE.md)
+  Guia oficial do passo a passo para preparar a release, validar o pacote e submeter a extensao a catalogos públicos.
+- [Spec Kit extension user guide](https://github.com/github/spec-kit/blob/main/extensions/EXTENSION-USER-GUIDE.md)
+  Guia do usuario para descobrir, instalar, configurar e gerenciar extensoes em projetos reais.
+- [Spec Kit RFC extension system](https://github.com/github/spec-kit/blob/main/extensions/RFC-EXTENSION-SYSTEM.md)
+  Documento arquitetural que explica principios, manifestos, catalogos, hooks e seguranca do sistema de extensoes.
 - [Spec Kit community catalog](https://github.com/github/spec-kit/blob/main/extensions/catalog.community.json)
   Catalogo bruto que mostra como as extensoes da comunidade sao descritas e organizadas antes da instalacao.
 - [Spec Kit community catalog website](https://speckit-community.github.io/extensions/all-extensions)

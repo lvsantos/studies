@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 17 · Publicar uma extensão no Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 17 · 20 minutos</p>
+  <h1>Publicar uma extensão em catálogo próprio ou da comunidade</h1>
+  <p class="lede">Vitória de hoje: entender como uma extensão deixa de ser “local” e vira algo compartilhável, governável e instalável por outras pessoas.</p>
+
+  <div class="panel">
+    <strong>O mapa mental</strong>
+    <p>Há três caminhos principais:</p>
+    <ul>
+      <li><strong>instalação por URL direta</strong> para uso ad hoc;</li>
+      <li><strong>catálogo próprio / privado</strong> para times e organizações;</li>
+      <li><strong>catálogo da comunidade</strong> para descoberta pública, revisão e compartilhamento.</li>
+    </ul>
+    <p>A diferença crucial é: <strong>descoberta e instalação não são a mesma coisa.</strong></p>
+  </div>
+
+  <h2>1. O que significa “publicar” em Spec Kit</h2>
+  <p>Publicar uma extensão não significa apenas “colocar no GitHub”. A parte importante é garantir que outras pessoas consigam:</p>
+  <ol>
+    <li>encontrar a extensão;</li>
+    <li>ver requisitos e compatibilidade;</li>
+    <li>instalar em um projeto com <code>specify extension add</code>;</li>
+    <li>entender se ela vem de um catálogo aprovado ou de um catálogo de descoberta.</li>
+  </ol>
+  <p>Em Spec Kit, o projeto documenta explicitamente a ideia de <strong>catalog stack</strong>: há um catálogo principal de instalações aprovadas e um catálogo de comunidade para descoberta, não para instalação direta.</p>
+
+  <h2>2. O catálogo da comunidade é de descoberta, não de instalação direta</h2>
+  <p>Esse é o ponto mais importante para não cair em confusão. O README oficial deixa claro que:</p>
+  <ul>
+    <li>o catálogo de comunidade serve para <strong>explorar</strong> extensões públicas;</li>
+    <li>ele é uma <strong>referência de descoberta</strong>;</li>
+    <li>a instalação direta a partir dele normalmente não é permitida sem passar por uma catalogação aprovada.</li>
+  </ul>
+  <p>Em termos práticos, o fluxo é:</p>
+  <ol>
+    <li>busca na comunidade;</li>
+    <li>avalia qualidade, risco e compatibilidade;</li>
+    <li>copia a entrada para um catálogo próprio com <code>install_allowed: true</code>;</li>
+    <li>instala com o nome da extensão.</li>
+  </ol>
+
+  <h2>3. Catálogo próprio: para time ou organização</h2>
+  <p>Quando você controla o ambiente de um time, o catálogo próprio é o mecanismo mais seguro e previsível.</p>
+  <p>Você cria um arquivo <code>catalog.json</code> com suas extensões aprovadas e o aponta em um repositório interno ou público da organização. Depois, o projeto usa esse catálogo como a fonte de verdade para instalação.</p>
+  <p>O comando oficial é:</p>
+  <pre><code>specify extension catalog add \
+  --name "internal" \
+  --priority 2 \
+  --install-allowed \
+  https://internal.company.com/spec-kit/catalog.json</code></pre>
+  <p>Depois, a busca e a instalação viram um processo de catálogo aprovado e governado, em vez de improviso por URL aleatória.</p>
+
+  <h2>4. Instalação por URL direta</h2>
+  <p>Há uma opção para uso ad hoc ou desenvolvimento:</p>
+  <pre><code>specify extension add meu-ext --from https://github.com/voce/spec-kit-meu-ext/archive/refs/tags/v1.0.0.zip</code></pre>
+  <p>Essa opção serve para:</p>
+  <ul>
+    <li>testar uma extensão antes de aprovar a entrada no catálogo;</li>
+    <li>usar uma extensão privada ou experimental;</li>
+    <li>instalar uma versão em desenvolvimento localmente.</li>
+  </ul>
+  <p>Mas ela é uma exceção, não o modelo preferido para compartilhamento em equipe.</p>
+
+  <h2>5. Como publicar no catálogo da comunidade</h2>
+  <p>O guia oficial pede um fluxo de release e publicação explícito.</p>
+  <ol>
+    <li>crie um repositório com a extensão;</li>
+    <li>valide o <code>extension.yml</code>;</li>
+    <li>crie release do GitHub com tag semver;</li>
+    <li>arquivo um <strong>issue de submissão</strong> no repositório do Spec Kit, usando o template de extensão;</li>
+    <li>aguarde a revisão e a entrada no <code>catalog.community.json</code>.</li>
+  </ol>
+  <p>O processo não pede um PR direto para o catálogo da comunidade. A documentação indica que a entrada é revisada via issue e depois integrada por um mantenedor.</p>
+
+  <h2>6. Checklist antes da publicação</h2>
+  <p>Antes de subir para o catálogo, confirme:</p>
+  <ul>
+    <li>o <code>extension.yml</code> está válido;</li>
+    <li>o ID é minúsculo com hífens;</li>
+    <li>o número de versão está em semver;</li>
+    <li>o repositório e o arquivo de release existem;</li>
+    <li>a README explica instalação, uso e configuração;</li>
+    <li>existe LICENSE, CHANGELOG e comandos funcionando.</li>
+  </ul>
+  <p>Sem esse conjunto, a extensão pode não ser instalável ou pode gerar risco real para quem instalar.</p>
+
+  <h2>7. Como a equipe usa isso em produção</h2>
+  <p>O fluxo recomendado para organizações costuma ser:</p>
+  <ol>
+    <li>descobrir extensões na comunidade;</li>
+    <li>revisar o código, documentação e compatibilidade;</li>
+    <li>copiar as entradas aprovadas para o catálogo interno;</li>
+    <li>manter um catálogo governado e consistente.</li>
+  </ol>
+  <p>Isso mantém o ambiente previsível: <strong>a comunidade é fonte de descoberta, mas a organização decide o que é apto para instalação.</strong></p>
+
+  <h2>8. Regra de ouro</h2>
+  <p>Não pense em “catalog community = install direto”. Isso é o erro clássico aqui.</p>
+  <p>O padrão oficial do Spec Kit é:</p>
+  <ul>
+    <li><strong>descoberta pública</strong> → catálogo da comunidade;</li>
+    <li><strong>instalação aprovável</strong> → catálogo próprio ou catálogo de organização;</li>
+    <li><strong>uso ad hoc</strong> → URL direta ou instalação local em desenvolvimento.</li>
+  </ul>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Use o <a href="https://github.com/github/spec-kit/blob/main/extensions/README.md#making-extensions-available">README de Extensions</a>, o <a href="https://github.com/github/spec-kit/blob/main/extensions/EXTENSION-PUBLISHING-GUIDE.md">Extension Publishing Guide</a>, o <a href="https://github.com/github/spec-kit/blob/main/extensions/EXTENSION-USER-GUIDE.md">Extension User Guide</a> e o <a href="https://github.com/github/spec-kit/blob/main/extensions/RFC-EXTENSION-SYSTEM.md">RFC Extension System</a>. Juntos, eles mostram a política de descoberta, governança e publicação do sistema.</p>
+  </div>
+
+  <p><a href="./0016-criar-extensao-propria-do-spec-kit.html">Lição anterior</a> · <a href="./0022-gerenciar-artefatos-de-features-concluidas.html">Próxima aula</a> · <a href="../reference/spec-kit-pos-init.html">Mapa pós-init</a></p>
+  <footer>O professor pode te ajudar a decidir se a extensão deve ser distribuída por catálogo interno, por URL direta ou por comunidade, e a montar o passo a passo correto do seu repositório e do catálogo.</footer>
+</main>
+</body>
+</html>
