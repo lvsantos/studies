@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 29 · Workflows do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 29 · 12 minutos</p>
+  <h1>Workflows: transformar etapas em um processo repetível</h1>
+  <p class="lede">Vitória de hoje: decidir quando um workflow resolve o problema, acompanhar uma execução e distingui-lo de uma extension ou preset.</p>
+
+  <div class="panel">
+    <strong>O problema que resolve</strong>
+    <p>Um processo com várias etapas depende da pessoa lembrar a ordem, passar os dados certos, fazer as revisões no momento adequado e retomar o trabalho se algo parar no meio. Isso funciona até que a sequência varie entre sessões, pessoas ou projetos.</p>
+    <p>Um workflow coloca essa sequência em uma definição YAML executável. O Spec Kit coordena os passos, registra o estado e permite retomar uma execução pausada ou falha. Ele não substitui o julgamento sobre o resultado: os checkpoints humanos continuam fazendo parte do processo.</p>
+  </div>
+
+  <h2>1. Uma definição, várias etapas</h2>
+  <p>Um workflow tem metadados e requisitos, entradas declaradas e uma lista ordenada de passos. As entradas podem ser obrigatórias, tipadas, ter padrão e opções permitidas. Cada passo recebe um identificador e pode usar valores recebidos ou saídas de passos anteriores.</p>
+  <pre><code>inputs:
+  spec:
+    type: string
+    required: true
+    prompt: "O que você quer construir?"
+
+steps:
+  - id: specify
+    command: speckit.specify
+    input:
+      args: "{{ inputs.spec }}"
+  - id: review-spec
+    type: gate
+    message: "Revise a spec antes de continuar."
+    options: [approve, reject]
+    on_reject: abort
+  - id: plan
+    command: speckit.plan</code></pre>
+  <p>Este fragmento mostra a ideia central: executar um comando, parar num gate para revisão e só então seguir. Na definição oficial completa, o workflow <code>speckit</code> encadeia <code>specify</code>, revisão da spec, <code>plan</code>, revisão do plano, <code>tasks</code> e <code>implement</code>.</p>
+
+  <h2>2. O motor de execução</h2>
+  <p>Os passos não se limitam a chamar comandos de feature. Um workflow também pode enviar um prompt ao agente, executar um comando de shell, inicializar um projeto, aguardar aprovação, ramificar por condição ou repetir um trecho. Há ainda fan-out/fan-in para distribuir uma etapa sobre itens e reunir os resultados.</p>
+  <ol>
+    <li><strong>Entrada:</strong> quem inicia fornece os valores exigidos ou responde às perguntas interativas.</li>
+    <li><strong>Execução:</strong> o motor percorre os passos na ordem definida e resolve expressões como <code>{{ inputs.spec }}</code>.</li>
+    <li><strong>Controle:</strong> gates podem pausar para uma decisão humana; condições e loops adaptam a rota.</li>
+    <li><strong>Estado:</strong> progresso e resultados ficam registrados em <code>.specify/workflows/runs/&lt;run_id&gt;/</code>.</li>
+    <li><strong>Retomada:</strong> consulte o status e continue uma execução pausada ou falha a partir do ponto registrado.</li>
+  </ol>
+  <p>Estados comuns são <code>running</code>, <code>completed</code>, <code>paused</code>, <code>failed</code> e <code>aborted</code>. Uma falha normalmente interrompe a execução; ao retomar, o passo que falhou é tentado novamente. Um gate não aprova nada sozinho: a pessoa revisa e chama <code>resume</code>.</p>
+
+  <h2>3. Por que usar um workflow?</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Benefício</th><th>O que muda no trabalho</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Repetibilidade</strong></td><td>A mesma sequência e os mesmos checkpoints são aplicados sempre que o processo é iniciado.</td></tr>
+      <tr><td><strong>Menos carga de memória</strong></td><td>A pessoa não precisa lembrar a próxima etapa nem reconstruir manualmente quais dados passar.</td></tr>
+      <tr><td><strong>Revisão no momento certo</strong></td><td>Gates podem exigir revisão da spec ou do plano antes de trabalho posterior.</td></tr>
+      <tr><td><strong>Retomada rastreável</strong></td><td>O estado da execução deixa visível onde parou; não é preciso tratar cada pausa como um recomeço.</td></tr>
+      <tr><td><strong>Adaptação</strong></td><td>Condições e loops permitem caminhos diferentes, recuperação explícita ou repetição controlada.</td></tr>
+    </tbody>
+  </table></div>
+  <p>O ganho não é “automatizar tudo”. É tornar explícito o que deve acontecer e em que ordem, deixando decisões importantes com uma pessoa e tarefas mecânicas com o motor.</p>
+
+  <h2>4. Workflow, extension ou preset?</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Bloco</th><th>Pergunta que responde</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Workflow</strong></td><td>Em que ordem, com quais desvios e aprovações as etapas acontecem?</td><td>Executar specify → review → plan → review → tasks → implement.</td></tr>
+      <tr><td><strong>Extension</strong></td><td>Que comando, integração ou capacidade ainda não existe?</td><td>Adicionar comandos de bug fixing ou conectar uma ação ao Jira.</td></tr>
+      <tr><td><strong>Preset</strong></td><td>Como um processo ou artefato existente deve ser instruído ou formatado?</td><td>Exigir uma seção de segurança no plano e orientar o agente a preenchê-la.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Uma extensão oferece passos que podem ser usados; um workflow organiza esses passos numa sequência. Os workflows oficiais <code>bugfix</code> e <code>assess</code>, por exemplo, chamam comandos fornecidos pelas extensões correspondentes. Já um preset altera templates ou comandos existentes: ele não é o mecanismo que controla a ordem, a pausa ou a retomada.</p>
+  <p>Os blocos podem trabalhar juntos. Um workflow pode chamar comandos de uma extensão e usar comandos ou templates influenciados por presets. Para adaptar a sequência existente sem editar a cópia instalada, workflows também têm <em>overlays</em>; eles editam passos por âncoras e são diferentes dos overlays de template/resolução de presets.</p>
+
+  <h2>5. Experimentar no projeto</h2>
+  <p>A maioria dos comandos de workflow pressupõe um projeto preparado com <code>specify init</code>. Primeiro descubra e inspecione; depois instale e execute:</p>
+  <pre><code>specify workflow search
+specify workflow info speckit
+specify workflow add speckit
+specify workflow list
+specify workflow run speckit --input spec="Build a kanban board"
+specify workflow status
+specify workflow resume &lt;run_id&gt;</code></pre>
+  <p>Também é possível executar um YAML local com <code>specify workflow run ./workflow.yml --input chave=valor</code>. A exceção é útil para experimentar sem instalar um workflow; passos que dependem de comandos ou integrações ainda precisam encontrá-los no ambiente.</p>
+
+  <h3>Um gate pausa; resume continua a mesma execução</h3>
+  <p>No workflow <code>speckit</code>, a primeira execução chama <code>specify</code> para gerar a spec e então chega ao gate <code>review-spec</code>. Nesse ponto, a execução fica pausada e o comando informa um <code>run_id</code>. Revise o arquivo gerado e consulte o status se precisar localizar essa execução:</p>
+  <pre><code>specify workflow status
+specify workflow status &lt;run_id&gt;
+specify workflow resume &lt;run_id&gt;</code></pre>
+  <p><strong>Se você aprovar:</strong> o gate libera a continuação da mesma execução. O workflow roda <code>plan</code> e para novamente em <code>review-plan</code>. Depois de revisar o plano, retome com o mesmo <code>run_id</code>; então ele segue por <code>tasks</code> e <code>implement</code>, até concluir.</p>
+  <p><strong>Se você rejeitar:</strong> no workflow oficial, <code>on_reject: abort</code> encerra essa execução; não apaga os arquivos que ela já gerou. A spec fica na pasta da feature em <code>specs/</code>. Neste projeto, uma nova chamada a <code>specify</code> escolhe o próximo número livre e cria outra pasta; repetir o workflow com a mesma ideia pode, portanto, deixar duas features semelhantes, sem substituir a primeira.</p>
+  <p><strong>Para corrigir sem duplicar:</strong> enquanto a execução ainda estiver pausada em <code>review-spec</code>, edite o <code>spec.md</code> gerado, revise a versão corrigida e aprove o gate; o workflow seguirá no mesmo <code>run_id</code>. Se você já rejeitou e o run foi abortado, a spec continua no disco. Confira <code>.specify/feature.json</code> para confirmar que essa pasta continua sendo a feature ativa e prossiga a partir dela com <code>/speckit.plan</code> na integração, ou use uma workflow que comece em <code>plan</code>. Não inicie outro <code>speckit</code> completo a menos que queira criar uma feature nova.</p>
+  <p>Em qualquer pausa, use <code>workflow resume &lt;run_id&gt;</code> para continuar, não <code>workflow run</code>. Aprovar é uma decisão humana para continuar, não uma validação automática da qualidade do documento.</p>
+
+  <div class="panel">
+    <strong>Segurança e limites</strong>
+    <p>Um passo <code>shell</code> executa um comando local com os privilégios do usuário; o engine não oferece sandbox. Valores interpolados em <code>run</code> são inseridos sem escape automático. Revise o YAML antes de executar, evite passar conteúdo não confiável para shell e restrinja entradas com uma lista permitida quando isso fizer sentido. Workflows comunitários são mantidos por seus autores e não são auditados ou endossados pelo Spec Kit.</p>
+  </div>
+
+  <h2>6. Pratique: escolha o bloco</h2>
+  <p><strong>Cenário A:</strong> toda feature deve seguir uma sequência com revisão humana entre spec e plan, e entre plan e tasks. Qual bloco organiza essa sequência?</p>
+  <button type="button" data-answer="workflow">Revelar resposta</button>
+  <div id="answer-workflow" class="answer panel" aria-live="polite"></div>
+
+  <p><strong>Cenário B:</strong> a equipe precisa de um comando novo que avalia um bug e outro que guia sua correção. Qual bloco fornece essas capacidades?</p>
+  <button type="button" data-answer="extension">Revelar resposta</button>
+  <div id="answer-extension" class="answer panel" aria-live="polite"></div>
+
+  <p><strong>Cenário C:</strong> todo plano deve ter uma seção de segurança e instruções para o agente registrá-la. Qual bloco adapta o processo existente?</p>
+  <button type="button" data-answer="preset">Revelar resposta</button>
+  <div id="answer-preset" class="answer panel" aria-live="polite"></div>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>Use a <a href="https://github.github.io/spec-kit/reference/workflows.html">referência oficial de workflows</a> para os comandos, estado, retomada e formato YAML. O <a href="https://github.com/github/spec-kit/tree/main/workflows">diretório oficial de workflows</a> contém as definições reais de <code>speckit</code>, <code>bugfix</code> e <code>assess</code>. O <a href="https://github.github.io/spec-kit/guides/customization.html#choose-the-right-building-block">guia de customização</a> resume quando escolher cada bloco.</p>
+  </div>
+
+  <p><a href="./0012-extensions-do-spec-kit.html">Lição 12: extensions</a> · <a href="./0015-extensao-assess-do-spec-kit.html">Lição 15: fluxo assess</a> · <a href="./0020-presets-do-spec-kit.html">Lição 20: presets</a> · <a href="../reference/spec-kit-workflows.html">Referência rápida: workflows</a></p>
+  <footer>O professor pode ajudar a decompor seu processo atual em passos, entradas e gates, ou avaliar se a lacuna pede workflow, preset ou extension. Traga a sequência que você quer tornar repetível.</footer>
+</main>
+<script>
+  const answers = {
+    workflow: '<strong>Workflow.</strong> Ele define a ordem dos comandos e os gates de revisão, além de guardar o estado para permitir retomada.',
+    extension: '<strong>Extension.</strong> Ela adiciona comandos/capacidades. Um workflow pode depois encadear esses novos comandos.',
+    preset: '<strong>Preset.</strong> Ele adapta templates e instruções de um processo existente; não controla a ordem de execução.'
+  };
+  document.querySelectorAll('[data-answer]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const answer = document.querySelector(`#answer-${button.dataset.answer}`);
+      answer.innerHTML = answers[button.dataset.answer];
+      answer.classList.add('visible');
+    });
+  });
+</script>
+</body>
+</html>

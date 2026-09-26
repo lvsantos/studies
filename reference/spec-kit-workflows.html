@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Workflows do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>Workflows</h1>
+  <p class="lede">Workflows encadeiam comandos, prompts, shell e revisões humanas em execuções rastreáveis e retomáveis.</p>
+
+  <h2>Escolha a peça</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Preciso...</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td>Ordenar etapas, condicionar rotas, pausar ou retomar</td><td><strong>Workflow</strong></td></tr>
+      <tr><td>Adicionar comando, capacidade ou integração externa</td><td><strong>Extension</strong></td></tr>
+      <tr><td>Mudar instruções ou formato de um processo existente</td><td><strong>Preset</strong></td></tr>
+      <tr><td>Fazer ajuste pontual de template neste projeto</td><td><strong>Override local</strong></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Modelo mental</h2>
+  <pre><code>inputs + requisitos
+        ↓
+lista ordenada de passos
+        ↓
+comando / prompt / shell / gate / controle de fluxo
+        ↓
+estado por execução → status, pausa ou retomada</code></pre>
+  <p>Expressões como <code>{{ inputs.spec }}</code> passam valores entre entradas e passos. Um gate pode pausar para aprovação; condições e loops podem controlar a próxima ação. Estado em <code>.specify/workflows/runs/&lt;run_id&gt;/</code>.</p>
+
+  <h2>Comandos de uso</h2>
+  <pre><code>specify workflow search [query]
+specify workflow info &lt;id&gt;
+specify workflow add &lt;id&gt;
+specify workflow list
+specify workflow run &lt;id&gt; --input chave=valor
+specify workflow status [&lt;run_id&gt;]
+specify workflow resume &lt;run_id&gt;
+specify workflow disable &lt;id&gt;
+specify workflow enable &lt;id&gt;
+specify workflow remove &lt;id&gt;</code></pre>
+  <p>Para experimentar YAML local: <code>specify workflow run ./workflow.yml --input chave=valor</code>. A execução de um arquivo local é a exceção que pode rodar fora de um projeto inicializado; outros comandos normalmente exigem <code>specify init</code>.</p>
+
+  <h2>Workflows oficiais para reconhecer</h2>
+  <ul>
+    <li><strong><code>speckit</code>:</strong> specify → revisão → plan → revisão → tasks → implement.</li>
+    <li><strong><code>bugfix</code>:</strong> assess do bug → gate de revisão → fix → test; usa comandos da extensão bug.</li>
+    <li><strong><code>assess</code>:</strong> intake → research → define → shape → decide → gate do veredito; usa comandos da extensão assess.</li>
+  </ul>
+
+  <h2>Cuidados</h2>
+  <ul>
+    <li>Revise workflows antes de instalar ou executar, especialmente os de terceiros.</li>
+    <li>Passos <code>shell</code> rodam com os privilégios locais; não há sandbox.</li>
+    <li>Interpolação em <code>run</code> não recebe escape automático. Não passe valores não confiáveis ao shell; restrinja entradas sempre que possível.</li>
+    <li>Um gate é um ponto de decisão humana, não uma revisão automática do próximo comando.</li>
+  </ul>
+
+  <p><a href="../lessons/0029-workflows-do-spec-kit.html">Lição: workflows do Spec Kit</a> · <a href="../lessons/0012-extensions-do-spec-kit.html">Extensions</a> · <a href="../lessons/0020-presets-do-spec-kit.html">Presets</a></p>
+  <p class="small">Fontes: <a href="https://github.github.io/spec-kit/reference/workflows.html">referência oficial</a> · <a href="https://github.com/github/spec-kit/tree/main/workflows">definições oficiais</a>.</p>
+</main>
+</body>
+</html>

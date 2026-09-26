@@ -18,6 +18,10 @@
   Fonte primaria para quando e como essa decisao aparece pela primeira vez em um projeto ja existente.
 - [Spec Kit customization guide](https://github.github.io/spec-kit/guides/customization.html)
   Fonte primaria para escolher entre extensoes, presets, overrides locais, workflows e bundles ao adaptar o Spec Kit.
+- [Spec Kit workflows reference](https://github.github.io/spec-kit/reference/workflows.html)
+  Referencia primaria para definicoes YAML, entradas, tipos de passos, execucao, status, retomada, overlays e limites de seguranca dos workflows.
+- [Spec Kit workflows directory](https://github.com/github/spec-kit/tree/main/workflows)
+  Definicoes oficiais dos workflows `speckit`, `bugfix` e `assess`, alem dos catalogos e guias de arquitetura/publicacao; use para conferir como as sequencias reais encadeiam comandos e gates.
 - [Project-local overrides and resolution](https://github.github.io/spec-kit/guides/customization.html#project-local-overrides-and-resolution)
   Secao primaria sobre o caminho `.specify/templates/overrides/`, precedencia dos overrides locais e a diferenca entre resolver templates/scripts e materializar comandos na integracao ativa.
 - [Spec Kit presets reference](https://github.github.io/spec-kit/reference/presets.html)
