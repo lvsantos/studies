@@ -48,6 +48,10 @@
   Referencia oficial dos comandos `/speckit.assess.*`, dos artefatos em `.specify/assessments/<slug>/` e das regras de go, needs-clarification e kill.
 - [Spec Kit assess extension README](https://github.com/github/spec-kit/blob/main/extensions/assess/README.md)
   Documento da propria extensao que detalha a pipeline, os artefatos, as guardrails e a relacao entre assessment e especificacao.
+- [Spec Kit Coding Agent Context extension](https://github.com/github/spec-kit/blob/main/extensions/agent-context/README.md)
+  README oficial da extensao bundled e opt-in que sincroniza a secao gerenciada dos arquivos de contexto dos agentes.
+- [Spec Kit Git Branching Workflow extension](https://github.com/github/spec-kit/blob/main/extensions/git/README.md)
+  README oficial da extensao bundled e opt-in para branches, validacao, remotes e commits automatizados.
 - [Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl (Birgitta Bockeler, martinfowler.com)](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
   Analise independente que define os tres niveis de SDD (spec-first, spec-anchored, spec-as-source) e traz uma visao critica sobre limitacoes praticas do Spec Kit.
 

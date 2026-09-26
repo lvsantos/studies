@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 17 · Extensão Git Branching Workflow</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 17 · 20 minutos</p>
+  <h1>Git Branching Workflow: organizar o trabalho em branches</h1>
+  <p class="lede">Vitória de hoje: entender como a extensão oficial <code>git</code> organiza branches, remotes e commits sem confundir controle de versão com o estado da feature que o Spec Kit está usando.</p>
+
+  <div class="panel">
+    <strong>O mapa mental</strong>
+    <p><strong>Bug Fix</strong> organiza diagnóstico, correção e prova. <strong>Idea Assessment</strong> organiza pesquisa e decisão. <strong>Git Branching Workflow</strong> organiza a camada de versionamento que envolve esses trabalhos.</p>
+    <p>Ela é uma extensão oficial, bundled e opt-in. O fluxo principal do Spec Kit continua funcionando sem Git; a extensão acrescenta convenções e automações para equipes que querem esse controle.</p>
+  </div>
+
+  <h2>1. Que problema ela resolve?</h2>
+  <p>Sem uma convenção, diferentes pessoas podem criar branches com nomes incompatíveis, esquecer de detectar o remote ou commitar artefatos em momentos diferentes. Isso torna mais difícil revisar o resultado de uma especificação, de um bug fix ou de uma decisão de produto.</p>
+  <p>A extensão concentra operações Git relacionadas ao workflow: inicializar o repositório, criar branch de feature, validar o nome, detectar o remote e, se configurado, fazer commits automáticos.</p>
+
+  <h2>2. Como instalar</h2>
+  <pre><code>specify extension add git</code></pre>
+  <p>Para desativar sem remover:</p>
+  <pre><code>specify extension disable git
+# Para reativar:
+specify extension enable git</code></pre>
+  <p>Se Git não estiver instalado ou o diretório não for um repositório, a extensão degrada com avisos: os diretórios de especificação continuam sendo criados, mas branches, validação e detecção de remote são ignorados.</p>
+
+  <h2>3. Comandos disponíveis</h2>
+  <table>
+    <thead><tr><th>Comando canônico</th><th>Função</th></tr></thead>
+    <tbody>
+      <tr><td><code>speckit.git.initialize</code></td><td>Inicializa o repositório com uma mensagem configurável.</td></tr>
+      <tr><td><code>speckit.git.feature</code></td><td>Cria uma branch numerada para uma feature.</td></tr>
+      <tr><td><code>speckit.git.validate</code></td><td>Verifica se a branch segue a convenção.</td></tr>
+      <tr><td><code>speckit.git.remote</code></td><td>Detecta a URL do remote para integrações GitHub.</td></tr>
+      <tr><td><code>speckit.git.commit</code></td><td>Faz commit automático quando habilitado.</td></tr>
+    </tbody>
+  </table>
+  <p>Em uma integração com skills baseadas em hífen, por exemplo, <code>speckit.git.feature</code> é invocado como:</p>
+  <pre><code>/speckit-git-feature</code></pre>
+  <p>O comando pode criar nomes como <code>001-offline-mode</code>. A numeração pode ser sequencial ou baseada em timestamp.</p>
+
+  <h2>4. Hooks e configuração</h2>
+  <p>A configuração fica em:</p>
+  <pre><code>.specify/extensions/git/git-config.yml</code></pre>
+  <p>Você pode configurar a estratégia de numeração, um template de branch e o estilo das mensagens de commit. Os commits automáticos ficam desativados por padrão e podem ser habilitados por etapa, como depois de <code>specify</code>, <code>plan</code>, <code>tasks</code> ou <code>implement</code>.</p>
+  <p>Isso é importante: instalar a extensão não significa autorizar commits automáticos. A equipe precisa escolher explicitamente quais hooks serão habilitados.</p>
+
+  <h2>5. Um detalhe que evita confusão</h2>
+  <p>O quickstart atual diferencia branch Git de feature ativa. O Spec Kit resolve os comandos pelo estado registrado em <code>.specify/feature.json</code>, ou pela variável <code>SPECIFY_FEATURE_DIRECTORY</code>. Portanto, trocar de branch com <code>git checkout</code> não muda sozinho a feature ativa para os comandos do Spec Kit.</p>
+  <p>A extensão Git ajuda a nomear e organizar branches, mas não transforma a branch em fonte única da verdade do estado da feature. Essa separação evita executar comandos contra o diretório errado.</p>
+
+  <h2>6. Como ela se relaciona com Bug Fix e Assess?</h2>
+  <ul>
+    <li>Depois de um <strong>Idea Assessment</strong> com resultado <strong>go</strong>, use a extensão Git para criar e validar a branch que carregará a feature.</li>
+    <li>Durante um <strong>Bug Fix</strong>, use a extensão Git para manter a correção isolada e registrar checkpoints, se os hooks estiverem configurados.</li>
+    <li>Nem <code>git</code> nem <code>agent-context</code> decidem se uma ideia vale a pena ou qual é a causa de um bug. Eles sustentam a execução desses processos.</li>
+  </ul>
+
+  <h2>7. Quando usar</h2>
+  <ul>
+    <li>a equipe precisa de nomes de branch previsíveis;</li>
+    <li>o fluxo depende de um remote GitHub detectável;</li>
+    <li>commits por etapa ajudam a revisar ou recuperar o trabalho;</li>
+    <li>o projeto quer adotar uma política Git sem duplicar scripts em cada feature.</li>
+  </ul>
+  <p>Se o projeto ainda não usa Git ou se a equipe já tem um workflow consolidado, mantenha a extensão desativada até que a automação realmente reduza trabalho.</p>
+
+  <h2>8. Prática: qual extensão escolher?</h2>
+  <p>Um bug foi avaliado, corrigido e testado. O time agora quer que cada etapa gere um checkpoint com mensagem consistente, sem alterar o diagnóstico nem a validação do bug. Qual extensão atua nessa necessidade?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Use <code>git</code>.</strong> A extensão Bug Fix continua responsável por assess, fix e test; a extensão Git cuida dos commits e da organização do trabalho em versionamento.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.com/github/spec-kit/blob/main/extensions/git/README.md">README da extensão Git Branching Workflow</a> e o <a href="https://github.github.io/spec-kit/quickstart.html#recommended-process">processo recomendado do quickstart</a>. Eles explicam comandos, hooks, configuração, degradação sem Git e a diferença entre branch e feature ativa.</p>
+  </div>
+
+  <p><a href="./0016-extensao-agent-context-do-spec-kit.html">Lição anterior</a> · <a href="./0018-criar-extensao-propria-do-spec-kit.html">Próxima aula</a> · <a href="../reference/spec-kit-official-extensions.html">Referência de extensões oficiais</a> · <a href="../reference/spec-kit-pos-init.html">Mapa pós-init</a></p>
+  <footer>O professor pode ajudar a escolher uma convenção de branch, revisar hooks de commit ou diagnosticar uma divergência entre a branch atual e a feature ativa do Spec Kit. Pergunte com o fluxo do seu projeto.</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 16 · Extensão Coding Agent Context</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 16 · 15 minutos</p>
+  <h1>Coding Agent Context: manter o agente no contexto certo</h1>
+  <p class="lede">Vitória de hoje: entender como a extensão oficial <code>agent-context</code> sincroniza o contexto do agente sem misturar esse trabalho com a investigação de bugs ou a avaliação de ideias.</p>
+
+  <div class="panel">
+    <strong>O mapa mental</strong>
+    <p><strong>Bug Fix</strong> investiga e corrige um defeito. <strong>Idea Assessment</strong> decide se uma ideia merece investimento. <strong>Coding Agent Context</strong> mantém no arquivo do agente as instruções e referências necessárias para executar o trabalho com continuidade.</p>
+    <p>Ela é uma extensão oficial, bundled e opt-in. O Spec Kit não altera o arquivo de contexto por conta própria: essa responsabilidade começa quando você instala a extensão.</p>
+  </div>
+
+  <h2>1. Que problema ela resolve?</h2>
+  <p>Agentes de programação dependem de um arquivo de contexto, como <code>AGENTS.md</code>, <code>CLAUDE.md</code>, <code>GEMINI.md</code> ou <code>.github/copilot-instructions.md</code>. Se esse arquivo não acompanha o plano ativo do projeto, cada conversa pode começar com instruções incompletas ou desatualizadas.</p>
+  <p>A extensão resolve essa lacuna mantendo uma seção gerenciada no arquivo de contexto. Ela atualiza as referências do Spec Kit sem sobrescrever o conteúdo que a equipe mantém fora dessa seção.</p>
+
+  <h2>2. Como instalar</h2>
+  <pre><code>specify extension add agent-context</code></pre>
+  <p>A instalação deve ser feita na raiz de um projeto já inicializado com Spec Kit. Como é opt-in, não instalar a extensão é uma decisão válida: nesse caso, o arquivo de contexto permanece sob administração manual.</p>
+  <p>Para desativar os hooks sem remover a extensão:</p>
+  <pre><code>specify extension disable agent-context
+# Para reativar:
+specify extension enable agent-context</code></pre>
+
+  <h2>3. Como usar</h2>
+  <p>O comando principal atualiza a seção gerenciada do arquivo de contexto:</p>
+  <pre><code>/speckit.agent-context.update</code></pre>
+  <p>Em integrações que usam skills com hífens, a mesma operação aparece como:</p>
+  <pre><code>/speckit-agent-context-update</code></pre>
+  <p>Por padrão, a extensão delimita sua área com:</p>
+  <pre><code>&lt;!-- SPECKIT START --&gt;
+...
+&lt;!-- SPECKIT END --&gt;</code></pre>
+  <p>O conteúdo fora desses marcadores continua intacto. Isso permite que regras da organização e instruções específicas do agente coexistam com a parte atualizada pelo Spec Kit.</p>
+
+  <h2>4. Exemplo real com GitHub Copilot</h2>
+  <p>Imagine um projeto que usa somente o GitHub Copilot. Antes de instalar a extensão, o arquivo <code>.github/copilot-instructions.md</code> pode conter apenas as regras mantidas manualmente pela equipe:</p>
+  <pre><code># Instruções do projeto
+
+- Use TypeScript.
+- Escreva testes para novas funcionalidades.
+- Não altere o banco sem criar uma migração.</code></pre>
+  <p>Depois de instalar a extensão e executar:</p>
+  <pre><code>specify extension add agent-context
+/speckit-agent-context-update</code></pre>
+  <p>o arquivo pode passar a ter uma seção gerenciada pelo Spec Kit:</p>
+  <pre><code># Instruções do projeto
+
+- Use TypeScript.
+- Escreva testes para novas funcionalidades.
+- Não altere o banco sem criar uma migração.
+
+&lt;!-- SPECKIT START --&gt;
+## Spec Kit
+
+A feature ativa possui os seguintes artefatos:
+
+- Spec: `specs/001-checkout/spec.md`
+- Plano: `specs/001-checkout/plan.md`
+- Tarefas: `specs/001-checkout/tasks.md`
+
+Consulte esses arquivos antes de implementar.
+&lt;!-- SPECKIT END --&gt;</code></pre>
+  <p>Se o plano mudar depois de <code>/speckit-plan</code>, a extensão atualiza apenas o trecho entre os marcadores. As regras manuais continuam intactas. Portanto, mesmo com um único agente, a extensão pode evitar que o Copilot trabalhe com uma referência antiga do plano ativo.</p>
+
+  <h2>5. O que ela atualiza?</h2>
+  <p>A extensão pode manter a referência ao plano ativo e sincronizar mais de um arquivo de contexto quando o projeto realmente usa vários agentes. A configuração fica em:</p>
+  <pre><code>.specify/extensions/agent-context/agent-context-config.yml</code></pre>
+  <p>Nela, você pode ajustar os arquivos monitorados e os marcadores. Para arquivos <code>.mdc</code>, a extensão também garante que o frontmatter contenha <code>alwaysApply: true</code>.</p>
+  <p>Os hooks declarados pela extensão executam a atualização depois de etapas como <code>specify</code> e <code>plan</code>. Ainda assim, a atualização sob demanda continua disponível quando o contexto mudou e você quer sincronizá-lo imediatamente.</p>
+
+  <h2>6. Como ela se relaciona com Bug Fix e Assess?</h2>
+  <table>
+    <thead><tr><th>Extensão</th><th>Pergunta respondida</th><th>Resultado principal</th></tr></thead>
+    <tbody>
+      <tr><td><code>bug</code></td><td>O que quebrou e como provar a correção?</td><td>assessment, fix e test</td></tr>
+      <tr><td><code>assess</code></td><td>Esta ideia merece investimento?</td><td>research, concept e decision</td></tr>
+      <tr><td><code>agent-context</code></td><td>Que instruções o agente deve carregar?</td><td>seção sincronizada no contexto</td></tr>
+    </tbody>
+  </table>
+  <p>Portanto, ela não substitui nenhuma das duas aulas anteriores. Ela melhora a continuidade do agente enquanto qualquer um desses fluxos está sendo executado.</p>
+
+  <h2>7. Quando usar</h2>
+  <ul>
+    <li>o projeto tem regras importantes que o agente precisa receber em toda sessão;</li>
+    <li>o plano ativo deve aparecer no arquivo de contexto;</li>
+    <li>mais de uma integração de agente compartilha instruções;</li>
+    <li>a equipe quer automação sem perder controle sobre o texto manual do arquivo.</li>
+  </ul>
+  <p>Não use a extensão apenas para evitar uma edição manual ocasional. O ganho aparece quando contexto e plano mudam com frequência ou quando vários agentes precisam permanecer alinhados.</p>
+
+  <h2>8. Prática: qual extensão escolher?</h2>
+  <p>Uma ideia já recebeu <strong>go</strong> no Idea Assessment. Agora o time quer executar o plano com Copilot e Claude, mantendo as mesmas regras do projeto e a referência do plano ativo. Qual extensão resolve o problema?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Use <code>agent-context</code>.</strong> O resultado de <code>assess</code> decide o investimento; a extensão de contexto garante que os agentes recebam as instruções e referências necessárias durante a execução.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.com/github/spec-kit/blob/main/extensions/agent-context/README.md">README da extensão Coding Agent Context</a> e o <a href="https://github.github.io/spec-kit/quickstart.html#recommended-process">processo recomendado do quickstart</a>. Eles explicam a instalação opt-in, os marcadores, o comando de atualização e a relação entre contexto e plano ativo.</p>
+  </div>
+
+  <p><a href="./0015-extensao-assess-do-spec-kit.html">Lição anterior</a> · <a href="./0017-extensao-git-do-spec-kit.html">Próxima aula</a> · <a href="../reference/spec-kit-official-extensions.html">Referência de extensões oficiais</a> · <a href="../reference/spec-kit-pos-init.html">Mapa pós-init</a></p>
+  <footer>O professor pode ajudar a decidir quais instruções pertencem ao contexto compartilhado, revisar os marcadores ou separar uma regra de agente de uma regra de produto. Pergunte com o arquivo e a integração que você usa.</footer>
+</main>
+</body>
+</html>

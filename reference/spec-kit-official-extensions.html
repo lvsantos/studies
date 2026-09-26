@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Extensões oficiais do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Extensões</p>
+  <h1>As quatro extensões oficiais do Spec Kit</h1>
+  <p class="lede">Um mapa para escolher entre avaliar uma ideia, corrigir um bug, sincronizar o contexto do agente e organizar o trabalho no Git.</p>
+
+  <table>
+    <thead><tr><th>Extensão</th><th>Pergunta</th><th>Artefato ou efeito</th></tr></thead>
+    <tbody>
+      <tr><td><code>assess</code></td><td>A ideia merece investimento?</td><td>intake, research, define, shape e decision</td></tr>
+      <tr><td><code>bug</code></td><td>O que quebrou e como provar a correção?</td><td>assessment, fix e test</td></tr>
+      <tr><td><code>agent-context</code></td><td>Que contexto o agente deve carregar?</td><td>seção sincronizada no arquivo do agente</td></tr>
+      <tr><td><code>git</code></td><td>Como organizar o trabalho no versionamento?</td><td>branches, remotes, validação e commits</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Escolha pelo problema</h2>
+  <ol>
+    <li>Ideia ainda incerta? Use <code>assess</code>.</li>
+    <li>Comportamento quebrado? Use <code>bug</code>.</li>
+    <li>Instruções e plano precisam acompanhar o agente? Use <code>agent-context</code>.</li>
+    <li>Branches e checkpoints precisam de convenção? Use <code>git</code>.</li>
+  </ol>
+
+  <h2>Instalação e controle</h2>
+  <pre><code>specify extension add assess
+specify extension add bug
+specify extension add agent-context
+specify extension add git
+
+specify extension list
+specify extension disable agent-context
+specify extension enable git</code></pre>
+  <p>As quatro são oficiais, bundled e opt-in: estão disponíveis no Spec Kit, mas não são instaladas automaticamente só por inicializar um projeto. Cada uma pode ser instalada ou desativada separadamente.</p>
+
+  <h2>Uma distinção importante</h2>
+  <p><code>assess</code> e <code>bug</code> organizam o conteúdo do trabalho. <code>agent-context</code> e <code>git</code> sustentam a execução: uma mantém o agente informado; a outra mantém o trabalho organizado no versionamento.</p>
+  <p>A extensão <code>git</code> não torna a branch a fonte única da feature ativa. O Spec Kit continua usando o estado em <code>.specify/feature.json</code> ou <code>SPECIFY_FEATURE_DIRECTORY</code>.</p>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p><a href="https://github.com/github/spec-kit/tree/main/extensions">Diretório oficial de extensões</a> · <a href="https://github.com/github/spec-kit/blob/main/extensions/agent-context/README.md">agent-context</a> · <a href="https://github.com/github/spec-kit/blob/main/extensions/git/README.md">git</a> · <a href="https://github.github.io/spec-kit/quickstart.html#recommended-process">processo recomendado</a>.</p>
+  </div>
+
+  <p><a href="../lessons/0016-extensao-agent-context-do-spec-kit.html">Aula agent-context</a> · <a href="../lessons/0017-extensao-git-do-spec-kit.html">Aula git</a> · <a href="./spec-kit-pos-init.html">Mapa pós-init</a></p>
+  <footer>Material de referência do curso de Spec Kit com GitHub Copilot.</footer>
+</main>
+</body>
+</html>
