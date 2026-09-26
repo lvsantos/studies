@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 30 · Workflows comunitários do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 30 · 8 minutos</p>
+  <h1>Workflow comunitário: descubra, inspecione, decida</h1>
+  <p class="lede">Vitória de hoje: distinguir os catálogos de workflows e de steps, e avaliar uma sequência comunitária antes de executá-la com Copilot.</p>
+
+  <div class="panel">
+    <strong>Não confunda catálogo com aprovação</strong>
+    <p>Assim como no catálogo de <a href="./0013-extensoes-da-comunidade-do-spec-kit.html">extensions comunitárias</a>, o catálogo comunitário de workflows é uma fonte de descoberta, não um selo de confiança. O CLI deixa pesquisar e inspecionar os itens, mas o catálogo comunitário padrão não permite instalar pelo ID. Os autores mantêm o código; a presença no catálogo não significa que o workflow foi auditado ou endossado.</p>
+    <p>Isso difere do fluxo de <a href="./0021-presets-da-comunidade-do-spec-kit.html">presets comunitários</a>, cujo comando de instalação por ID não deve ser presumido para workflows. Aqui, a configuração dos catálogos controla se uma origem pode instalar.</p>
+  </div>
+
+  <h2>1. Dois catálogos, duas coisas diferentes</h2>
+  <p>Os arquivos <code>catalog.json</code> e <code>catalog.community.json</code> listam workflows completos: sequências de comandos, gates e outras etapas. Os arquivos <code>step-catalog.json</code> e <code>step-catalog.community.json</code> listam tipos de step reutilizáveis, isto é, comportamento novo que um YAML pode chamar com <code>type:</code>.</p>
+  <p>Na consulta de 26/09/2026, o catálogo de workflows da comunidade lista <code>pipeline</code> e <code>yolo</code>. Os dois catálogos de steps, oficial e comunitário, têm <code>"steps": {}</code>: não há step types publicados neles nesse momento. Um step comunitário futuro merece revisão especialmente cuidadosa: seu pacote inclui Python que o CLI importa ao carregar o step.</p>
+
+  <h2>2. Descubra sem instalar</h2>
+  <p>Em um projeto inicializado, veja as origens ativas, pesquise e peça a ficha do item:</p>
+  <pre><code>specify workflow catalog list
+specify workflow search --tag automation
+specify workflow info pipeline</code></pre>
+  <p>A busca inclui os catálogos ativos, por padrão o oficial e o comunitário. A ficha ajuda a comparar versão, autor, requisitos, entradas e etapas; ela não substitui a leitura do YAML real, do README e dos arquivos auxiliares versionados.</p>
+
+  <h2>3. Compare o processo real</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Exemplo</th><th>O que promete</th><th>O que verificar</th></tr></thead>
+    <tbody>
+      <tr><td><strong><code>pipeline</code> 1.1.0</strong></td><td>Clarify, análise antes de implementar e um loop limitado de converge + implement; aceita Copilot e requer Spec Kit 0.11.2 ou superior.</td><td>Tem um gate após clarify, mas não os gates de revisão da spec e do plan do workflow oficial <code>speckit</code>. O nome “Guided” não garante esses checkpoints.</td></tr>
+      <tr><td><strong><code>yolo</code> 0.1.0</strong></td><td>Specify → plan → tasks → implement sem interrupções entre as etapas.</td><td>Remove todos os gates. Além disso, a ficha do catálogo declara requisito mínimo 0.8.12, enquanto o README/YAML versionado declara 0.8.5: esclareça a divergência antes de usar.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Em ambos, examine os comandos chamados, os tipos de step, os gates, dependências de extensions, requisitos de versão e qualquer <code>shell</code> ou interpolação. Shell roda com os privilégios locais; a validação estrutural do YAML não é auditoria de segurança.</p>
+
+  <h2>4. Depois da revisão, escolha a origem</h2>
+  <p>Se o projeto ou a equipe decidir instalar o item revisado, use uma URL HTTPS versionada. O CLI pede confirmação ao instalar de uma URL externa não registrada em catálogo:</p>
+  <pre><code>specify workflow add pipeline --from https://raw.githubusercontent.com/domattioli/spec-kit-workflow-pipeline/v1.1.0/workflow.yml
+specify workflow list
+specify workflow run pipeline --input spec="Descreva a feature"</code></pre>
+  <p>Outra opção é a equipe publicar um catálogo próprio e marcar explicitamente a origem como instalável segundo sua política. Não transforme o catálogo comunitário de descoberta em fonte instalável por conveniência. Depois, confira as etapas instaladas e acompanhe pausas com <code>specify workflow status</code> e <code>specify workflow resume &lt;run_id&gt;</code>.</p>
+
+  <h2>5. Pratique: qual sequência serve?</h2>
+  <p>Você quer usar Copilot, revisar a spec antes do plan e revisar o plan antes de gerar tasks. A ficha de um workflow diz “Guided SDD Pipeline”. Isso basta para instalá-lo?</p>
+  <button type="button" data-answer="workflow-choice">Revelar resposta</button>
+  <div id="answer-workflow-choice" class="answer panel" aria-live="polite"></div>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>Use a <a href="https://github.github.io/spec-kit/reference/workflows.html">referência de workflows</a> para comandos e configuração de catálogos. Compare os <a href="https://github.com/github/spec-kit/blob/main/workflows/catalog.community.json">workflows comunitários</a> com o <a href="https://github.com/github/spec-kit/blob/main/workflows/catalog.json">catálogo first-party</a>. Os catálogos de <a href="https://github.com/github/spec-kit/blob/main/workflows/step-catalog.community.json">steps comunitários</a> e <a href="https://github.com/github/spec-kit/blob/main/workflows/step-catalog.json">steps first-party</a> mostram a extensão separada. Para o risco de código executável em step types, leia o <a href="https://github.com/github/spec-kit/blob/main/design/workflow-step.md">guia de design de workflow steps</a>.</p>
+  </div>
+
+  <p><a href="./0029-workflows-do-spec-kit.html">Lição 29: workflows</a> · <a href="./0013-extensoes-da-comunidade-do-spec-kit.html">Lição 13: extensions comunitárias</a> · <a href="./0021-presets-da-comunidade-do-spec-kit.html">Lição 21: presets comunitários</a> · <a href="../reference/spec-kit-community-workflows.html">Referência rápida: workflows comunitários</a></p>
+  <footer>O professor pode comparar o YAML de dois workflows com você, mapear os gates e apontar dependências ou divergências. Traga o ID, a URL versionada e os checkpoints que seu fluxo precisa preservar.</footer>
+</main>
+<script>
+  const answers = {
+    'workflow-choice': '<strong>Não.</strong> Leia o YAML: pipeline aceita Copilot, mas seu gate fica após clarify, não após spec e plan. yolo não tem gates. Se esses dois checkpoints forem obrigatórios, mantenha o workflow oficial speckit ou adapte-o com overlays; confirme também versão, origem e comandos antes de instalar.'
+  };
+  document.querySelectorAll('[data-answer]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const answer = document.querySelector(`#answer-${button.dataset.answer}`);
+      answer.innerHTML = answers[button.dataset.answer];
+      answer.classList.add('visible');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Workflows comunitários do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>Workflows comunitários</h1>
+  <p class="lede">Catálogo para descobrir sequências; YAML e arquivos versionados para decidir se convém executá-las.</p>
+
+  <h2>Dois catálogos</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Catálogo</th><th>Contém</th><th>Política padrão</th></tr></thead>
+    <tbody>
+      <tr><td><code>workflows/catalog*.json</code></td><td>Workflows completos: etapas e sua ordem.</td><td>O oficial permite instalação; o comunitário é discovery-only.</td></tr>
+      <tr><td><code>workflows/step-catalog*.json</code></td><td>Pacotes de tipos de step reutilizáveis (<code>type:</code>).</td><td>O comunitário é discovery-only; um step instalado inclui Python importado pelo CLI.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Em 2026-09-26, o catálogo comunitário listava <code>pipeline</code> e <code>yolo</code>; os catálogos first-party e comunitário de steps continham <code>"steps": {}</code>. Verifique novamente antes de usar: os catálogos mudam.</p>
+
+  <h2>Explorar workflows</h2>
+  <pre><code>specify workflow catalog list
+specify workflow search --tag automation
+specify workflow info &lt;id&gt;
+specify workflow add &lt;id&gt;            # somente origem instalável
+specify workflow add &lt;id&gt; --from &lt;URL-versionada&gt;  # fonte externa, pede confirmação
+specify workflow list
+specify workflow run &lt;id&gt; --input spec="..."</code></pre>
+  <p>A busca consulta os catálogos ativos. Metadados e validação estrutural não provam segurança nem correspondência entre ficha e pacote.</p>
+
+  <h2>Explorar step types</h2>
+  <pre><code>specify workflow step catalog list
+specify workflow step search
+specify workflow step info &lt;type-id&gt;
+specify workflow step add &lt;type-id&gt;  # instala e importa código Python</code></pre>
+  <p>Ao avaliar um pacote comunitário de step, leia <code>step.yml</code>, <code>__init__.py</code> e todos os arquivos auxiliares antes da instalação.</p>
+
+  <h2>Checklist de revisão</h2>
+  <ol>
+    <li>Leia README, YAML e arquivos auxiliares na release/commit indicado.</li>
+    <li>Compare gates e sua posição com os checkpoints que você exige.</li>
+    <li>Confira comandos, shell, interpolação de entradas, dependências e versão mínima.</li>
+    <li>Investigue divergências entre catálogo, YAML, README e release.</li>
+    <li>Prefira testar numa branch/cópia; só depois escolha uma fonte instalável.</li>
+  </ol>
+  <p><strong>Regra:</strong> gates são decisões humanas, não sandbox; <code>shell</code> executa com seus privilégios. Tipos de step podem executar Python ao serem carregados.</p>
+
+  <h2>Comparação observada</h2>
+  <ul>
+    <li><strong><code>pipeline</code> 1.1.0:</strong> aceita Copilot e exige Spec Kit ≥ 0.11.2; tem um gate após clarify, além de analyze e loop limitado de converge + implement. Não tem os gates de revisão da spec e do plan do <code>speckit</code>.</li>
+    <li><strong><code>yolo</code> 0.1.0:</strong> encadeia specify, plan, tasks e implement sem gates. A ficha do catálogo diz ≥ 0.8.12; README/YAML versionado diz ≥ 0.8.5. Confirme com o mantenedor antes de prosseguir.</li>
+  </ul>
+
+  <p><a href="../lessons/0030-workflows-comunitarios-spec-kit.html">Lição 30: workflows comunitários</a> · <a href="../lessons/0029-workflows-do-spec-kit.html">Lição 29: workflows do Spec Kit</a> · <a href="../lessons/0013-extensoes-da-comunidade-do-spec-kit.html">Extensions comunitárias</a> · <a href="../lessons/0021-presets-da-comunidade-do-spec-kit.html">Presets comunitários</a></p>
+  <p class="small">Fontes: <a href="https://github.github.io/spec-kit/reference/workflows.html">referência de workflows</a> · <a href="https://github.com/github/spec-kit/blob/main/workflows/catalog.community.json">catálogo community</a> · <a href="https://github.com/github/spec-kit/blob/main/workflows/step-catalog.community.json">catálogo community de steps</a> · <a href="https://github.com/github/spec-kit/blob/main/design/workflow-step.md">design dos step types</a>.</p>
+</main>
+</body>
+</html>

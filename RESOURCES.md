@@ -20,6 +20,18 @@
   Fonte primaria para escolher entre extensoes, presets, overrides locais, workflows e bundles ao adaptar o Spec Kit.
 - [Spec Kit workflows reference](https://github.github.io/spec-kit/reference/workflows.html)
   Referencia primaria para definicoes YAML, entradas, tipos de passos, execucao, status, retomada, overlays e limites de seguranca dos workflows.
+- [Spec Kit first-party workflow catalog](https://github.com/github/spec-kit/blob/main/workflows/catalog.json)
+  Lista workflows bundled e mantidos no repositorio oficial; compare a sequencia e os requisitos com alternativas da comunidade.
+- [Spec Kit community workflow catalog](https://github.com/github/spec-kit/blob/main/workflows/catalog.community.json)
+  Lista workflows comunitarios para descoberta. A presenca no catalogo nao substitui a leitura da definicao versionada nem uma revisao independente.
+- [Spec Kit first-party workflow step catalog](https://github.com/github/spec-kit/blob/main/workflows/step-catalog.json)
+  Catalogo oficial separado para tipos de steps reutilizaveis; a consulta de 2026-09-26 mostra a lista vazia.
+- [Spec Kit community workflow step catalog](https://github.com/github/spec-kit/blob/main/workflows/step-catalog.community.json)
+  Catalogo comunitario separado de steps; a consulta de 2026-09-26 mostra a lista vazia. Ao avaliar uma entrada futura, revise o Python que o CLI importa.
+- [Spec Kit workflow step design](https://github.com/github/spec-kit/blob/main/design/workflow-step.md)
+  Fonte primaria para o contrato dos step types e para entender que um pacote instalado importa e executa codigo Python no processo do CLI.
+- [Spec Kit workflows README](https://github.com/github/spec-kit/blob/main/workflows/README.md)
+  Guia oficial sobre execucao, catalogos, instalação, estado e retomada; esclarece que o catalogo comunitario e mantido por autores independentes e nao e auditado ou endossado.
 - [Spec Kit workflows directory](https://github.com/github/spec-kit/tree/main/workflows)
   Definicoes oficiais dos workflows `speckit`, `bugfix` e `assess`, alem dos catalogos e guias de arquitetura/publicacao; use para conferir como as sequencias reais encadeiam comandos e gates.
 - [Project-local overrides and resolution](https://github.github.io/spec-kit/guides/customization.html#project-local-overrides-and-resolution)
