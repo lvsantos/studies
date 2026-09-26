@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Publicar presets do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>Publicar presets</h1>
+  <p class="lede">O repositório do autor hospeda o pacote. O catálogo comunitário aponta para ele para facilitar a descoberta.</p>
+
+  <h2>Do diretório à release</h2>
+  <ol>
+    <li>Prepare <code>preset.yml</code>, README específico, <code>LICENSE</code> e, de preferência, <code>CHANGELOG.md</code>.</li>
+    <li>Revise ID (minúsculas e hífens), SemVer, requisito do Spec Kit, dependências e caminhos em <code>provides</code>.</li>
+    <li>Teste em projeto descartável iniciado com <code>specify init</code>: <code>specify preset add --dev ./meu-preset</code>, <code>specify preset resolve &lt;arquivo&gt;</code>, gere um artefato e remova com <code>specify preset remove &lt;id&gt;</code>.</li>
+    <li>Atualize versão e changelog; crie uma tag como <code>v1.0.0</code> e envie ao seu repositório.</li>
+    <li>Instale pelo arquivo publicado, para testar o pacote que outras pessoas vão receber: <code>specify preset add --from https://github.com/ORG/REPO/archive/refs/tags/v1.0.0.zip</code>.</li>
+  </ol>
+
+  <h2>README que serve ao usuário</h2>
+  <p>Explique o que o preset fornece, quando usar (e quando não usar), requisitos e limitações. A documentação no catálogo deve apontar para um README GitHub alcançável cujo URL termina em <code>README.md</code>. Inclua nele um comando válido <code>specify preset add ...</code>; prefira o mesmo <code>--from</code> usado em <code>download_url</code>.</p>
+
+  <h2>Submissão comunitária</h2>
+  <ol>
+    <li>Faça fork de <code>github/spec-kit</code> e crie uma branch.</li>
+    <li>Inclua a entrada em <code>presets/catalog.community.json</code>, ordenada por ID.</li>
+    <li>Inclua a linha em <code>docs/community/presets.md</code>, ordenada pelo nome exibido.</li>
+    <li>Confira versão, URL de download, URL de documentação, licença, requisitos, contagens de arquivos e tags.</li>
+    <li>Abra o PR, preencha a checklist vigente e responda à validação/revisão dos mantenedores.</li>
+  </ol>
+
+  <div class="panel">
+    <strong>O que cada canal significa</strong>
+    <p><strong>Seu repositório + release:</strong> origem pública e instalação direta. <strong>Catálogo comunitário:</strong> descoberta; o preset continua hospedado por você. A listagem não substitui revisão do código por quem instala e não é endosso de segurança.</p>
+  </div>
+
+  <h2>Atualizar uma versão existente</h2>
+  <p>Altere a versão em <code>preset.yml</code>, registre a mudança no changelog, publique uma nova tag, teste seu ZIP e abra PR para atualizar <code>version</code> e <code>download_url</code> no catálogo. Não reutilize tags para conteúdo diferente.</p>
+
+  <p><a href="../lessons/0027-publicar-preset-spec-kit.html">Aula detalhada: publicar um preset</a> · <a href="./spec-kit-presets.html">Referência: funcionamento dos presets</a></p>
+  <p class="small">Fonte primária: <a href="https://github.com/github/spec-kit/blob/main/presets/PUBLISHING.md">Preset Publishing Guide</a>. Confirme o fluxo vigente no repositório antes de submeter.</p>
+</main>
+</body>
+</html>

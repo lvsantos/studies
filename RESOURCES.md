@@ -35,7 +35,7 @@
 - [Preset scaffold](https://github.com/github/spec-kit/tree/main/presets/scaffold)
   Molde oficial para desenvolver presets; deve ser copiado e personalizado (o ID inicial e `my-preset`), nao tratado como pacote pronto chamado `scaffold`.
 - [Preset publishing guide](https://github.com/github/spec-kit/blob/main/presets/PUBLISHING.md)
-  Guia oficial para validar a estrutura do preset, testá-lo localmente com `--dev`, preparar README/licença/release e submetê-lo ao catálogo da comunidade.
+  Guia oficial para validar a estrutura do preset, testá-lo localmente com `--dev`, preparar README/licença/release e submetê-lo ao catálogo da comunidade. A edição consultada em 2026-09-26 exige README específico acessível com um comando `specify preset add ...`; a submissão comunitária atualiza `presets/catalog.community.json` (ordem por ID) e `docs/community/presets.md` (ordem por nome), via PR. O preset permanece hospedado no repositório do autor.
 - [Preset self-test](https://github.com/github/spec-kit/tree/main/presets/self-test)
   Manifest, templates e comandos marcados usados como fixture para verificar substituicao e composicao; nao e um workflow recomendado para produto.
 - [Spec Kit Pirate Speak preset demo](https://github.com/mnriem/spec-kit-pirate-speak-preset-demo)

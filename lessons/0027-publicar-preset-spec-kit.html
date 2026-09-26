@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 27 · Publicar um preset do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 27 · 18 minutos</p>
+  <h1>Publicar um preset: do seu repositório ao catálogo comunitário</h1>
+  <p class="lede">Vitória de hoje: conseguir empacotar um preset para instalação reproduzível e distinguir publicar no seu GitHub de submetê-lo para descoberta no Spec Kit.</p>
+
+  <div class="panel">
+    <strong>A diferença que organiza o fluxo</strong>
+    <p>O repositório próprio é a <strong>origem do pacote</strong>: guarda manifest, templates, comandos, documentação e releases. O catálogo comunitário do Spec Kit é uma <strong>vitrine de descoberta</strong>: aponta para essa origem e permite que as pessoas encontrem o preset com <code>specify preset search</code>.</p>
+    <p>São etapas separadas. Um preset pode estar publicado e instalável pelo seu URL de release sem aparecer no catálogo. E aparecer no catálogo não significa que os mantenedores auditaram ou endossaram seu conteúdo.</p>
+  </div>
+
+  <h2>1. Use o preset da lição anterior como pacote</h2>
+  <p>Na <a href="./0026-criar-preset-proprio-spec-kit.html">lição 26</a>, criamos <code>security-review</code>, que acrescenta uma revisão de segurança ao template de plano. Vamos supor que os testes passaram e que o pacote será mantido em <code>https://github.com/acme/spec-kit-security-review</code>. O nome é ilustrativo; substitua organização, URL, ID e versão pelos seus.</p>
+  <p>Uma estrutura simples de repositório fica assim:</p>
+  <pre><code>spec-kit-security-review/
+├── preset.yml
+├── README.md
+├── LICENSE
+├── CHANGELOG.md          # recomendado
+└── templates/
+    └── plan-security-addendum.md</code></pre>
+  <p>Em um monorepo, os arquivos podem morar numa subpasta, como <code>presets/security-review/</code>. O importante é que <code>preset.yml</code> e os caminhos declarados nele estejam dentro da raiz do pacote que será instalado, e que a URL <code>documentation</code> leve ao README específico desse preset.</p>
+
+  <h2>2. Prepare o repositório próprio</h2>
+  <p>Antes de publicar, trate o preset como um produto pequeno, não como uma pasta que por acaso funciona na sua máquina:</p>
+  <ol>
+    <li><strong>Manifesto:</strong> mantenha <code>preset.yml</code> válido; use ID único em minúsculas e hífens, versão SemVer como <code>1.0.0</code>, descrição concisa, URL pública do repositório, licença e requisito mínimo do Spec Kit.</li>
+    <li><strong>Arquivos fornecidos:</strong> confira cada caminho em <code>provides.templates</code> e <code>provides.commands</code>; remova exemplos do scaffold que não pertencem ao produto.</li>
+    <li><strong>Dependências:</strong> se um comando substituído depende de uma extensão, declare-a em <code>requires.extensions</code>. Sem essa declaração, o preset ainda pode instalar e a instrução que depende dela simplesmente não produzir o efeito esperado.</li>
+    <li><strong>README:</strong> explique o que o preset fornece, quando usar e quando não usar, requisitos, limitações e como instalar. O README deve documentar <em>este preset</em>, não apenas apresentar um framework maior.</li>
+    <li><strong>Licença e histórico:</strong> inclua <code>LICENSE</code>; mantenha <code>CHANGELOG.md</code> para registrar mudanças por versão.</li>
+  </ol>
+  <p>Para uma submissão comunitária, o README ligado no catálogo precisa ser uma página GitHub legível cujo caminho termine em <code>README.md</code> e conter pelo menos um comando <code>specify preset add ...</code>. Em monorepo, use o README dentro da pasta do preset, não o README de marketing na raiz.</p>
+
+  <h2>3. Teste a pasta e o artefato real</h2>
+  <p>Use um projeto de laboratório já inicializado com <code>specify init</code>. O modo <code>--dev</code> instala a pasta local e testa o desenvolvimento; não publica nada:</p>
+  <pre><code>specify preset add --dev ../spec-kit-security-review
+specify preset info security-review
+specify preset list
+specify preset resolve plan-template
+specify preset remove security-review</code></pre>
+  <p>Não pare em <code>resolve</code>. Gere ou atualize um plano com o agente e verifique se a seção de segurança realmente aparece, se o restante do plano foi preservado e se comandos substituídos (se houver) foram materializados no diretório do agente ativo. Repita em outro agente quando você declarar compatibilidade com ele. Remova o preset ao final para não contaminar o projeto de teste.</p>
+  <p>A checagem que pode reprovar a hipótese de “está pronto” é direta: se a versão instalada do ZIP não produz o comportamento observado com <code>--dev</code>, ainda não publique; primeiro descubra se o problema está no manifest, nos caminhos, no empacotamento ou no README.</p>
+
+  <h2>4. Crie uma versão instalável no seu GitHub</h2>
+  <p>O valor em <code>preset.yml</code> é <code>1.0.0</code>; a tag normalmente é <code>v1.0.0</code>. Atualize manifesto e changelog antes de marcar a release:</p>
+  <pre><code>git add preset.yml CHANGELOG.md README.md LICENSE templates/
+git commit -m "Release security-review 1.0.0"
+git tag v1.0.0
+git push origin main --tags</code></pre>
+  <p>Com a tag no GitHub, o arquivo-fonte compactado fica disponível neste formato:</p>
+  <pre><code>https://github.com/acme/spec-kit-security-review/archive/refs/tags/v1.0.0.zip</code></pre>
+  <p>Faça o último teste usando essa URL exata, não apenas a pasta local:</p>
+  <pre><code>specify preset add --from \
+  https://github.com/acme/spec-kit-security-review/archive/refs/tags/v1.0.0.zip
+specify preset resolve plan-template
+specify preset remove security-review</code></pre>
+  <p>O teste de arquivo detecta problemas que o modo <code>--dev</code> pode esconder, como uma release que não contém o diretório esperado ou README que aponta para outra versão. Use esse mesmo comando no README, assim quem lê já consegue instalar a versão publicada.</p>
+
+  <h2>5. Se quiser, publique somente no seu repositório</h2>
+  <p>Essa etapa já permite compartilhar: mantenha o repositório público, publique releases com tags e dê aos usuários a URL de instalação <code>--from</code>. Não é necessário alterar o Spec Kit nem esperar inclusão em catálogo. É uma boa opção para:</p>
+  <ul>
+    <li>um preset da equipe cuja descoberta será feita pela documentação interna;</li>
+    <li>uma primeira versão pública que você ainda quer observar com usuários;</li>
+    <li>uma distribuição controlada por link direto.</li>
+  </ul>
+  <p>Se várias equipes vão instalar pelo catálogo interno de uma organização, o repositório do preset continua sendo a origem; o catálogo organizacional é outra camada de distribuição. A lição 19 sobre extensões explica a diferença entre URL direta e catálogo. Para presets, siga os comandos e o modelo de catálogo próprios descritos no <a href="https://github.com/github/spec-kit/blob/main/presets/PUBLISHING.md">guia de publicação</a>.</p>
+
+  <h2>6. Submeta para descoberta no catálogo da comunidade</h2>
+  <p>Para aparecer na busca comunitária, contribua para o repositório <code>github/spec-kit</code>. O guia oficial descreve uma mudança de catálogo por pull request, não a publicação do pacote dentro do repositório do Spec Kit:</p>
+  <ol>
+    <li><strong>Faça fork e clone</strong> de <code>github/spec-kit</code>; crie uma branch para a submissão.</li>
+    <li><strong>Edite <code>presets/catalog.community.json</code></strong>: insira a entrada dentro de <code>presets</code>, ordenada alfabeticamente pelo <em>ID</em> do preset.</li>
+    <li><strong>Edite <code>docs/community/presets.md</code></strong>: acrescente uma linha à tabela comunitária, ordenada alfabeticamente pelo <em>nome exibido</em>.</li>
+    <li><strong>Abra um PR</strong> com as duas mudanças e preencha a descrição/checklist pedida pelo guia e pelo repositório.</li>
+    <li><strong>Acompanhe validação e revisão:</strong> corrija metadados, README, compatibilidade e problemas encontrados. A entrada só passa a ser apresentada como verificada depois da validação e aprovação previstas pelo projeto.</li>
+  </ol>
+  <p>Uma entrada reduzida tem esta forma. Conte os arquivos fornecidos a partir do pacote real e mantenha as datas/URLs coerentes com a release:</p>
+  <pre><code>{
+  "security-review": {
+    "name": "Security Review",
+    "id": "security-review",
+    "version": "1.0.0",
+    "description": "Adds a security review to feature plans",
+    "author": "Acme Engineering",
+    "repository": "https://github.com/acme/spec-kit-security-review",
+    "download_url": "https://github.com/acme/spec-kit-security-review/archive/refs/tags/v1.0.0.zip",
+    "documentation": "https://github.com/acme/spec-kit-security-review/blob/v1.0.0/README.md",
+    "license": "MIT",
+    "requires": { "speckit_version": ">=0.1.0" },
+    "provides": { "templates": 1, "commands": 0 },
+    "tags": ["security", "planning"]
+  }
+}</code></pre>
+  <p>O hash SHA-256 é opcional no formato descrito pelo guia, mas pode ser incluído quando calculado para exatamente o arquivo indicado em <code>download_url</code>. Não copie contagens, versão, link de README ou hash de outro preset. Os links de documentação devem ser acessíveis antes do download.</p>
+
+  <h2>7. O que a revisão comunitária verifica</h2>
+  <p>Espere análise do manifesto e dos arquivos, qualidade dos templates, coerência entre comandos e seções, segurança de conteúdo/operações e documentação. A validação automatizada consegue conferir itens objetivos, incluindo README alcançável e existência de comando de instalação; pessoas ainda avaliam se o material realmente descreve aquele preset e se faz sentido para usuários.</p>
+  <p>O guia menciona que uma automação é acionada após a triagem aplicar o rótulo <code>preset-submission</code> a um issue. Se a contribuição ficar aguardando essa triagem, isso não significa que você possa aplicar o rótulo ou que precise insistir nele: siga o estado e as instruções do processo atual dos mantenedores.</p>
+  <p>O catálogo comunitário é principalmente para descoberta. Não trate a presença de metadados, a listagem em <code>specify preset search</code> ou o rótulo de verificação como garantia de segurança para qualquer ambiente. Leia o código e a documentação antes de instalar, conforme a <a href="https://github.github.io/spec-kit/community/presets.html">orientação de presets comunitários</a>.</p>
+
+  <h2>8. Atualize sem quebrar quem já instalou</h2>
+  <p>Para cada nova versão, atualize o campo <code>version</code> em <code>preset.yml</code> e o <code>CHANGELOG.md</code>, crie e envie uma nova tag, teste o novo arquivo compactado e abra um PR para atualizar <code>version</code> e <code>download_url</code> no catálogo comunitário. O repositório do preset e o catálogo são duas fontes de informação: atualizar só uma deixa a descoberta apontando para uma versão antiga.</p>
+  <p>Uma alteração incompatível merece nova versão principal SemVer; correção compatível incrementa a versão de patch. Nunca reutilize uma tag já publicada para conteúdo diferente: a URL precisa identificar o artefato que foi revisado.</p>
+
+  <h2>9. Pratique: qual é o próximo passo?</h2>
+  <p>Você já publicou <code>security-review</code> como release no seu GitHub. Uma colega instalou com <code>--from</code>, mas o preset não aparece em <code>specify preset search</code>. O que falta para a busca comunitária conhecê-lo?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar uma resposta possível</button>
+  <div id="answer" class="answer panel">
+    <p><strong>A submissão ao repositório do Spec Kit:</strong> adicionar a entrada ordenada ao <code>presets/catalog.community.json</code>, adicionar a linha à tabela em <code>docs/community/presets.md</code> e abrir o PR para revisão. O pacote continua hospedado no seu repositório. Até a inclusão, o URL da release continua sendo o caminho de instalação direta.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária recomendada</strong>
+    <p>Siga o <a href="https://github.com/github/spec-kit/blob/main/presets/PUBLISHING.md">Preset Publishing Guide</a> para estrutura, release, README, catálogo e revisão. Compare com o <a href="https://github.com/github/spec-kit/blob/main/presets/catalog.community.json">catálogo comunitário atual</a> e a <a href="https://github.github.io/spec-kit/community/presets.html">página oficial de presets comunitários</a>; metadados e validações podem mudar.</p>
+  </div>
+
+  <p><a href="./0026-criar-preset-proprio-spec-kit.html">Lição anterior: criar um preset</a> · <a href="./0019-publicar-extensao-do-spec-kit.html">Comparar com publicação de extensão</a> · <a href="../reference/spec-kit-preset-publishing.html">Checklist rápido de publicação</a></p>
+  <footer>Traga o seu <code>preset.yml</code>, README e URL da release para revisar o pacote antes de submeter. Se a diferença entre catálogo do autor, catálogo comunitário e instalação direta ainda estiver confusa, pergunte ao professor e percorremos o fluxo com seus próprios links.</footer>
+</main>
+</body>
+</html>
