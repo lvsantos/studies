@@ -57,6 +57,17 @@ specify preset remove &lt;preset-id&gt;</code></pre>
     <p>Regra compartilhada entre projetos → preset. Ajuste de um projeto → override local. Comportamento novo ou integração externa → extensão.</p>
   </div>
 
+  <h2>Criar um preset próprio</h2>
+  <ol>
+    <li>Defina a convenção compartilhada e o resultado observável.</li>
+    <li>Escolha template (estrutura do documento), command (instruções do agente) ou extensão (capacidade/integração nova).</li>
+    <li>Copie <code>presets/scaffold</code>, personalize o ID e metadados do <code>preset.yml</code>, remova exemplos irrelevantes e escreva só os arquivos necessários.</li>
+    <li>Prefira <code>append</code> para acrescentar conteúdo sem substituir o template central; use <code>replace</code> quando pretende ser dono do arquivo inteiro.</li>
+    <li>Em projeto de laboratório com <code>specify init</code>, instale com <code>specify preset add --dev ./meu-preset</code>, confira <code>specify preset resolve plan-template</code>, gere um artefato real e depois remova o preset.</li>
+    <li>Para compartilhar: README específico, licença, versão SemVer, arquivos revisados e instruções do <a href="https://github.com/github/spec-kit/blob/main/presets/PUBLISHING.md">guia de publicação</a>.</li>
+  </ol>
+  <p><a href="../lessons/0026-criar-preset-proprio-spec-kit.html">Aula prática: criar um preset de revisão de segurança</a> · <a href="../lessons/0024-scaffold-presets-spec-kit.html">Aula: scaffold oficial</a></p>
+
   <h2>Quatro presets oficiais para reconhecer</h2>
   <div class="table-scroll"><table>
     <thead><tr><th>Preset</th><th>Resolve</th><th>Nota de uso</th></tr></thead>
@@ -68,7 +79,7 @@ specify preset remove &lt;preset-id&gt;</code></pre>
     </tbody>
   </table></div>
 
-  <p><a href="../lessons/0020-presets-do-spec-kit.html">Aula: presets do Spec Kit</a> · <a href="../lessons/0011-customizar-o-spec-kit.html">Aula: customizar o Spec Kit</a> · <a href="../lessons/0022-constitution-sync-spec-kit.html">Constitution sync</a> · <a href="../lessons/0023-lean-spec-kit.html">Lean</a> · <a href="../lessons/0024-scaffold-presets-spec-kit.html">Scaffold</a> · <a href="../lessons/0025-self-test-spec-kit.html">Self-test</a></p>
+  <p><a href="../lessons/0020-presets-do-spec-kit.html">Aula: presets do Spec Kit</a> · <a href="../lessons/0011-customizar-o-spec-kit.html">Aula: customizar o Spec Kit</a> · <a href="../lessons/0022-constitution-sync-spec-kit.html">Constitution sync</a> · <a href="../lessons/0023-lean-spec-kit.html">Lean</a> · <a href="../lessons/0024-scaffold-presets-spec-kit.html">Scaffold</a> · <a href="../lessons/0026-criar-preset-proprio-spec-kit.html">Criar preset</a> · <a href="../lessons/0025-self-test-spec-kit.html">Self-test</a></p>
   <p class="small">Fontes: <a href="https://github.github.io/spec-kit/reference/presets.html">referência oficial</a> · <a href="https://github.github.io/spec-kit/guides/customization.html#presets-change-how-a-process-works">guia de customização</a>.</p>
 </main>
 </body>

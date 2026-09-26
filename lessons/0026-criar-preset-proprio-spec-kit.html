@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 26 · Criar um preset próprio no Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 26 · 12 minutos</p>
+  <h1>Do scaffold ao seu primeiro preset</h1>
+  <p class="lede">Vitória de hoje: transformar uma regra recorrente da equipe em um pacote instalável, testar se ela realmente afeta o artefato e saber quando o scaffold oficial economiza trabalho.</p>
+
+  <div class="panel">
+    <strong>O exemplo da aula</strong>
+    <p>Uma equipe quer que todo plano de feature registre riscos de segurança e uma mitigação. Vamos acrescentar essa seção ao fim do template de plano. Como a regra muda a estrutura do documento, começaremos com um <strong>template</strong>, sem substituir nem reescrever o comando central.</p>
+    <p>Um preset é adequado porque adapta um processo existente. Se a regra exigisse executar um scanner, abrir um ticket ou introduzir uma nova etapa automática, o próximo candidato seria uma extensão.</p>
+  </div>
+
+  <h2>1. Defina a regra antes dos arquivos</h2>
+  <p>Escreva uma frase que permita testar o resultado: “Todo plano deve terminar com uma revisão de segurança que liste riscos, mitigação e itens não aplicáveis com justificativa.” Essa frase determina o que o preset fornece e como vamos verificar que funcionou.</p>
+  <ol>
+    <li><strong>É repetível entre projetos?</strong> Se só vale para um repositório, use um override local.</li>
+    <li><strong>O Spec Kit já executa o processo?</strong> Se sim e você quer mudar formato ou instruções, use um preset.</li>
+    <li><strong>Precisa de capacidade ou integração nova?</strong> Isso aponta para uma extensão, não para um preset.</li>
+  </ol>
+  <p>A <a href="https://github.github.io/spec-kit/guides/customization.html">decisão oficial de customização</a> separa essas opções pelo trabalho que a mudança realiza, não pelo tamanho do pacote.</p>
+
+  <h2>2. O que o scaffold oferece</h2>
+  <p>O <a href="https://github.com/github/spec-kit/tree/main/presets/scaffold">scaffold oficial</a> é um diretório de partida, não um preset de produto pronto chamado <code>scaffold</code>. Seu manifest começa com o ID <code>my-preset</code>. Você copia a pasta, troca os metadados e mantém apenas os arquivos que fazem sentido.</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Sem scaffold</th><th>Com scaffold</th></tr></thead>
+    <tbody>
+      <tr><td>Pesquisar o formato do manifest, os caminhos e os nomes resolvidos.</td><td>Partir de um <code>preset.yml</code> comentado e uma estrutura já reconhecida.</td></tr>
+      <tr><td>Inventar e conferir a organização de templates e comandos.</td><td>Usar exemplos de template, comando, substituição e composição como referência.</td></tr>
+      <tr><td>Montar do zero o ciclo de teste local.</td><td>Seguir a receita com <code>--dev</code>, <code>resolve</code> e remoção.</td></tr>
+      <tr><td>Você decide o escopo, compatibilidade e como provar que a regra funciona.</td><td>Essas decisões continuam suas; o molde não valida a qualidade nem publica o preset.</td></tr>
+    </tbody>
+  </table></div>
+  <p>O molde traz exemplos ilustrativos ligados a uma extensão chamada <code>myext</code>. Eles não significam que essa extensão esteja instalada: remova as entradas e os arquivos que não fazem parte do seu caso. O scaffold economiza estrutura e sintaxe; não substitui o desenho da regra, os testes ou a revisão.</p>
+
+  <h2>3. Copie e dê identidade ao pacote</h2>
+  <p>Faça isso a partir do checkout do repositório oficial. O projeto em que você instalar o preset para testá-lo precisa já ter sido iniciado com <code>specify init</code>.</p>
+  <pre><code>cp -r presets/scaffold security-review
+# Edite security-review/preset.yml e remova os exemplos que nao usara
+# Edite ou crie os arquivos em security-review/templates/ e commands/</code></pre>
+  <p>Troque o ID <code>my-preset</code> por um ID único em minúsculas e hífens, por exemplo <code>security-review</code>. Atualize nome, descrição, versão semântica, autor, repositório, licença, versão mínima do Spec Kit e tags. O ID do manifest é o que será usado para remover o preset; ele não precisa ser igual ao nome da pasta.</p>
+
+  <h2>4. Declare o template no manifest</h2>
+  <p>Para uma seção adicional, a estratégia <code>append</code> preserva o template de plano de menor prioridade e acrescenta o arquivo do preset ao final. O exemplo abaixo mostra os metadados relevantes e uma única entrada em <code>provides.templates</code>:</p>
+  <pre><code>schema_version: "1.0"
+
+preset:
+  id: "security-review"
+  name: "Security Review"
+  version: "0.1.0"
+  description: "Adds a security review to feature plans"
+  author: "Your Team"
+  repository: "https://github.com/your-org/security-review"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.1.0"
+
+provides:
+  templates:
+    - type: "template"
+      name: "plan-template"
+      file: "templates/plan-security-addendum.md"
+      description: "Appends security review prompts to plans"
+      replaces: "plan-template"
+      strategy: "append"
+
+tags:
+  - "security"
+  - "planning"</code></pre>
+  <p><code>name</code> identifica o item na pilha de resolução; <code>file</code> aponta para o conteúdo que vamos criar; <code>replaces</code> documenta o template afetado; e <code>strategy</code> escolhe a composição. Em <code>replace</code>, o arquivo substituiria todo o plano. Aqui escolhemos <code>append</code> para preservar as seções centrais. Os tipos de item, campos e marcadores são detalhados no <a href="https://github.com/github/spec-kit/blob/main/presets/scaffold/preset.yml">manifest de exemplo</a>.</p>
+
+  <h2>5. Escreva o conteúdo e mantenha o escopo pequeno</h2>
+  <p>Crie <code>security-review/templates/plan-security-addendum.md</code> com a parte reutilizável da regra. Um template precisa dar forma à saída e deixar claro o que o agente deve preencher:</p>
+  <pre><code>## Security Review
+
+For each relevant risk, record the affected asset or boundary,
+the threat, and a mitigation or verification step.
+
+| Risk or asset | Threat | Mitigation or verification |
+|---------------|--------|----------------------------|
+| [Fill in]     | [Fill in] | [Fill in] |
+
+If no security-relevant change is identified, explain why this
+review is not applicable.</code></pre>
+  <p>Por enquanto, não crie um override de <code>speckit.plan</code>: o ganho esperado é apenas uma seção consistente no artefato. Adicione um comando ao preset somente se o agente precisar de instruções de trabalho diferentes que o template, sozinho, não consegue expressar.</p>
+
+  <h2>6. Instale em desenvolvimento e teste o efeito</h2>
+  <p>Em um projeto de laboratório inicializado com Spec Kit, execute:</p>
+  <pre><code>specify preset add --dev ./caminho/para/security-review
+specify preset list
+specify preset resolve plan-template</code></pre>
+  <p>Confirme que o preset aparece na lista e que <code>resolve</code> mostra o arquivo aditivo na pilha. Depois peça ao agente ativo que gere ou atualize um plano real e confira três coisas:</p>
+  <ol>
+    <li>A seção <code>Security Review</code> aparece no plano final.</li>
+    <li>As seções centrais do plano continuam presentes.</li>
+    <li>Quando não há risco relevante, há uma justificativa, não um campo silenciosamente vazio.</li>
+  </ol>
+  <p>Se a seção não aparecer, confira primeiro o nome resolvido, a presença do arquivo indicado em <code>file</code> e o uso de <code>append</code>. Se <code>resolve</code> aponta para o preset mas o plano gerado não tem a seção, investigue se o agente usou o comando/template efetivo esperado. Ao terminar o teste:</p>
+  <pre><code>specify preset remove security-review</code></pre>
+  <p>Essa verificação é o teste que decide a hipótese da aula: se o template aditivo aparecer e sobreviver no plano gerado, não foi necessário criar um comando próprio para esta regra. O comando <code>--dev</code> serve para experimentar a pasta local; não é publicação nem validação completa do pacote.</p>
+
+  <h2>7. Quando estiver pronto para compartilhar</h2>
+  <p>Antes de publicar, faça o pacote caber no que ele promete: retire exemplos alheios, revise se todos os arquivos declarados existem e registre apenas os templates/comandos realmente fornecidos. Escreva um <code>README.md</code> específico para o preset, inclua uma licença e explique o uso, os casos adequados e as limitações. Versione em SemVer e teste de novo com <code>--dev</code>.</p>
+  <p>O <a href="https://github.com/github/spec-kit/blob/main/presets/PUBLISHING.md">guia oficial de publicação</a> cobre release, README com comando de instalação e submissão ao catálogo da comunidade. A entrada no catálogo ajuda na descoberta; não é uma auditoria de segurança do código do preset.</p>
+
+  <h2>8. Pratique: template ou comando?</h2>
+  <p>O preset já acrescenta a seção de segurança, mas o time agora exige que o agente sempre consulte uma política interna e registre como essa política afetou o plano. O que você investigaria primeiro: mudar apenas o template, adicionar instruções ao comando, ou criar uma extensão? Responda antes de revelar.</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar uma resposta possível</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Provavelmente ajustar o comando do fluxo de plano</strong>, se a consulta à política for uma instrução que o agente consegue seguir com os arquivos disponíveis. O template pode reservar lugar para a conclusão, mas não garante que o agente consulte a fonte. Se a consulta precisar de automação, credenciais ou integração externa, desenhe uma extensão. Teste primeiro a opção menor.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária recomendada</strong>
+    <p>Leia o <a href="https://github.com/github/spec-kit/tree/main/presets/scaffold">diretório do scaffold oficial</a> junto com o <a href="https://github.github.io/spec-kit/reference/presets.html">guia de resolução e composição de presets</a>. Para compartilhar com outras pessoas, siga o <a href="https://github.com/github/spec-kit/blob/main/presets/PUBLISHING.md">guia de publicação</a>.</p>
+  </div>
+
+  <p><a href="./0024-scaffold-presets-spec-kit.html">Revisar o scaffold</a> · <a href="./0020-presets-do-spec-kit.html">Revisar como presets funcionam</a> · <a href="../reference/spec-kit-presets.html">Referência rápida de presets</a></p>
+  <footer>Se algo ficar pouco claro, pergunte ao professor. Você pode trazer seu <code>preset.yml</code>, a saída de <code>specify preset resolve</code> e o trecho do plano gerado para revisar o comportamento junto.</footer>
+</main>
+</body>
+</html>
