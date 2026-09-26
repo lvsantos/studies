@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 21 · Presets da comunidade do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 21 · 8 minutos</p>
+  <h1>Preset comunitário: descubra, revise, só então instale</h1>
+  <p class="lede">Vitória de hoje: encontrar um preset que resolva uma necessidade do seu fluxo com Copilot e verificar o que ele altera antes de ativá-lo.</p>
+
+  <div class="panel">
+    <strong>O catálogo é uma vitrine, não um selo de segurança</strong>
+    <p>O catálogo comunitário ajuda a encontrar presets e exibe metadados e links. Os autores mantêm os pacotes; os mantenedores do Spec Kit verificam se as entradas estão completas e bem formatadas, mas não revisam, auditam, endossam nem dão suporte ao código.</p>
+    <p>Portanto, <strong>estar no catálogo não significa estar aprovado</strong>. A decisão de instalar continua sendo sua ou da equipe.</p>
+  </div>
+
+  <h2>1. Comece pela necessidade</h2>
+  <p>Um preset adapta templates ou comandos de um processo existente. Antes de pesquisar, diga qual parte repetitiva você quer mudar. Se precisa acrescentar uma capacidade ou integração nova, volte à distinção entre <a href="./0020-presets-do-spec-kit.html">preset, extensão e override</a>.</p>
+  <p>Como exemplo ligado ao seu uso do Copilot, o catálogo lista <code>vscode-ask-questions</code>: ele modifica o comando de esclarecimento para usar o seletor de perguntas do VS Code. É uma opção para avaliar se essa interação resolve um problema recorrente; não é a extensão <code>agent-context</code> e não faz a sincronização de instruções descrita em <a href="../learning-records/0013-exemplo-agent-context-com-copilot.md">seu exemplo de agent-context</a>.</p>
+
+  <h2>2. Pesquise e identifique a origem</h2>
+  <p>Em um projeto já inicializado com <code>specify init</code>, confira os catálogos ativos e pesquise por uma palavra do problema ou por uma tag:</p>
+  <pre><code>specify preset catalog list
+specify preset search "vscode"
+specify preset search --tag clarify
+specify preset info vscode-ask-questions</code></pre>
+  <p><code>search</code> consulta os catálogos ativos, normalmente o oficial e o comunitário. <code>info</code> mostra detalhes e metadados; nenhum dos comandos é uma auditoria de segurança. Confirme em qual catálogo e repositório está o preset, quem o mantém e qual versão está sendo oferecida.</p>
+
+  <h2>3. Faça uma revisão curta, mas concreta</h2>
+  <ol>
+    <li><strong>Objetivo:</strong> o que muda e isso resolve sua necessidade real?</li>
+    <li><strong>Compatibilidade:</strong> confira a versão mínima do Spec Kit e extensões exigidas.</li>
+    <li><strong>Escopo:</strong> veja quantos templates, comandos e scripts são fornecidos; abra os arquivos correspondentes no repositório ou pacote da versão listada.</li>
+    <li><strong>Origem:</strong> procure README, licença, histórico de versões e release. Se houver hash no catálogo, compare-o com o arquivo baixado.</li>
+    <li><strong>Impacto:</strong> identifique instruções, scripts e comandos que podem alterar o fluxo. Teste primeiro numa branch ou cópia descartável.</li>
+  </ol>
+  <p>A ficha do catálogo é só o começo: para entender o comportamento, leia os arquivos do preset. A página também deixa claro que o conteúdo é mantido por terceiros; contacte o autor para problemas do pacote.</p>
+
+  <h2>4. Instale e confira o efeito</h2>
+  <p>Depois da revisão, instale pelo ID encontrado. O número menor de prioridade ganha quando há conflito entre presets; mantenha o padrão se não tiver motivo para alterar a ordem.</p>
+  <pre><code>specify preset add vscode-ask-questions
+specify preset list
+specify preset resolve speckit.clarify</code></pre>
+  <p>Compare o resultado de <code>resolve</code> com o fluxo anterior e revise os arquivos modificados na integração do agente. Para desfazer completamente, use <code>specify preset remove vscode-ask-questions</code>. Atenção: <code>disable</code> não remove comandos já registrados no agente; para retirar esses comandos, use <code>remove</code>.</p>
+
+  <h2>5. Pratique: o que o catálogo verificou?</h2>
+  <p>Você encontra um preset comunitário no catálogo e vê que a entrada está completa, com versão, autor e link para o repositório. O que isso prova sobre o código?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Nada sobre a segurança ou qualidade do código.</strong> A verificação descrita pelos mantenedores cobre completude e formato da entrada. Ainda é preciso revisar origem, requisitos e arquivos do pacote antes de instalar.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Comece pela página <a href="https://github.github.io/spec-kit/community/presets.html">Community Presets</a> e pelo <a href="https://github.github.io/spec-kit/reference/presets.html">guia de comandos e resolução</a>. Confira a lista first-party em <a href="https://github.com/github/spec-kit/blob/main/presets/catalog.json">catalog.json</a> e a lista da comunidade em <a href="https://github.com/github/spec-kit/blob/main/presets/catalog.community.json">catalog.community.json</a>.</p>
+  </div>
+
+  <p><a href="./0020-presets-do-spec-kit.html">Lição 20: como presets funcionam</a> · <a href="./0016-extensao-agent-context-do-spec-kit.html">Lição 16: agent-context</a> · <a href="../reference/spec-kit-community-presets.html">Referência rápida: presets comunitários</a></p>
+  <footer>O professor pode ajudar a comparar dois presets e revisar os arquivos que eles alteram. Traga o ID do preset, o repositório e a necessidade que você quer resolver.</footer>
+</main>
+</body>
+</html>

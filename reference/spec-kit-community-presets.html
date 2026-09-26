@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Presets comunitários do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>Presets comunitários</h1>
+  <p class="lede">Pesquise no catálogo, confira o pacote na origem e valide o efeito depois da instalação. A presença no catálogo não é auditoria nem endosso.</p>
+
+  <h2>Fluxo de descoberta</h2>
+  <pre><code>specify preset catalog list
+specify preset search [query]
+specify preset search --tag &lt;tag&gt;
+specify preset search --author &lt;author&gt;
+specify preset info &lt;preset-id&gt;</code></pre>
+  <p>O fluxo requer um projeto inicializado. A busca consulta os catálogos ativos; use <code>catalog list</code> para conferir nomes, prioridades e permissão de instalação.</p>
+
+  <h2>Revisão antes de instalar</h2>
+  <ul>
+    <li>Leia propósito, README e requisitos de versão/extensões.</li>
+    <li>Confira autor, repositório, licença, release e histórico.</li>
+    <li>Conte e inspecione templates, comandos e scripts que o preset fornece.</li>
+    <li>Compare o pacote com a origem da versão indicada; valide o SHA-256 quando disponível.</li>
+    <li>Teste em branch ou projeto descartável e revise o diff.</li>
+  </ul>
+  <p>Os mantenedores verificam completude e formato dos metadados no catálogo, não o código do preset.</p>
+
+  <h2>Instalação e verificação</h2>
+  <pre><code>specify preset add &lt;preset-id&gt;
+specify preset list
+specify preset resolve &lt;nome-do-arquivo-ou-comando&gt;
+specify preset remove &lt;preset-id&gt;</code></pre>
+  <p>Exemplo do catálogo: <code>vscode-ask-questions</code> afeta o comando de esclarecimento para VS Code. Confirme seu conteúdo no repositório antes de instalar. Para remover arquivos e comandos registrados, use <code>remove</code>; <code>disable</code> não retira os comandos já registrados no agente.</p>
+
+  <h2>First-party/bundled</h2>
+  <ul>
+    <li><code>lean</code>: comandos de workflow mais minimalistas.</li>
+    <li><code>constitution-sync</code>: propagação opt-in da constituição para artefatos materializados, com implicações de drift.</li>
+  </ul>
+  <p>Lista oficial: <a href="https://github.com/github/spec-kit/blob/main/presets/catalog.json">presets/catalog.json</a>. Lista comunitária: <a href="https://github.com/github/spec-kit/blob/main/presets/catalog.community.json">presets/catalog.community.json</a>.</p>
+
+  <p class="small">Os dois itens first-party listados foram conferidos em 26/09/2026; a lista pode mudar.</p>
+  <p><a href="../lessons/0021-presets-da-comunidade-do-spec-kit.html">Aula: presets da comunidade</a> · <a href="../lessons/0020-presets-do-spec-kit.html">Aula: presets do Spec Kit</a></p>
+  <p class="small">Referências: <a href="https://github.github.io/spec-kit/community/presets.html">Community Presets</a> · <a href="https://github.github.io/spec-kit/reference/presets.html">Preset reference</a> · <a href="https://github.com/github/spec-kit/blob/main/presets/README.md">README oficial de presets</a>.</p>
+</main>
+</body>
+</html>

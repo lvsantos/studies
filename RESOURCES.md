@@ -20,6 +20,14 @@
   Fonte primaria para escolher entre extensoes, presets, overrides locais, workflows e bundles ao adaptar o Spec Kit.
 - [Spec Kit presets reference](https://github.github.io/spec-kit/reference/presets.html)
   Referencia primaria para instalar e administrar presets, inspecionar arquivos resolvidos, entender precedencia e aplicar estrategias de composicao.
+- [Spec Kit Community Presets](https://github.github.io/spec-kit/community/presets.html)
+  Fonte primaria para descobrir presets comunitarios e entender o limite da verificacao do catalogo: metadados completos e bem formatados nao significam auditoria ou endosso do codigo.
+- [Spec Kit community preset catalog](https://github.com/github/spec-kit/blob/main/presets/catalog.community.json)
+  Catalogo de descoberta com IDs, autores, versoes, requisitos, arquivos fornecidos e links para os pacotes comunitarios; consultar antes de avaliar um item.
+- [Spec Kit first-party preset catalog](https://github.com/github/spec-kit/blob/main/presets/catalog.json)
+  Catalogo bundled mantido no repositorio oficial; distingue presets first-party como `lean` e `constitution-sync` dos itens comunitarios.
+- [Spec Kit presets README](https://github.com/github/spec-kit/blob/main/presets/README.md)
+  Guia de funcionamento, instalacao e resolucao dos presets; inclui exemplos e ressalvas para `constitution-sync`.
 - [Spec Kit Pirate Speak preset demo](https://github.com/mnriem/spec-kit-pirate-speak-preset-demo)
   Exemplo comunitario que demonstra como templates e comandos de um preset podem alterar a estrutura dos artefatos e as instrucoes do agente sem modificar o Spec Kit.
 - [Spec Kit extensions reference](https://github.github.io/spec-kit/reference/extensions.html)
