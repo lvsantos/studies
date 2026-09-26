@@ -24,10 +24,11 @@
 
   <h2>Resolução de arquivos</h2>
   <pre><code>1. .specify/templates/overrides/       maior precedência
-2. Presets instalados (prioridade menor primeiro)
+2. Presets instalados (menor número de prioridade primeiro)
 3. Extensões instaladas (prioridade menor primeiro)
 4. .specify/templates/                 núcleo</code></pre>
-  <p>A resolução é independente para cada arquivo. A estratégia padrão é <code>replace</code>, na qual o primeiro arquivo encontrado substitui completamente as versões inferiores.</p>
+  <p>A resolução é independente para cada arquivo. Overrides locais são indicados para ajustes pontuais de template em um projeto; use um preset quando a convenção precisar ser reutilizada. A estratégia padrão é <code>replace</code>, na qual o primeiro arquivo encontrado substitui completamente as versões inferiores. Verifique um nome com <code>specify preset resolve &lt;nome&gt;</code>.</p>
+  <p>Templates e scripts são consultados na pilha quando necessários. Comandos usam a pilha para substituição/composição, mas são materializados no diretório da integração ativa; o agente não re-resolve a pilha a cada invocação. Instalação e remoção reconciliam comandos afetados.</p>
 
   <h2>Estratégias de composição</h2>
   <div class="table-scroll"><table>
@@ -66,7 +67,7 @@ specify preset remove &lt;preset-id&gt;</code></pre>
     <li>Em projeto de laboratório com <code>specify init</code>, instale com <code>specify preset add --dev ./meu-preset</code>, confira <code>specify preset resolve plan-template</code>, gere um artefato real e depois remova o preset.</li>
     <li>Para compartilhar: README específico, licença, versão SemVer, arquivos revisados e instruções do <a href="https://github.com/github/spec-kit/blob/main/presets/PUBLISHING.md">guia de publicação</a>.</li>
   </ol>
-  <p><a href="./spec-kit-preset-publishing.html">Checklist: publicar em repositório próprio e submeter ao catálogo comunitário</a> · <a href="../lessons/0027-publicar-preset-spec-kit.html">Aula: publicar um preset</a></p>
+  <p><a href="./spec-kit-preset-publishing.html">Checklist: publicar em repositório próprio e submeter ao catálogo comunitário</a> · <a href="../lessons/0027-publicar-preset-spec-kit.html">Aula: publicar um preset</a> · <a href="../lessons/0028-overrides-locais-spec-kit.html">Aula: overrides locais e resolução</a></p>
   <p><a href="../lessons/0026-criar-preset-proprio-spec-kit.html">Aula prática: criar um preset de revisão de segurança</a> · <a href="../lessons/0024-scaffold-presets-spec-kit.html">Aula: scaffold oficial</a></p>
 
   <h2>Quatro presets oficiais para reconhecer</h2>

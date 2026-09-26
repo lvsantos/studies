@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 28 · Overrides locais e resolução no Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 28 · 8 minutos</p>
+  <h1>Uma regra, um projeto: use override local</h1>
+  <p class="lede">Vitória de hoje: fazer uma alteração pontual em um template, prever qual arquivo o Spec Kit vai usar e confirmar a previsão pela pilha de resolução.</p>
+
+  <div class="panel">
+    <strong>O caso</strong>
+    <p>Este repositório precisa acrescentar uma seção específica ao plano de feature. A regra não será compartilhada com outros projetos. Nesse caso, comece por um <strong>override local</strong>, não por um preset publicável.</p>
+  </div>
+
+  <h2>1. Coloque o arquivo na camada do projeto</h2>
+  <p>Crie o arquivo com o mesmo nome do template que quer substituir, dentro de <code>.specify/templates/overrides/</code>. Para o template de plano:</p>
+  <pre><code>.specify/
+└── templates/
+    └── overrides/
+        └── plan-template.md</code></pre>
+  <p>O arquivo local fica no próprio repositório, então pode ser revisado e versionado junto com o projeto. Com a estratégia padrão <code>replace</code>, seu conteúdo substitui o arquivo de menor precedência por inteiro. Se precisar conservar seções centrais, inclua-as no override ou investigue uma composição via preset.</p>
+
+  <h2>2. Preveja e verifique o vencedor</h2>
+  <p>A resolução acontece separadamente para cada arquivo. Por padrão, vence a primeira correspondência nesta ordem:</p>
+  <pre><code>1. .specify/templates/overrides/       maior precedência
+2. Presets instalados                   menor número de prioridade vence
+3. Extensões instaladas                 por prioridade
+4. .specify/templates/                 núcleo do Spec Kit</code></pre>
+  <p>Mesmo que um preset instalado também forneça <code>plan-template.md</code>, o override local vence esse arquivo. Outros arquivos ainda podem vir de outras camadas. Consulte a pilha efetiva no projeto:</p>
+  <pre><code>specify preset resolve plan-template.md</code></pre>
+  <p>Leia a origem vencedora na saída e compare com o caminho em <code>.specify/templates/overrides/</code>. Depois gere ou atualize um plano e confirme o efeito no artefato; localizar um arquivo não prova, por si só, que o agente produziu o resultado esperado.</p>
+
+  <h2>3. Não confunda arquivos de template e comandos</h2>
+  <p>Templates e scripts são consultados na pilha quando o Spec Kit precisa deles. Comandos de preset e extensão usam a mesma pilha para decidir substituição ou composição, mas são materializados no diretório da integração ativa. O agente não refaz essa resolução a cada invocação do comando.</p>
+  <p>Após instalar ou remover componentes, o Spec Kit reconcilia os comandos afetados. Remover a camada que vencia permite restaurar a camada restante. Por isso, para investigar um comando, combine <code>specify preset resolve &lt;nome&gt;</code> com a inspeção do arquivo materializado na integração ativa; não espere que o agente leia a pilha de templates em tempo de execução.</p>
+
+  <h2>Pratique: qual camada?</h2>
+  <p>Uma seção especial precisa existir só neste repositório. Qual bloco de customização você experimentaria primeiro?</p>
+  <div>
+    <button type="button" data-answer="preset">Preset</button>
+    <button type="button" data-answer="override">Override</button>
+    <button type="button" data-answer="extension">Extensão</button>
+  </div>
+  <div id="feedback" class="answer panel" aria-live="polite"></div>
+
+  <div class="panel">
+    <strong>Fonte primária recomendada</strong>
+    <p>Leia <a href="https://github.github.io/spec-kit/guides/customization.html#project-local-overrides-and-resolution">Project-local overrides and resolution</a> e use a <a href="https://github.github.io/spec-kit/reference/presets.html#file-resolution">referência de resolução de arquivos</a> para investigar a pilha completa.</p>
+  </div>
+
+  <p><a href="./0027-publicar-preset-spec-kit.html">Lição anterior: publicar um preset</a> · <a href="./0026-criar-preset-proprio-spec-kit.html">Criar um preset</a> · <a href="../reference/spec-kit-presets.html">Referência rápida de presets</a></p>
+  <footer>Se algo ficar pouco claro, pergunte ao professor. Você pode trazer a saída de <code>specify preset resolve</code> e o arquivo gerado para verificarmos juntos qual camada venceu e se o resultado foi aplicado.</footer>
+</main>
+<script>
+  const feedback = document.querySelector('#feedback');
+  const responses = {
+    preset: '<strong>Quase.</strong> Um preset é mais adequado quando a convenção será reutilizada em outros projetos.',
+    override: '<strong>Isso.</strong> Para uma mudança pontual, comece em <code>.specify/templates/overrides/</code> e confira o vencedor com <code>specify preset resolve plan-template.md</code>.',
+    extension: '<strong>Não neste caso.</strong> Extensões adicionam capacidades ou integrações; a mudança descrita só adapta um template existente.'
+  };
+  document.querySelectorAll('[data-answer]').forEach((button) => {
+    button.addEventListener('click', () => {
+      feedback.innerHTML = responses[button.dataset.answer];
+      feedback.classList.add('visible');
+    });
+  });
+</script>
+</body>
+</html>
