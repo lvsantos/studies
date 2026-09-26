@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 23 · lean do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 23 · 9 minutos</p>
+  <h1>Lean: mantenha o fluxo, tire a cerimônia</h1>
+  <p class="lede">Vitória de hoje: instalar e avaliar um fluxo specify → plan → tasks → implement que pede ao agente artefatos focados, sem as estruturas longas dos templates completos.</p>
+
+  <div class="panel">
+    <strong>O problema que resolve</strong>
+    <p>O fluxo estruturado do Spec Kit ajuda a orientar decisões, mas os templates completos podem trazer seções e boilerplate demais para um projeto pequeno ou para uma equipe que prefere documentos concisos. <code>lean</code> reduz esse atrito sem abandonar a sequência de artefatos.</p>
+  </div>
+
+  <h2>1. O que muda (e o que não muda)</h2>
+  <p>O preset fornece cinco <strong>comandos</strong>: <code>speckit.specify</code>, <code>speckit.plan</code>, <code>speckit.tasks</code>, <code>speckit.implement</code> e <code>speckit.constitution</code>. Cada comando é um prompt próprio, que cria ou atualiza diretamente o Markdown ou executa as tarefas. O manifest não fornece templates separados: as instruções do comando carregam a estrutura concisa.</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Comando</th><th>Resultado</th><th>Intenção do modo lean</th></tr></thead>
+    <tbody>
+      <tr><td><code>specify</code></td><td><code>spec.md</code></td><td>Descrição enxuta do comportamento pedido.</td></tr>
+      <tr><td><code>plan</code></td><td><code>plan.md</code></td><td>Abordagem de implementação derivada da spec.</td></tr>
+      <tr><td><code>tasks</code></td><td><code>tasks.md</code></td><td>Tarefas ordenadas por dependência a partir de spec e plano.</td></tr>
+      <tr><td><code>implement</code></td><td>Código e progresso das tarefas</td><td>Executar tarefas em ordem e marcar andamento.</td></tr>
+      <tr><td><code>constitution</code></td><td><code>constitution.md</code></td><td>Criar ou atualizar os princípios do projeto.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Os comandos substituem os equivalentes centrais; não se mesclam automaticamente com o texto original. Outros comandos que o preset não fornece, como <code>clarify</code>, continuam na resolução normal do projeto.</p>
+
+  <h2>2. Ativar, inspecionar, experimentar</h2>
+  <p><code>lean</code> é um preset first-party bundled. O projeto precisa ter sido inicializado antes:</p>
+  <pre><code>specify preset add lean
+specify preset list
+specify preset resolve speckit.specify
+specify preset resolve speckit.plan</code></pre>
+  <p>Os comandos do preset são registrados na integração de agente ativa. Faça uma feature pequena em uma branch de teste e compare os artefatos com uma execução anterior: a pergunta não é só se ficaram menores, mas se ainda contêm informação suficiente para construir e revisar a feature.</p>
+  <ol>
+    <li>Use <code>/speckit.specify</code> para descrever uma mudança observável.</li>
+    <li>Use <code>/speckit.plan</code> e <code>/speckit.tasks</code>.</li>
+    <li>Procure decisões, critérios de aceitação e dependências que tenham ficado implícitos.</li>
+    <li>Execute <code>/speckit.implement</code> só depois de validar que o plano e as tarefas estão claros.</li>
+  </ol>
+
+  <h2>3. O compromisso por trás da concisão</h2>
+  <p>Lean troca scaffolding extenso por instruções mais diretas. Isso reduz campos para preencher, mas também reduz os lembretes estruturais que ajudam a não esquecer análises. Não interprete “lean” como “sem requisitos” ou “sem revisão”: critérios verificáveis e decisões técnicas ainda precisam estar escritos quando o projeto depende deles.</p>
+  <p>Se um time precisa de uma seção obrigatória de segurança, compatibilidade ou migração, o modo lean pode não a pedir por padrão. Pode-se criar uma convenção própria com override ou preset; se a necessidade for um comando/integração novo, investigue uma extensão. Veja a <a href="./0020-presets-do-spec-kit.html">distinção entre preset, override e extensão</a>.</p>
+
+  <h2>4. Retornar ao fluxo anterior</h2>
+  <p>Para comparar sem desinstalar, desative temporariamente. Lembre que os comandos já registrados continuam disponíveis no agente; para remover a alteração por completo, remova o preset:</p>
+  <pre><code>specify preset disable lean
+specify preset enable lean
+specify preset remove lean</code></pre>
+  <p>Depois da remoção, confira <code>specify preset resolve speckit.specify</code> e revise arquivos de comando registrados na integração. Não faça a comparação só pelo tamanho: confira a qualidade dos artefatos e a facilidade de revisar o diff.</p>
+
+  <h2>5. Pratique: menos texto ou menos controle?</h2>
+  <p>Um time instalou <code>lean</code> e notou que o plano ficou curto. Qual evidência indica que o preset está ajudando, em vez de apenas esconder decisões?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>O plano continua explícito o bastante para orientar tarefas e revisão.</strong> Confira abordagem, dependências e decisões necessárias ao projeto; se algum controle obrigatório sumiu, adicione-o à convenção antes de implementar.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.com/github/spec-kit/tree/main/presets/lean">README, manifest e os cinco comandos do preset lean</a>. A <a href="https://github.github.io/spec-kit/reference/presets.html">referência oficial</a> explica resolução, prioridade e ciclo de instalação.</p>
+  </div>
+
+  <p><a href="./0022-constitution-sync-spec-kit.html">Anterior: constitution-sync</a> · <a href="./0024-scaffold-presets-spec-kit.html">Próxima: scaffold</a> · <a href="../reference/spec-kit-presets.html">Referência rápida</a></p>
+  <footer>O professor pode comparar o mesmo pedido produzido pelo fluxo completo e por lean. Traga a spec e o plano resultantes para revisar o que ficou explícito ou implícito.</footer>
+</main>
+</body>
+</html>

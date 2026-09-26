@@ -57,7 +57,18 @@ specify preset remove &lt;preset-id&gt;</code></pre>
     <p>Regra compartilhada entre projetos → preset. Ajuste de um projeto → override local. Comportamento novo ou integração externa → extensão.</p>
   </div>
 
-  <p><a href="../lessons/0020-presets-do-spec-kit.html">Aula: presets do Spec Kit</a> · <a href="../lessons/0011-customizar-o-spec-kit.html">Aula: customizar o Spec Kit</a></p>
+  <h2>Quatro presets oficiais para reconhecer</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Preset</th><th>Resolve</th><th>Nota de uso</th></tr></thead>
+    <tbody>
+      <tr><td><a href="../lessons/0022-constitution-sync-spec-kit.html"><code>constitution-sync</code></a></td><td>Materializa e propaga princípios da constituição para artefatos locais revisáveis.</td><td>Opt-in; exige Spec Kit &gt;= 0.14.4 e pode criar drift.</td></tr>
+      <tr><td><a href="../lessons/0023-lean-spec-kit.html"><code>lean</code></a></td><td>Encurta o fluxo substituindo cinco comandos centrais por prompts diretos.</td><td>Instalável; troca comandos, não templates.</td></tr>
+      <tr><td><a href="../lessons/0024-scaffold-presets-spec-kit.html"><code>scaffold</code></a></td><td>Fornece a estrutura inicial para criar um preset próprio.</td><td>Molde de desenvolvimento; o ID inicial é <code>my-preset</code>.</td></tr>
+      <tr><td><a href="../lessons/0025-self-test-spec-kit.html"><code>self-test</code></a></td><td>Fornece templates e comandos marcados para testar resolução e composição.</td><td>Fixture de teste; use em cópia/branch descartável.</td></tr>
+    </tbody>
+  </table></div>
+
+  <p><a href="../lessons/0020-presets-do-spec-kit.html">Aula: presets do Spec Kit</a> · <a href="../lessons/0011-customizar-o-spec-kit.html">Aula: customizar o Spec Kit</a> · <a href="../lessons/0022-constitution-sync-spec-kit.html">Constitution sync</a> · <a href="../lessons/0023-lean-spec-kit.html">Lean</a> · <a href="../lessons/0024-scaffold-presets-spec-kit.html">Scaffold</a> · <a href="../lessons/0025-self-test-spec-kit.html">Self-test</a></p>
   <p class="small">Fontes: <a href="https://github.github.io/spec-kit/reference/presets.html">referência oficial</a> · <a href="https://github.github.io/spec-kit/guides/customization.html#presets-change-how-a-process-works">guia de customização</a>.</p>
 </main>
 </body>

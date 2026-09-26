@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 24 · scaffold de presets do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 24 · 10 minutos</p>
+  <h1>Scaffold: transforme uma convenção em preset próprio</h1>
+  <p class="lede">Vitória de hoje: usar o scaffold oficial como ponto de partida para empacotar templates e instruções repetíveis sem confundir o molde de desenvolvimento com um preset pronto para instalar.</p>
+
+  <div class="panel">
+    <strong>Uma distinção que evita uma busca inútil</strong>
+    <p><code>presets/scaffold</code> é um diretório-modelo do repositório oficial. Ele não é um preset publicado cujo ID seja <code>scaffold</code>: o <code>preset.yml</code> começa com ID <code>my-preset</code> e metadados de exemplo. A finalidade é copiar, editar e testar um preset seu.</p>
+    <p>Isso resolve o problema de começar do zero sem inventar o formato do manifest, a estrutura de arquivos e os passos básicos de teste.</p>
+  </div>
+
+  <h2>1. O que vem no molde</h2>
+  <p>O scaffold demonstra templates de documentos e comandos de agente. O README inclui exemplos como <code>spec-template</code>, <code>speckit.specify</code> e um template/comando ilustrativo para uma extensão chamada <code>myext</code>; esses nomes de exemplo não significam que sua equipe tenha essa extensão instalada.</p>
+  <p>O <code>preset.yml</code> ensina a declarar o tipo de cada item, o nome usado para resolução, o caminho do arquivo, uma descrição e, opcionalmente, o item que ele substitui e a estratégia de composição. Os campos essenciais identificam o preset (ID, nome, versão, descrição), a versão mínima do Spec Kit e a lista de arquivos fornecidos.</p>
+
+  <h2>2. Fluxo de criação e teste</h2>
+  <p>Partindo de uma cópia local do repositório oficial, copie o diretório de exemplo, ajuste o manifest e remova os exemplos que não atendem à sua convenção:</p>
+  <pre><code>cp -r presets/scaffold my-preset
+# Edite my-preset/preset.yml e os arquivos de templates/ e commands/
+specify preset add --dev ./my-preset
+specify preset resolve spec-template
+specify preset remove my-preset</code></pre>
+  <p>Antes de instalar, altere o campo <code>preset.id</code> e complete nome, versão, descrição, autor, repositório, compatibilidade e conteúdo. O identificador passado ao remover precisa ser o ID declarado no manifest, não necessariamente o nome do diretório.</p>
+  <ol>
+    <li>Escreva uma regra concreta e reutilizável que a equipe quer compartilhar entre projetos.</li>
+    <li>Escolha se ela muda a estrutura do artefato (template) ou como o agente trabalha (command).</li>
+    <li>Declare o arquivo e a estratégia no manifest.</li>
+    <li>Instale com <code>--dev</code> num projeto de teste; verifique os nomes com <code>specify preset resolve</code>.</li>
+    <li>Gere um artefato real e confirme que a regra está presente e que o comando central não perdeu comportamento necessário.</li>
+  </ol>
+
+  <h2>3. Escolher a estratégia de composição</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Estratégia</th><th>Resultado</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td><code>replace</code></td><td>Substitui o arquivo de menor prioridade inteiro.</td><td>Reformular o template da spec.</td></tr>
+      <tr><td><code>prepend</code></td><td>Acrescenta orientação antes do conteúdo de menor prioridade.</td><td>Exigir que o agente leia uma regra antes do comando central.</td></tr>
+      <tr><td><code>append</code></td><td>Acrescenta conteúdo depois do arquivo base.</td><td>Adicionar uma seção de conformidade a um template.</td></tr>
+      <tr><td><code>wrap</code></td><td>Insere o conteúdo inferior em <code>{CORE_TEMPLATE}</code>.</td><td>Manter o comando central e cercá-lo com uma checagem própria.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Para scripts, apenas <code>replace</code> e <code>wrap</code> são suportadas; wrappers de script usam <code>$CORE_SCRIPT</code>. Prefira a composição quando a regra é um complemento e você quer receber melhorias futuras do core. Use <code>replace</code> apenas quando pretende ser dono do comportamento completo.</p>
+
+  <h2>4. O que testar antes de compartilhar</h2>
+  <p>O comando <code>--dev</code> instala uma cópia local do pacote para experimentação; ele não publica o preset para colegas nem o inclui automaticamente no catálogo da equipe. Antes de distribuir, valide o manifest, documente os conflitos e faça o processo de publicação oficial ou disponibilize um catálogo confiável.</p>
+  <ul>
+    <li>Um template ausente continua sendo resolvido por outra camada da pilha.</li>
+    <li>Se outro preset fornecer o mesmo arquivo, a prioridade e a estratégia produzem o resultado esperado.</li>
+    <li>O comando continua compatível com a integração de agente em uso.</li>
+    <li>O preset não promete capacidade nova de CLI: se o caso exige uma etapa executável ou integração, avalie uma extensão.</li>
+  </ul>
+
+  <h2>5. Pratique: pode instalar pelo nome?</h2>
+  <p>Você quer experimentar o diretório oficial <code>presets/scaffold</code>. Qual ID deve usar para instalá-lo diretamente, sem editar nada?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Nenhum ID pronto: copie e personalize primeiro.</strong> O manifest de exemplo declara <code>my-preset</code>; altere os metadados e teste a sua cópia com <code>specify preset add --dev ./my-preset</code>.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Consulte o <a href="https://github.com/github/spec-kit/tree/main/presets/scaffold">scaffold oficial</a>, em especial <code>README.md</code> e <code>preset.yml</code>. Para compor e resolver arquivos, veja a <a href="https://github.github.io/spec-kit/reference/presets.html">referência de presets</a> e o <a href="https://github.com/github/spec-kit/blob/main/presets/PUBLISHING.md">guia oficial de publicação</a>.</p>
+  </div>
+
+  <p><a href="./0023-lean-spec-kit.html">Anterior: lean</a> · <a href="./0025-self-test-spec-kit.html">Próxima: self-test</a> · <a href="../reference/spec-kit-presets.html">Referência rápida</a></p>
+  <footer>O professor pode revisar um manifest e ajudar a escolher entre preset, override e extensão. Traga a regra de equipe que você quer tornar reutilizável.</footer>
+</main>
+</body>
+</html>

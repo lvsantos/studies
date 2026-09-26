@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 22 · constitution-sync do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 22 · 10 minutos</p>
+  <h1>Constitution-sync: quando a regra precisa aparecer nos arquivos</h1>
+  <p class="lede">Vitória de hoje: distinguir a constituição lida em tempo de execução de cópias materializadas para revisão e aprender a ativar essa propagação deliberadamente.</p>
+
+  <div class="panel">
+    <strong>O problema que resolve</strong>
+    <p>O Spec Kit padrão mantém a constituição viva como fonte de verdade: comandos como <code>plan</code>, <code>tasks</code> e <code>analyze</code> leem o arquivo atual. Isso evita cópias desatualizadas, mas pode não bastar quando a equipe quer revisar em PR, como artefatos versionados, as regras concretas que orientarão templates e comandos.</p>
+    <p><code>constitution-sync</code> é uma opção explícita para materializar essas regras em scaffolds e orientações locais. Não substitui o modelo padrão; acrescenta cópias revisáveis e assume o trabalho de mantê-las coerentes.</p>
+  </div>
+
+  <h2>1. O que o preset realmente fornece</h2>
+  <p>O manifest requer Spec Kit <code>&gt;= 0.14.4</code> e fornece um único comando: <code>speckit.constitution</code>, com estratégia <code>wrap</code>. O preset envolve o comando atual via <code>{CORE_TEMPLATE}</code>, preservando o fluxo central e adicionando uma etapa de propagação depois que a constituição é escrita.</p>
+  <p>Há dois momentos diferentes:</p>
+  <ul>
+    <li><strong>Ao instalar ou reconciliar a pilha:</strong> o preset pode materializar o <code>constitution-template</code> resolvido em <code>.specify/memory/constitution.md</code>. Em mudanças posteriores na pilha, só substitui o arquivo vivo se o hash ainda corresponder ao conteúdo gerado; uma edição humana impede a substituição automática.</li>
+    <li><strong>Ao executar o comando de constituição:</strong> ele alinha os templates locais de plano, spec e tarefas, orientações do projeto e comandos locais não geridos por outros presets/extensões. Depois registra no Sync Impact Report quais arquivos foram atualizados.</li>
+  </ul>
+  <p>Mesmo com esse preset, comandos de runtime continuam lendo a constituição viva. A cópia materializada é uma camada adicional, não uma nova fonte de verdade.</p>
+
+  <h2>2. Exemplo: uma regra nova precisa chegar ao fluxo</h2>
+  <p>Imagine um projeto cuja constituição diz: <strong>“Toda mudança em uma API deve ter testes de contrato.”</strong> Sem <code>constitution-sync</code>, o <code>plan</code> ainda pode consultar a constituição viva durante a execução, mas os templates versionados do projeto podem continuar mostrando apenas o lembrete genérico:</p>
+  <pre><code>## Constitution Check
+
+[Gates determined based on constitution file]</code></pre>
+  <p>Com o preset instalado, a pessoa atualiza os princípios usando <code>/speckit.constitution</code>. O comando central continua fazendo seu trabalho normal; em seguida, o wrapper faz uma passada de consistência nos artefatos locais. Por exemplo, o <code>plan-template.md</code> pode passar a incluir um gate concreto como:</p>
+  <pre><code>## Constitution Check
+
+- [ ] Mudanças de API incluem testes de contrato.</code></pre>
+  <p>O mesmo passe pode ajustar o <code>spec-template.md</code> para pedir critérios de aceitação compatíveis, o <code>tasks-template.md</code> para lembrar a tarefa de teste e documentos/comandos locais para remover instruções antigas. O Sync Impact Report da constituição registra quais caminhos foram atualizados. As frases acima são um exemplo do resultado esperado, não texto fixo que o preset sempre insere: o conteúdo depende dos princípios reais e da revisão feita pelo agente.</p>
+  <p><strong>Resultado prático:</strong> quem revisa um PR pode ler o gate no próprio template versionado, antes de gerar um plano. Sem esse preset, a equipe pode manter o ponteiro genérico e deixar o comando consultar a constituição viva quando for usado.</p>
+
+  <h2>3. Como usar com segurança</h2>
+  <p>O projeto precisa estar inicializado com <code>specify init</code>. Confira a versão do Spec Kit e use o preset somente se a equipe quer que os arquivos materializados sejam revisados e commitados.</p>
+  <pre><code>specify preset add constitution-sync
+specify preset list
+specify preset resolve speckit.constitution</code></pre>
+  <p>Depois, na integração de agente ativa, execute <code>/speckit.constitution</code> (ou o nome equivalente que a integração registrou) e revise o diff inteiro. Ao mudar princípios, execute o comando de novo; não presuma que uma edição da constituição propagou sozinha para todos os arquivos derivados.</p>
+  <ol>
+    <li>Revise a constituição resultante e o Sync Impact Report.</li>
+    <li>Revise mudanças em <code>.specify/templates/</code>, comandos locais e documentos de orientação.</li>
+    <li>Confirme com <code>specify preset resolve</code> quais arquivos são controlados por presets ou extensões.</li>
+    <li>Faça commit só depois de confirmar que cópias geradas e a constituição dizem a mesma coisa.</li>
+  </ol>
+
+  <h2>4. O custo da materialização</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Ganho</th><th>Responsabilidade</th></tr></thead>
+    <tbody>
+      <tr><td>Regras concretas aparecem nos templates e podem ser revisadas em PR.</td><td>As cópias são snapshots; se a equipe não rodar a propagação após mudar a constituição, elas derivam.</td></tr>
+      <tr><td>Um arquivo gerado inalterado pode ser atualizado com proteção de proveniência.</td><td>Arquivos editados por pessoas ficam protegidos da substituição automática, mas exigem reconciliação consciente.</td></tr>
+      <tr><td>O comando central continua recebendo as atualizações do core por composição.</td><td>Comandos e templates geridos por outro preset/extensão não devem ser editados diretamente: a reconciliação pode recriá-los e apagar mudanças propagadas.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Há ainda um efeito de orientação: substituir no <code>plan-template.md</code> o ponteiro dinâmico de Constitution Check por gates concretos pode fazer o primeiro <code>/plan</code> se ancorar em texto congelado. Mantenha o ponteiro, a menos que a equipe queira deliberadamente versionar aqueles gates ali.</p>
+
+  <h2>5. Quando escolher e quando não</h2>
+  <p>Escolha-o se revisores precisam ler e aprovar os gates materializados junto com templates e comandos locais. Evite-o se o modelo de resolução em tempo de execução já atende à equipe, ou se boa parte do fluxo é gerida por outros presets e extensões. Nesse cenário, o stack composável mantém uma única constituição viva sem cópias que possam derivar.</p>
+  <p>Para voltar ao comportamento padrão, redefina as seções materializadas de Constitution Check para o ponteiro dinâmico indicado no README oficial e remova o preset:</p>
+  <pre><code>specify preset remove constitution-sync</code></pre>
+  <p>A remoção não decide como reconciliar texto local já materializado; revise o diff e restaure conscientemente os ponteiros antes ou depois de remover.</p>
+
+  <h2>6. Pratique: uma equipe mudou de modelo</h2>
+  <p>A equipe quer que o PR mostre os gates exatos, mas seu template de plano é fornecido por outra extensão. O que deve investigar antes de instalar <code>constitution-sync</code>?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Verifique a propriedade do template e resolva sua origem.</strong> O preset não deve editar arquivos versionados de outra extensão; a reconciliação pode sobrescrevê-los. Nesse fluxo, prefira a resolução dinâmica ou crie uma camada organizacional compatível e governada.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.com/github/spec-kit/tree/main/presets/constitution-sync">README, manifest e comando de constitution-sync</a>. Para precedência e composição, consulte a <a href="https://github.github.io/spec-kit/reference/presets.html">referência oficial de presets</a>.</p>
+  </div>
+
+  <p><a href="./0020-presets-do-spec-kit.html">Mapa: como presets funcionam</a> · <a href="./0023-lean-spec-kit.html">Próxima: lean</a> · <a href="../reference/spec-kit-presets.html">Referência rápida</a></p>
+  <footer>O professor pode ajudar a revisar o Sync Impact Report ou decidir se um arquivo é local ou gerido por uma extensão. Traga o caminho do arquivo e o diff que gerou a dúvida.</footer>
+</main>
+</body>
+</html>

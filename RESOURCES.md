@@ -28,6 +28,14 @@
   Catalogo bundled mantido no repositorio oficial; distingue presets first-party como `lean` e `constitution-sync` dos itens comunitarios.
 - [Spec Kit presets README](https://github.com/github/spec-kit/blob/main/presets/README.md)
   Guia de funcionamento, instalacao e resolucao dos presets; inclui exemplos e ressalvas para `constitution-sync`.
+- [Preset constitution-sync](https://github.com/github/spec-kit/tree/main/presets/constitution-sync)
+  README, manifest e comando oficial do preset; descreve materializacao protegida da constituicao, propagacao em `/constitution`, compatibilidade minima e riscos de drift/reconciliacao.
+- [Preset lean](https://github.com/github/spec-kit/tree/main/presets/lean)
+  README, manifest e comandos oficiais; substitui cinco comandos do fluxo por prompts diretos que geram artefatos sem templates separados.
+- [Preset scaffold](https://github.com/github/spec-kit/tree/main/presets/scaffold)
+  Molde oficial para desenvolver presets; deve ser copiado e personalizado (o ID inicial e `my-preset`), nao tratado como pacote pronto chamado `scaffold`.
+- [Preset self-test](https://github.com/github/spec-kit/tree/main/presets/self-test)
+  Manifest, templates e comandos marcados usados como fixture para verificar substituicao e composicao; nao e um workflow recomendado para produto.
 - [Spec Kit Pirate Speak preset demo](https://github.com/mnriem/spec-kit-pirate-speak-preset-demo)
   Exemplo comunitario que demonstra como templates e comandos de um preset podem alterar a estrutura dos artefatos e as instrucoes do agente sem modificar o Spec Kit.
 - [Spec Kit extensions reference](https://github.github.io/spec-kit/reference/extensions.html)

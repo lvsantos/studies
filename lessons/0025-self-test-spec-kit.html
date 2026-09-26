@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 25 · self-test do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 25 · 9 minutos</p>
+  <h1>Self-test: reconheça se a pilha está usando o preset</h1>
+  <p class="lede">Vitória de hoje: entender os marcadores visíveis do preset de teste e usá-los para diagnosticar resolução de templates, substituição de comando e composição com wrap.</p>
+
+  <div class="panel">
+    <strong>Não é uma configuração de produção</strong>
+    <p><code>self-test</code> é uma fixture de teste mantida dentro do repositório do Spec Kit. Seus arquivos têm marcadores explícitos como <code>(Self-Test Preset)</code> e <code>preset:self-test</code> para mostrar de onde veio um resultado. O objetivo é provar que a pilha selecionou e compôs os arquivos esperados, não orientar um fluxo de produto.</p>
+    <p>A listagem first-party do catálogo oficial inclui presets como <code>lean</code> e <code>constitution-sync</code>, mas não lista <code>self-test</code> como preset distribuído pelo catálogo. Para experimentá-lo, use o checkout do repositório e instale a pasta local com <code>--dev</code>.</p>
+  </div>
+
+  <h2>1. O que a fixture fornece</h2>
+  <p>O manifest substitui cinco templates do núcleo: <code>spec-template</code>, <code>plan-template</code>, <code>tasks-template</code>, <code>checklist-template</code> e <code>constitution-template</code>. Eles têm conteúdo pequeno e identificável, por exemplo uma spec com seções Overview, Requirements, Design e Acceptance Criteria.</p>
+  <p>Também inclui dois comandos:</p>
+  <ul>
+    <li><code>speckit.specify</code> substitui o comando de especificação e pede que a saída siga o template de teste, incluindo seu marcador.</li>
+    <li><code>speckit.wrap-test</code> usa <code>strategy: wrap</code>. O arquivo imprime <code>Preset Pre-Logic</code>, insere o comando inferior em <code>{CORE_TEMPLATE}</code> e imprime <code>Preset Post-Logic</code>.</li>
+  </ul>
+  <p>Essa segunda peça é especialmente útil: se o conteúdo central continua entre os dois marcadores, o teste demonstra que o wrapper preservou o comando inferior e acrescentou lógica antes e depois.</p>
+
+  <h2>2. Como executar a verificação</h2>
+  <p>O projeto em que você testa precisa estar inicializado com <code>specify init</code>. Use uma cópia de trabalho ou branch descartável: durante a instalação, os cinco templates de exemplo ganham precedência sobre os equivalentes inferiores.</p>
+  <pre><code># A partir de um clone local do repositorio github/spec-kit
+specify preset add --dev ./presets/self-test
+specify preset list
+specify preset resolve spec-template
+specify preset resolve speckit.specify
+specify preset resolve speckit.wrap-test</code></pre>
+  <p>Depois, gere uma spec com o comando registrado na integração ativa e procure o cabeçalho e o comentário <code>preset:self-test</code>. Inspecione também o conteúdo efetivo de <code>speckit.wrap-test</code>: a lógica central deve estar presente entre as seções Pre-Logic e Post-Logic.</p>
+  <ol>
+    <li>Se <code>resolve</code> aponta para o arquivo do preset, a camada venceu para aquele nome.</li>
+    <li>Se o artefato gerado tem o marcador, o agente usou o comando/template pretendido.</li>
+    <li>Se o wrapper perdeu conteúdo central, verifique a estratégia declarada e o placeholder <code>{CORE_TEMPLATE}</code>.</li>
+    <li>Remova a fixture ao terminar para restaurar os arquivos e comandos do fluxo normal.</li>
+  </ol>
+  <pre><code>specify preset remove self-test</code></pre>
+
+  <h2>3. O que ele não prova</h2>
+  <p>Um marcador confirma origem e composição, não qualidade de requisitos, compatibilidade semântica ou segurança. Os templates deliberadamente simples não são um ponto de partida adequado para especificações reais. O comando de teste também não valida sozinho todas as integrações de agentes: confira o comando materializado na integração ativa e execute o fluxo que deseja testar.</p>
+  <p>Use <code>self-test</code> para depurar a infraestrutura de presets, ou como exemplo ao desenvolver um preset. Para reduzir boilerplate no uso cotidiano, avalie <a href="./0023-lean-spec-kit.html">lean</a>; para criar uma regra própria, use o <a href="./0024-scaffold-presets-spec-kit.html">scaffold</a>.</p>
+
+  <h2>4. Pratique: onde está a falha?</h2>
+  <p><code>specify preset resolve speckit.wrap-test</code> mostra o arquivo do preset, mas ao executar o comando só aparece o texto central, sem os marcadores antes e depois. Qual é a primeira coisa a inspecionar?</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>Confira manifest e placeholder de composição.</strong> O item deve usar a estratégia <code>wrap</code> e o arquivo precisa conter <code>{CORE_TEMPLATE}</code>; depois confira o comando que foi registrado na integração ativa.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.com/github/spec-kit/tree/main/presets/self-test">manifest, templates e comandos de self-test</a> no repositório. O <a href="https://github.com/github/spec-kit/blob/main/presets/README.md">README geral de presets</a> explica instalação local, placeholders e estratégias de composição.</p>
+  </div>
+
+  <p><a href="./0024-scaffold-presets-spec-kit.html">Anterior: scaffold</a> · <a href="./0022-constitution-sync-spec-kit.html">Voltar ao início: constitution-sync</a> · <a href="../reference/spec-kit-presets.html">Referência rápida</a></p>
+  <footer>O professor pode ajudar a localizar em qual camada um comando ou template foi resolvido. Traga a saída de <code>specify preset resolve</code> e o resultado observado.</footer>
+</main>
+</body>
+</html>
