@@ -18,6 +18,10 @@
   Fonte primaria para quando e como essa decisao aparece pela primeira vez em um projeto ja existente.
 - [Spec Kit customization guide](https://github.github.io/spec-kit/guides/customization.html)
   Fonte primaria para escolher entre extensoes, presets, overrides locais, workflows e bundles ao adaptar o Spec Kit.
+- [Spec Kit presets reference](https://github.github.io/spec-kit/reference/presets.html)
+  Referencia primaria para instalar e administrar presets, inspecionar arquivos resolvidos, entender precedencia e aplicar estrategias de composicao.
+- [Spec Kit Pirate Speak preset demo](https://github.com/mnriem/spec-kit-pirate-speak-preset-demo)
+  Exemplo comunitario que demonstra como templates e comandos de um preset podem alterar a estrutura dos artefatos e as instrucoes do agente sem modificar o Spec Kit.
 - [Spec Kit extensions reference](https://github.github.io/spec-kit/reference/extensions.html)
   Referencia primaria para ciclo de vida, catalogos, configuracao, hooks, prioridades e governanca de extensoes.
 - [Spec Kit Community Extensions](https://github.github.io/spec-kit/community/extensions.html)

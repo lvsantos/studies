@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Presets do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>Presets</h1>
+  <p class="lede">Presets alteram templates e comandos existentes. Eles adaptam o processo sem acrescentar, por si só, uma nova capacidade ao CLI.</p>
+
+  <h2>Escolha o bloco</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Bloco</th><th>Use quando</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Preset</strong></td><td>Quer mudar formato, terminologia ou instruções de um processo existente.</td></tr>
+      <tr><td><strong>Extensão</strong></td><td>Precisa de novo comando, integração, hook ou fase.</td></tr>
+      <tr><td><strong>Override</strong></td><td>A mudança é pontual e exclusiva deste projeto.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Resolução de arquivos</h2>
+  <pre><code>1. .specify/templates/overrides/       maior precedência
+2. Presets instalados (prioridade menor primeiro)
+3. Extensões instaladas (prioridade menor primeiro)
+4. .specify/templates/                 núcleo</code></pre>
+  <p>A resolução é independente para cada arquivo. A estratégia padrão é <code>replace</code>, na qual o primeiro arquivo encontrado substitui completamente as versões inferiores.</p>
+
+  <h2>Estratégias de composição</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Estratégia</th><th>Templates/comandos</th><th>Scripts</th></tr></thead>
+    <tbody>
+      <tr><td><code>replace</code></td><td>Substitui o conteúdo inferior (padrão).</td><td>Substitui.</td></tr>
+      <tr><td><code>prepend</code></td><td>Adiciona antes do conteúdo inferior.</td><td>Não suportada.</td></tr>
+      <tr><td><code>append</code></td><td>Adiciona depois do conteúdo inferior.</td><td>Não suportada.</td></tr>
+      <tr><td><code>wrap</code></td><td>Usa <code>{CORE_TEMPLATE}</code> como ponto de inserção em templates e comandos.</td><td>Usa <code>$CORE_SCRIPT</code>.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Comandos de ciclo de vida</h2>
+  <pre><code>specify preset search [query]
+specify preset info &lt;preset-id&gt;
+specify preset add &lt;preset-id&gt;
+specify preset list
+specify preset resolve &lt;nome-do-arquivo&gt;
+specify preset set-priority &lt;preset-id&gt; &lt;N&gt;
+specify preset disable &lt;preset-id&gt;
+specify preset enable &lt;preset-id&gt;
+specify preset remove &lt;preset-id&gt;</code></pre>
+  <p>Esses comandos exigem um projeto já inicializado com <code>specify init</code>. <code>disable</code> pausa a participação do preset na resolução, mas mantém a instalação; <code>remove</code> desinstala e limpa os comandos registrados. Revise a origem e os arquivos antes de instalar componentes da comunidade.</p>
+
+  <div class="panel">
+    <strong>Regra prática</strong>
+    <p>Regra compartilhada entre projetos → preset. Ajuste de um projeto → override local. Comportamento novo ou integração externa → extensão.</p>
+  </div>
+
+  <p><a href="../lessons/0020-presets-do-spec-kit.html">Aula: presets do Spec Kit</a> · <a href="../lessons/0011-customizar-o-spec-kit.html">Aula: customizar o Spec Kit</a></p>
+  <p class="small">Fontes: <a href="https://github.github.io/spec-kit/reference/presets.html">referência oficial</a> · <a href="https://github.github.io/spec-kit/guides/customization.html#presets-change-how-a-process-works">guia de customização</a>.</p>
+</main>
+</body>
+</html>

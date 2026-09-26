@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 20 · Presets do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 20 · 10 minutos</p>
+  <h1>Presets: mudar o processo sem mudar o motor</h1>
+  <p class="lede">Vitória de hoje: prever qual template ou comando será usado e escolher entre preset, override e extensão para uma necessidade real.</p>
+
+  <div class="panel">
+    <strong>A ideia central</strong>
+    <p>Um preset adapta o comportamento que o Spec Kit já tem: pode trocar a estrutura de artefatos, o vocabulário e as instruções dadas aos agentes. Ele não precisa acrescentar uma capacidade nova ao CLI.</p>
+    <p>Pense nele como uma camada de arquivos que o Spec Kit consulta. A escolha acontece <strong>arquivo por arquivo</strong>, não como uma substituição indivisível de todo o processo.</p>
+  </div>
+
+  <h2>1. Preset, extensão ou override?</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Necessidade</th><th>Escolha provável</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td>Mudar formato, linguagem ou regra de um processo existente</td><td><strong>Preset</strong></td><td>Exigir uma seção de segurança em planos de implementação.</td></tr>
+      <tr><td>Adicionar comando, integração ou etapa nova</td><td><strong>Extensão</strong></td><td>Enviar tarefas para Jira.</td></tr>
+      <tr><td>Fazer uma alteração pontual neste projeto</td><td><strong>Override local</strong></td><td>Ajustar somente o template de plano deste repositório.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Atalho mental: se o Spec Kit já sabe fazer o trabalho, mas a equipe quer que o agente o faça ou o descreva de outro jeito, investigue um preset.</p>
+
+  <h2>2. Como o Spec Kit decide qual arquivo usar?</h2>
+  <p>A precedência padrão vai do nível mais específico ao mais genérico:</p>
+  <pre><code>1. Override do projeto: .specify/templates/overrides/
+2. Presets instalados: prioridade menor vem primeiro
+3. Extensões instaladas: prioridade menor vem primeiro
+4. Templates do núcleo: .specify/templates/</code></pre>
+  <p>Para cada nome de arquivo, a primeira camada que o fornece vence por padrão. Assim, um preset pode fornecer <code>plan-template.md</code>, enquanto outro fornece <code>tasks-template.md</code>; um arquivo ausente num preset continua sendo resolvido pela próxima camada.</p>
+  <p>Prioridade <code>5</code> vence prioridade <code>10</code>. Um override local ainda vence ambos. Para verificar o resultado de verdade, use <code>specify preset resolve &lt;nome-do-arquivo&gt;</code>.</p>
+
+  <h2>3. Substituir ou compor?</h2>
+  <p>O padrão é <strong>replace</strong>: o arquivo do preset substitui por inteiro a versão de menor prioridade. Presets também podem declarar estratégia de composição para templates e comandos:</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Estratégia</th><th>Efeito</th><th>Uso típico</th></tr></thead>
+    <tbody>
+      <tr><td><code>replace</code></td><td>Usa só o conteúdo do preset.</td><td>Reformular completamente um artefato.</td></tr>
+      <tr><td><code>prepend</code></td><td>Coloca o conteúdo do preset antes do conteúdo inferior.</td><td>Adicionar uma orientação obrigatória no início.</td></tr>
+      <tr><td><code>append</code></td><td>Coloca o conteúdo do preset depois do conteúdo inferior.</td><td>Em um template, acrescentar uma seção; em um comando, anexar instruções finais.</td></tr>
+      <tr><td><code>wrap</code></td><td>Insere o conteúdo inferior onde aparece <code>{CORE_TEMPLATE}</code>.</td><td>Envolver um template ou comando com conteúdo próprio.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Sim: <code>prepend</code>, <code>append</code> e <code>wrap</code> valem tanto para templates quanto para comandos. Em ambos os casos, <code>{CORE_TEMPLATE}</code> marca onde o conteúdo de menor prioridade entra. Scripts são a exceção: aceitam <code>replace</code> e <code>wrap</code> (com o marcador <code>$CORE_SCRIPT</code>), mas não <code>prepend</code> nem <code>append</code>. Composição também pode encadear vários presets.</p>
+
+  <h2>4. O exemplo pirata ensina mais do que o tom</h2>
+  <p>O <a href="https://github.com/mnriem/spec-kit-pirate-speak-preset-demo">demo Pirate Speak</a> aplicou um preset a um projeto Spring Boot 4. A ideia não era só renomear arquivos: os templates mudaram os artefatos gerados e os comandos ensinaram os agentes a preenchê-los com uma voz consistente.</p>
+
+  <h3>O template muda o formato do artefato</h3>
+  <p>Compare alguns títulos do template padrão com o <code>spec-template.md</code> do preset:</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Template padrão</th><th>Template do preset</th><th>O que muda</th></tr></thead>
+    <tbody>
+      <tr><td><code>Feature Specification</code></td><td><code>Voyage Manifest</code></td><td>O documento passa a ser apresentado como o manifesto da viagem.</td></tr>
+      <tr><td><code>User Scenarios &amp; Testing</code></td><td><code>Crew Tales &amp; Sea Trials</code></td><td>Histórias e testes ganham novos nomes, mantendo prioridades e cenários testáveis.</td></tr>
+      <tr><td><code>Requirements</code></td><td><code>Demands o' the Voyage</code></td><td>Os requisitos continuam no artefato, mas sob a estrutura e o vocabulário do preset.</td></tr>
+    </tbody>
+  </table></div>
+  <p>O template também troca o título do plano para <code>Battle Plan</code> e organiza tarefas como <code>Crew Assignments</code>. As saídas ainda cumprem funções reconhecíveis de spec, plan e tasks; mudam os rótulos, as seções e as instruções de preenchimento.</p>
+
+  <h3>O comando muda como o agente trabalha</h3>
+  <p>O arquivo <code>commands/speckit.specify.md</code> complementa o template. Ele instrui o agente a escrever <strong>todo o conteúdo</strong> em fala pirata, não apenas a copiar títulos temáticos. Também define como interpretar o pedido, limitar dúvidas importantes e revisar a spec antes de concluir.</p>
+  <pre><code>Pedido: "Create a minimal Spring Boot MVC application"
+
+Com o preset:
+- o template fornece "Voyage Manifest" e "Crew Tales";
+- o comando orienta o agente a preencher essas seções em fala pirata;
+- o resultado do demo descreve três entregas priorizadas:
+  página Thymeleaf, health check Actuator e API JSON de saudação.</code></pre>
+  <p>O comando continua ligado ao fluxo técnico de <code>specify</code>: mantém scripts e encaminhamentos para etapas como <code>clarify</code> e <code>plan</code>. O preset altera as instruções e o material usado pelo agente; não precisa reimplementar a ferramenta de inicialização da feature.</p>
+
+  <h3>Da demonstração à regra de uma equipe</h3>
+  <p>Imagine trocar pirata por uma convenção de engenharia: o template de plano ganha uma seção <code>Security Review</code>, enquanto o comando <code>speckit.plan</code> instrui o agente a registrar ameaças relevantes e justificar quando a seção não se aplica. Assim, a estrutura pede a informação e o comando orienta como produzi-la.</p>
+  <p>No demo, os arquivos temáticos substituem os equivalentes padrão. Uma equipe poderia fazer uma mudança menor com <code>append</code> para adicionar uma seção ao template ou ao comando existente. Se a revisão precisar chamar um scanner externo, abrir um ticket ou acrescentar uma etapa executável, isso já pede uma extensão.</p>
+
+  <h2>5. Experimente sem adivinhar</h2>
+  <p>O projeto precisa estar inicializado com <code>specify init</code>. O fluxo de exploração e verificação é:</p>
+  <pre><code>specify preset search
+specify preset info &lt;preset-id&gt;
+specify preset add &lt;preset-id&gt;
+specify preset list
+specify preset resolve plan-template.md</code></pre>
+  <p>Antes de instalar, confira os arquivos e as instruções do pacote: presets da comunidade são mantidos por seus autores, não auditados ou endossados pelos mantenedores do Spec Kit. Para pausar o efeito, <code>specify preset disable &lt;preset-id&gt;</code>; para removê-lo, <code>specify preset remove &lt;preset-id&gt;</code>.</p>
+
+  <h2>6. Pratique: diagnostique a precedência</h2>
+  <p>O time instala um preset de segurança com prioridade 5 e outro de estilo com prioridade 10. Ambos fornecem <code>plan-template.md</code>. O projeto também tem um override local desse mesmo arquivo. Qual conteúdo será resolvido? Antes de revelar, responda de memória.</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar resposta</button>
+  <div id="answer" class="answer panel">
+    <p><strong>O override local.</strong> Ele está acima de todos os presets. Se for removido, o preset de segurança vence para esse arquivo, pois prioridade 5 vem antes de 10. Os demais arquivos ainda podem vir de camadas diferentes; confirme cada um com <code>specify preset resolve</code>.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.github.io/spec-kit/guides/customization.html#presets-change-how-a-process-works">guia de customização, seção Presets</a>, e a <a href="https://github.github.io/spec-kit/reference/presets.html">referência oficial de presets</a>, especialmente resolução de arquivos e estratégias de composição. O <a href="https://github.com/mnriem/spec-kit-pirate-speak-preset-demo">demo Pirate Speak</a> ilustra templates e comandos alterados em conjunto.</p>
+  </div>
+
+  <p><a href="./0011-customizar-o-spec-kit.html">Lição 11: mapa das customizações</a> · <a href="./0012-extensions-do-spec-kit.html">Lição 12: extensions</a> · <a href="../reference/spec-kit-presets.html">Referência rápida: presets</a></p>
+  <footer>O professor pode ajudar a decidir se uma regra deve ser local, compartilhada num preset ou implementada como capacidade nova. Traga o arquivo que você quer mudar e o resultado esperado.</footer>
+</main>
+</body>
+</html>
