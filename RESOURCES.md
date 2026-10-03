@@ -136,6 +136,8 @@
   README oficial da extensao bundled e opt-in que sincroniza a secao gerenciada dos arquivos de contexto dos agentes.
 - [Spec Kit Git Branching Workflow extension](https://github.com/github/spec-kit/blob/main/extensions/git/README.md)
   README oficial da extensao bundled e opt-in para branches, validacao, remotes e commits automatizados.
+- [Spec Kit authentication reference](https://github.github.io/spec-kit/reference/authentication.html)
+  Referencia primaria da autenticacao HTTP opt-in do Specify CLI para catalogos, downloads de extensoes e verificacoes de releases; documenta hosts, provedores, esquemas e protecao de credenciais.
 - [Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl (Birgitta Bockeler, martinfowler.com)](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
   Analise independente que define os tres niveis de SDD (spec-first, spec-anchored, spec-as-source) e traz uma visao critica sobre limitacoes praticas do Spec Kit.
 

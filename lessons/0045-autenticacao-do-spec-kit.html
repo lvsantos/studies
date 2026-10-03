@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 45 · Autenticação do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 45 · 5 minutos</p>
+  <h1>Autenticação no Spec Kit não é login no Copilot</h1>
+  <p class="lede">Vitória de hoje: reconhecer quando o Specify CLI precisa de credenciais para buscar recursos remotos e separar isso da integração com seu agente.</p>
+
+  <div class="panel">
+    <strong>Em uma frase</strong>
+    <p>A autenticação do Spec Kit autoriza <code>requisições HTTP de saída do Specify CLI</code> para fontes remotas. Ela é opcional: sem configuração, as requisições são feitas sem credenciais.</p>
+  </div>
+
+  <h2>Que problema resolve?</h2>
+  <p>Um catálogo, uma extensão ou um artefato de release pode estar em um repositório privado ou exigir credenciais. Sem autenticação, o CLI não consegue ler esse conteúdo; com ela, consegue enviar a credencial apropriada ao host autorizado.</p>
+  <ul>
+    <li>Buscar catálogos que exigem acesso autenticado;</li>
+    <li>baixar extensões privadas;</li>
+    <li>consultar ou baixar releases protegidas.</li>
+  </ul>
+  <p>Isso <strong>não</strong> autentica o GitHub Copilot, não configura <code>specify init --integration</code>, não faz login no Git e não autentica usuários da aplicação que você está construindo. São credenciais para as requisições de rede do próprio CLI.</p>
+
+  <h2>Quando usar</h2>
+  <p>Configure autenticação quando você precisa acessar uma fonte remota privada ou protegida. Para recursos públicos que o CLI já consegue buscar anonimamente, em geral não é necessário configurar nada.</p>
+  <p>O arquivo de configuração fica em <code>~/.specify/auth.json</code>. Exemplo para GitHub:</p>
+  <pre><code>{
+  "providers": [
+    {
+      "hosts": ["github.com", "api.github.com", "raw.githubusercontent.com", "codeload.github.com"],
+      "provider": "github",
+      "auth": "bearer",
+      "token_env": "GH_TOKEN"
+    }
+  ]
+}</code></pre>
+  <p>O token fica numa variável de ambiente, não no JSON. Forneça <code>GH_TOKEN</code> por um gerenciador de segredos ou pelo ambiente seguro da sua sessão; limite as permissões ao acesso necessário. Restrinja o arquivo:</p>
+  <pre><code>chmod 600 ~/.specify/auth.json</code></pre>
+
+  <h2>O modelo mental</h2>
+  <pre><code>Specify faz uma requisição HTTP
+        ↓
+O host corresponde a uma entrada em auth.json?
+        ↓ sim
+O CLI busca a credencial configurada e autentica a requisição</code></pre>
+  <p>O host precisa corresponder à lista configurada. Se um download redirecionar para um host fora dela, o cabeçalho de autorização é removido para não vazar a credencial.</p>
+
+  <h2>Pratique: diagnóstico de 403</h2>
+  <p>Uma extensão privada do GitHub retorna <code>403</code>. Antes de trocar a integração do agente, revele o primeiro diagnóstico útil:</p>
+  <button type="button" onclick="document.querySelector('#answer').classList.toggle('visible')">Revelar diagnóstico</button>
+  <div id="answer" class="answer panel">
+    <p>Confira se o host acessado está em <code>hosts</code>, se a variável indicada em <code>token_env</code> está disponível e se o token tem permissão de leitura para o repositório. Se algum download usa <code>raw.githubusercontent.com</code> ou <code>codeload.github.com</code>, esses hosts também precisam estar listados.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>A <a href="https://github.github.io/spec-kit/reference/authentication.html">referência oficial de autenticação</a> documenta provedores para GitHub, Azure DevOps e Bitbucket, esquemas aceitos e o comportamento de hosts e redirecionamentos.</p>
+  </div>
+
+  <p><a href="../reference/spec-kit-authentication.html">Abrir referência rápida</a> · <a href="0012-extensions-do-spec-kit.html">Lição: extensions</a> · <a href="0013-extensoes-da-comunidade-do-spec-kit.html">Lição: extensões da comunidade</a></p>
+  <p class="small">A próxima vez que um download falhar, identifique primeiro quem está fazendo a requisição e qual host ela acessa; só então decida se precisa de credenciais.</p>
+  <footer>O professor pode explicar qualquer etapa, interpretar seus artefatos ou revisar uma especificação. Pergunte com o comando e a mensagem exata que você encontrou.</footer>
+</main>
+</body>
+</html>

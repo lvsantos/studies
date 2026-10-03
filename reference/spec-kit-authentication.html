@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Autenticação do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>Autenticação HTTP</h1>
+  <p class="lede">Credenciais opcionais do Specify CLI para acessar fontes remotas protegidas.</p>
+
+  <h2>Use para</h2>
+  <ul>
+    <li>Buscar catálogos autenticados;</li>
+    <li>baixar extensões privadas;</li>
+    <li>consultar ou baixar releases protegidas.</li>
+  </ul>
+  <p>Sem configuração, as requisições são anônimas. Isto não configura o Copilot, a integração do agente, Git ou autenticação da aplicação.</p>
+
+  <h2>Configuração</h2>
+  <p>Crie <code>~/.specify/auth.json</code>. Exemplo GitHub com token fornecido por variável de ambiente:</p>
+  <pre><code>{
+  "providers": [
+    {
+      "hosts": ["github.com", "api.github.com", "raw.githubusercontent.com", "codeload.github.com"],
+      "provider": "github",
+      "auth": "bearer",
+      "token_env": "GH_TOKEN"
+    }
+  ]
+}</code></pre>
+  <pre><code>chmod 600 ~/.specify/auth.json</code></pre>
+  <p>Guarde o token num gerenciador de segredos ou variável de ambiente segura; evite incluí-lo no JSON, no repositório ou em logs. Conceda apenas as permissões necessárias.</p>
+
+  <h2>Provedores e esquemas</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Provedor</th><th>Esquemas documentados</th><th>Exemplos de uso</th></tr></thead>
+    <tbody>
+      <tr><td><strong>GitHub</strong></td><td><code>bearer</code></td><td>PAT, fine-grained PAT, OAuth ou token de GitHub App.</td></tr>
+      <tr><td><strong>Azure DevOps</strong></td><td><code>basic-pat</code>, <code>bearer</code>, <code>azure-cli</code>, <code>azure-ad</code></td><td>PAT, token OAuth, sessão do Azure CLI ou service principal.</td></tr>
+      <tr><td><strong>Bitbucket</strong></td><td><code>bearer</code>, <code>basic</code></td><td>Access token ou API token; o host e o formato dependem do tipo de token.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Diagnóstico rápido</h2>
+  <ul>
+    <li><strong>401/403:</strong> confira host, variável de ambiente, validade e permissões de leitura do token.</li>
+    <li><strong>Download falha em outro host:</strong> inclua os hosts de origem usados pelo catálogo; a autenticação não é encaminhada para destinos fora da lista declarada.</li>
+    <li><strong>Recurso público funciona sem configuração:</strong> comportamento esperado; a autenticação é opt-in.</li>
+  </ul>
+  <p>Entradas podem declarar múltiplos hosts. Os nomes correspondem exatamente ou por wildcard de subdomínio iniciado por <code>*.</code>; esse wildcard não inclui o domínio base.</p>
+
+  <h2>Links</h2>
+  <p><a href="https://github.github.io/spec-kit/reference/authentication.html">Referência oficial completa</a> · <a href="../lessons/0045-autenticacao-do-spec-kit.html">Lição: autenticação do Spec Kit</a> · <a href="../lessons/0012-extensions-do-spec-kit.html">Lição: extensions</a></p>
+</main>
+</body>
+</html>
