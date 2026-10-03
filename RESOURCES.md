@@ -26,6 +26,12 @@
   Fonte primaria para descobrir bundles comunitarios, entender o que a revisao do catalogo cobre e verificar a resolucao dos componentes e os requisitos de submissao. A presenca no catalogo nao representa auditoria nem endosso.
 - [Spec Kit community bundle catalog](https://github.com/github/spec-kit/blob/main/bundles/catalog.community.json)
   Catalogo atual de descoberta; em 2026-10-03 lista `agentstandards`, `sicario-spec` e `specassay`, com metadados de papel, versao e contagem de componentes.
+- [Spec Kit Bundle Submission issue template](https://github.com/github/spec-kit/issues/new?template=bundle_submission.yml)
+  Formulario oficial para submeter ou atualizar bundles comunitarios; requer release versionada, artifact gerado por `specify bundle build`, README, evidencia de instalacao limpa e URLs de catalogos externos quando necessarias.
+- [Spec Kit contribution guide: community catalog submissions](https://github.com/github/spec-kit/blob/main/CONTRIBUTING.md)
+  Define que entradas e atualizacoes de catalogos comunitarios de bundles comecam por issue, nao por PR manual; a triagem aciona validacao automatizada e gera a mudanca de catalogo.
+- [Spec Kit first-party bundle catalog](https://github.com/github/spec-kit/blob/main/bundles/catalog.json)
+  Catalogo de bundles curados e mantidos pelo projeto, atualmente `bugfix` e `assess`; diferente do catalogo comunitario e sem rota de auto-submissao.
 - [Spec Kit workflows reference](https://github.github.io/spec-kit/reference/workflows.html)
   Referencia primaria para definicoes YAML, entradas, tipos de passos, execucao, status, retomada, overlays e limites de seguranca dos workflows.
 - [Spec Kit first-party workflow catalog](https://github.com/github/spec-kit/blob/main/workflows/catalog.json)

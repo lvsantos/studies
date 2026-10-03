@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 41 · Publicar um bundle do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 41 · 15 minutos</p>
+  <h1>Publicar um bundle: release própria ou catálogo do Spec Kit</h1>
+  <p class="lede">Vitória de hoje: validar e distribuir um setup por papel, sabendo quando basta publicar o pacote e como pedir sua inclusão no catálogo comunitário oficial.</p>
+
+  <div class="panel">
+    <strong>Pacote, catálogo e curadoria são coisas diferentes</strong>
+    <p>Seu repositório pode hospedar o <code>bundle.yml</code>, a documentação e o ZIP da release. Um catálogo controlado por você pode tornar esse bundle instalável por ID. Já o catálogo comunitário do Spec Kit é para descoberta: a submissão passa por um issue e por validação automatizada.</p>
+    <p>O <code>bundles/catalog.json</code> tem outra função: lista os bundles first-party que o projeto mantém. Não é um formulário de auto-publicação.</p>
+  </div>
+
+  <h2>1. Defina o pacote como nas aulas anteriores</h2>
+  <p>Um bundle reúne componentes que já têm suas próprias responsabilidades. Reaproveite as decisões das aulas de <a href="./0018-criar-extensao-propria-do-spec-kit.html">criação de extensão</a>, <a href="./0026-criar-preset-proprio-spec-kit.html">criação de preset</a> e <a href="./0034-criar-workflow-proprio-spec-kit.html">criação de workflow</a>: o bundle organiza versões e dependências, mas não substitui esses componentes.</p>
+  <p>Use os <a href="https://github.com/github/spec-kit/tree/main/examples/bundles">manifests de exemplo</a> como referência de estrutura; os IDs demonstrativos não garantem que os componentes existam nos catálogos. Crie seu pacote e mantenha apenas o que o papel realmente precisa:</p>
+  <pre><code>product-team/
+├── bundle.yml
+├── README.md
+└── LICENSE</code></pre>
+  <p>No <code>bundle.yml</code>, confira ID, nome, versão SemVer, papel, requisito mínimo do Spec Kit e cada componente declarado. Fixe as versões exigidas pelo formato. Uma referência no manifest não prova que o componente está publicado: confirme que ela resolve nos catálogos que o público terá disponíveis.</p>
+
+  <h2>2. Valide e teste o ZIP de verdade</h2>
+  <p>Validação e build respondem a perguntas diferentes: a primeira verifica estrutura e referências que podem ser verificadas; a segunda cria o artefato distribuível.</p>
+  <pre><code>specify bundle validate --path ./product-team
+specify bundle build --path ./product-team --output dist/
+specify bundle install ./dist/product-team-1.0.0.zip</code></pre>
+  <p>Faça a instalação em um projeto de teste limpo e confira os componentes instalados. Se o bundle depende de catálogos não padrão, adicione-os antes do teste e documente as URLs no README. O bundle distribui o manifest; componentes externos continuam precisando ser resolvidos nas fontes correspondentes. A <a href="https://github.github.io/spec-kit/reference/bundles.html">referência de bundles</a> detalha essa resolução.</p>
+
+  <h2>3. Publique primeiro no seu repositório</h2>
+  <p>Uma release versionada no seu GitHub já é uma forma completa de distribuição. Inclua o ZIP criado por <code>bundle build</code>, o <code>bundle.yml</code>, um README com papel, componentes, catálogos necessários e instruções, além da licença.</p>
+  <p>Quem receber o ZIP pode instalar pelo caminho do arquivo, sem esperar que o bundle apareça em um catálogo:</p>
+  <pre><code>specify bundle install ./product-team-1.0.0.zip</code></pre>
+  <p>Para instalar por ID dentro da organização, publique também um catálogo de bundles controlado por você e teste o fluxo completo:</p>
+  <pre><code>specify bundle catalog add \
+  https://acme.example/spec-kit/bundles.json \
+  --id acme-bundles --policy install-allowed
+specify bundle install product-team</code></pre>
+  <p>A release hospeda o artefato; o catálogo aponta para ele. São duas peças que você mantém alinhadas. A <a href="./0035-publicar-workflow-spec-kit.html">lição de publicação de workflows</a> usa a mesma distinção entre pacote e descoberta, mas o formato e os comandos são próprios de cada componente.</p>
+
+  <h2>4. Peça entrada no catálogo comunitário</h2>
+  <p>Para aparecer na busca comunitária do Spec Kit, publique a release no seu repositório e abra o formulário oficial de <a href="https://github.com/github/spec-kit/issues/new?template=bundle_submission.yml">Bundle Submission</a>. Ele pede, entre outros dados, ID e versão, URL do ZIP e do README, licença, requisito do Spec Kit, componentes, catálogos adicionais e evidência de teste em um projeto limpo.</p>
+  <ol>
+    <li>Confirme que <code>validate</code> e <code>build</code> passaram.</li>
+    <li>Crie a release GitHub com o ZIP versionado e teste o arquivo baixado.</li>
+    <li>Preencha o issue com metadados, dependências, exemplo de uso e testes.</li>
+    <li>Aguarde a triagem: um mantenedor aplica o rótulo que inicia a validação automatizada.</li>
+    <li>Corrija o que a validação apontar; após aprovação, a automação prepara a mudança no catálogo comunitário.</li>
+  </ol>
+  <p>Não abra um PR editando <code>bundles/catalog.community.json</code> diretamente. O <a href="https://github.com/github/spec-kit/blob/main/CONTRIBUTING.md">guia de contribuição</a> determina o issue para novas entradas e atualizações; a automação gera o PR depois de validar release, links e metadados.</p>
+
+  <h2>5. Não confunda catálogo comunitário com first-party</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Destino</th><th>Quem mantém</th><th>Como chegar</th></tr></thead>
+    <tbody>
+      <tr><td>Seu repositório/release</td><td>Você ou sua equipe</td><td>Publique o ZIP; compartilhe o arquivo ou um catálogo próprio instalável.</td></tr>
+      <tr><td><code>bundles/catalog.community.json</code></td><td>Autores independentes; entrada validada pelo processo comunitário</td><td>Issue <em>Bundle Submission</em>; não é instalação por ID no catálogo embutido padrão.</td></tr>
+      <tr><td><code>bundles/catalog.json</code></td><td>Projeto Spec Kit</td><td>Bundles first-party curados, como <code>bugfix</code> e <code>assess</code>; inclusão depende da decisão dos mantenedores.</td></tr>
+    </tbody>
+  </table></div>
+  <p>O catálogo comunitário embutido é <code>discovery-only</code>: <code>search</code> e <code>info</code> ajudam a descobrir e inspecionar, mas não autorizam instalar pelo ID. A presença no catálogo não é auditoria de segurança nem endosso. Para uma contribuição first-party, siga a orientação dos mantenedores e o processo normal de contribuição; não use o formulário comunitário como atalho para <code>catalog.json</code>.</p>
+
+  <h2>6. Pratique: qual caminho falta?</h2>
+  <p>Seu bundle já tem uma release pública e uma colega instalou o ZIP. Ele ainda não aparece em <code>specify bundle search</code> no catálogo comunitário. Qual é a próxima ação correta?</p>
+  <label for="answer-route">Sua resposta</label>
+  <p><input id="answer-route" type="text" autocomplete="off" aria-describedby="feedback-route"></p>
+  <button type="button" id="check-route">Conferir</button>
+  <p id="feedback-route" class="answer panel" aria-live="polite"></p>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>A <a href="https://github.github.io/spec-kit/reference/bundles.html">referência de bundles</a> descreve scaffold, validação, build, instalação e catálogos. A página de <a href="https://github.github.io/spec-kit/community/bundles.html">bundles comunitários</a> e o <a href="https://github.com/github/spec-kit/blob/main/.github/ISSUE_TEMPLATE/bundle_submission.yml">formulário de submissão</a> definem os requisitos e os limites da revisão.</p>
+  </div>
+
+  <p><a href="./0040-bundles-exemplos-spec-kit.html">Lição 40: manifestos por papel</a> · <a href="./0019-publicar-extensao-do-spec-kit.html">Publicar extensão</a> · <a href="./0027-publicar-preset-spec-kit.html">Publicar preset</a> · <a href="./0035-publicar-workflow-spec-kit.html">Publicar workflow</a> · <a href="../reference/spec-kit-bundles.html">Referência rápida de bundles</a></p>
+  <footer>Traga seu <code>bundle.yml</code>, o ZIP e a lista de catálogos exigidos para revisar a instalação de ponta a ponta. Se ainda houver dúvida sobre o destino, pergunte ao professor: release própria, catálogo de equipe ou descoberta comunitária.</footer>
+</main>
+<script>
+  const answerRoute = document.querySelector('#answer-route');
+  const feedbackRoute = document.querySelector('#feedback-route');
+  document.querySelector('#check-route').addEventListener('click', () => {
+    const answer = answerRoute.value.trim().toLowerCase();
+    feedbackRoute.innerHTML = ['abrir o issue bundle submission', 'bundle submission', 'issue bundle submission', 'submeter o issue de bundle', 'abrir um issue de submissao', 'abrir um issue de submissão', 'issue de submissão'].includes(answer)
+      ? '<strong>Isso.</strong> Abra o issue oficial Bundle Submission com os dados da release e evidência de teste. A automação valida e prepara a entrada no catálogo comunitário; não edite o JSON diretamente.'
+      : '<strong>Ainda não.</strong> Publicar a release permite instalar o ZIP, mas não registra o bundle para descoberta comunitária. Use o formulário oficial Bundle Submission.';
+    feedbackRoute.classList.add('visible');
+  });
+</script>
+</body>
+</html>
