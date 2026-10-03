@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 42 · Atualizar o Spec Kit sem surpresas</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 42 · 8 minutos</p>
+  <h1>Atualizar o Spec Kit sem misturar as camadas</h1>
+  <p class="lede">Vitória de hoje: atualizar a CLI, os arquivos do projeto e os componentes customizados como operações separadas, prevendo onde pode haver incompatibilidade.</p>
+
+  <div class="panel">
+    <strong>Modelo mental</strong>
+    <p>Há duas atualizações diferentes: a ferramenta <code>specify</code> instalada na máquina e os arquivos/componentes instalados dentro de cada projeto. Atualizar uma não atualiza automaticamente tudo da outra.</p>
+  </div>
+
+  <h2>1. Sequência para um projeto existente</h2>
+  <ol>
+    <li>Confira a versão e simule: <code>specify self check</code> e <code>specify self upgrade --dry-run</code>.</li>
+    <li>Faça commit ou backup das customizações; leia as notas da versão, sobretudo em um salto de versão principal.</li>
+    <li>Atualize a CLI: <code>specify self upgrade</code> (ou fixe uma tag com <code>--tag vX.Y.Z</code>).</li>
+    <li>Dentro do projeto, confira o estado com <code>specify integration status</code> e atualize cada integração instalada com <code>specify integration upgrade &lt;key&gt;</code>.</li>
+    <li>Atualize extensões independentes com <code>specify extension update</code>. Atualize também presets, workflows e bundles pelos comandos próprios, conforme quem é dono de cada componente.</li>
+    <li>Revise o diff, resolva avisos de arquivos modificados e rode comandos representativos do seu fluxo.</li>
+  </ol>
+  <p>Use <code>specify init --here --force</code> como recuperação quando faltam manifestos/metadados, não como rotina: essa rota ampla não oferece a mesma checagem por integração antes de substituir arquivos. O guia oficial confirma que specs, planos, tarefas, código e histórico Git ficam fora da atualização normal por manifesto.</p>
+
+  <h2>2. O que atualiza cada camada?</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Camada</th><th>Atualização</th><th>Risco típico</th></tr></thead>
+    <tbody>
+      <tr><td>CLI</td><td><code>specify self upgrade</code></td><td>Comandos/recursos novos podem exigir atualizar também os arquivos do projeto.</td></tr>
+      <tr><td>Integração e núcleo do projeto</td><td><code>specify integration upgrade &lt;key&gt;</code></td><td>Alterações locais em arquivos gerenciados podem bloquear a atualização; não use <code>--force</code> sem revisar o diff.</td></tr>
+      <tr><td>Extensões</td><td><code>specify extension update</code></td><td>Comandos, templates e hooks podem mudar; confira requisitos de versão e comportamento.</td></tr>
+      <tr><td>Presets</td><td><code>specify preset update &lt;id&gt;</code></td><td>Atualiza comandos/templates do preset, não garante que suas suposições ainda correspondam ao núcleo novo.</td></tr>
+      <tr><td>Workflows</td><td><code>specify workflow update [id]</code></td><td>Um overlay pode deixar de encontrar um passo se o workflow-base renomear/remover seu ID âncora.</td></tr>
+      <tr><td>Bundles</td><td><code>specify bundle update &lt;id&gt;</code></td><td>Reaplica versões fixadas no bundle; componentes que ele possui devem ser atualizados por ele.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Extensões, presets, workflows e bundles podem evoluir independentemente do núcleo. Uma atualização pode quebrar compatibilidade se mudar um comando, template, hook, requisito, entrada ou passo usado pela customização. Restrições como <code>requires.speckit_version</code> ajudam quando declaradas, mas não substituem teste. A promessa de compatibilidade do Spec Kit na mesma versão principal não é garantia universal para pacotes de terceiros nem para customizações próprias.</p>
+
+  <h2>3. Seu preset faz <code>append</code> em um comando</h2>
+  <p>Imagine que o comando central termina com uma instrução e seu preset acrescenta outra ao final. O <code>append</code> compõe o texto do preset depois do texto-base resolvido; ele não “cola para sempre” a instrução em um arquivo de origem. Comandos são materializados para a integração ativa e recalculados durante instalação/atualização/reconciliação do preset.</p>
+  <pre><code>Antes: núcleo v1 + sua instrução append
+Depois: núcleo v2 + sua instrução append</code></pre>
+  <p>Atualizar apenas a CLI não troca os arquivos de comando do projeto. Atualizar a integração atualiza a camada de comandos centrais; atualizar/reconciliar o preset recompõe os comandos gerenciados com a nova base. Porém, a frase acrescentada continua sendo sua responsabilidade: se o núcleo v2 mudou os nomes dos artefatos, a ordem das etapas ou a semântica do comando, a instrução anexada pode ficar redundante, contraditória ou inválida.</p>
+  <div class="panel">
+    <strong>Procedimento para esse caso</strong>
+    <ol>
+      <li>Atualize a CLI e os arquivos da integração.</li>
+      <li>Inspecione o arquivo do preset e a origem efetiva com <code>specify preset resolve &lt;nome-do-comando&gt;</code>.</li>
+      <li>Revise/atualize o preset e, se apropriado, rode <code>specify preset update &lt;id&gt;</code> para recompô-lo contra o núcleo novo.</li>
+      <li>Abra o comando materializado na pasta da integração ativa; confirme que o núcleo novo e o trecho anexado aparecem uma única vez e na ordem esperada.</li>
+      <li>Execute o comando em uma feature de teste e revise o artefato gerado.</li>
+    </ol>
+    <p><strong>Atenção:</strong> a atualização de preset é destrutiva: remove o preset instalado e depois tenta adicioná-lo de novo. Se a nova origem falhar, o preset anterior pode já ter sido removido. Confira a origem, faça backup/commit e use a saída de <code>preset info</code>/<code>preset resolve</code> antes.</p>
+  </div>
+  <p>Com <code>replace</code>, o preset substitui por inteiro o comando/template central: você pode não receber as melhorias do núcleo até atualizar o próprio preset. Com <code>wrap</code>, confira se o ponto <code>{CORE_TEMPLATE}</code> continua correto. Para templates, a resolução acontece em tempo de execução; para comandos, não: o agente usa o arquivo materializado.</p>
+
+  <h2>4. Workflows, bundles e outras incompatibilidades</h2>
+  <ul>
+    <li><strong>Workflows:</strong> atualizar um workflow pode preservar overlays locais, mas um overlay depende dos IDs dos passos do workflow-base. Rode <code>specify workflow resolve &lt;id&gt;</code> para ver a composição; depois valide e execute em um caso de teste.</li>
+    <li><strong>Bundles:</strong> o bundle é o dono das versões dos componentes que instalou. <code>bundle update</code> reaplica os pins atualizados e pode remover componentes que saíram do manifesto. Componentes independentes não são adotados nem atualizados pelo bundle.</li>
+    <li><strong>Extensões:</strong> algumas são empacotadas com o Spec Kit; podem exigir atualizar a CLI antes de atualizar a extensão. Se aparecer erro de incompatibilidade, confira o requisito declarado.</li>
+  </ul>
+  <p>Em qualquer camada, leia os arquivos novos antes de forçar substituição. “A instalação terminou” prova que o pacote passou pela instalação, não que a política, o comando ou o workflow ainda produz o resultado pretendido.</p>
+
+  <h2>Pratique: recupere a distinção</h2>
+  <p>Sem olhar acima: se você atualizou a CLI e ainda não atualizou a integração do projeto, os comandos existentes já mudaram? E o que precisa acontecer para o seu <code>append</code> voltar a ser combinado com a base nova?</p>
+  <button type="button" aria-expanded="false" aria-controls="recall-answer" onclick="const answer = document.querySelector('#recall-answer'); answer.classList.toggle('visible'); this.setAttribute('aria-expanded', answer.classList.contains('visible'))">Revelar resposta</button>
+  <div id="recall-answer" class="answer panel" aria-live="polite">
+    <p><strong>Não.</strong> A atualização da CLI não atualiza os arquivos do projeto. Atualize a integração e depois atualize/reconcilie o preset; então inspecione o comando materializado e teste se o texto acrescentado ainda faz sentido.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.github.io/spec-kit/upgrade.html">guia oficial de upgrade</a>. Para a composição do exemplo, consulte a <a href="https://github.github.io/spec-kit/reference/presets.html">referência de presets</a>; para requisitos e ciclo de vida, veja as referências de <a href="https://github.github.io/spec-kit/reference/extensions.html">extensões</a>, <a href="https://github.github.io/spec-kit/reference/workflows.html">workflows</a> e <a href="https://github.github.io/spec-kit/reference/bundles.html">bundles</a>.</p>
+  </div>
+
+  <p><a href="./0028-overrides-locais-spec-kit.html">Aula: overrides e resolução</a> · <a href="./0026-criar-preset-proprio-spec-kit.html">Criar um preset</a> · <a href="../reference/spec-kit-upgrade.html">Referência rápida: atualizar o Spec Kit</a></p>
+  <footer>Se algo ficar pouco claro, pergunte ao professor. Traga as versões, o comando de atualização e a saída de <code>integration status</code> ou <code>preset resolve</code>; podemos rastrear juntos qual camada está ativa.</footer>
+</main>
+</body>
+</html>

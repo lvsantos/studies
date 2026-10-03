@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Atualização do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>Atualizar sem perder o mapa</h1>
+  <p class="lede">CLI, arquivos do projeto e componentes customizados têm ciclos de atualização separados.</p>
+
+  <h2>Sequência-base</h2>
+  <pre><code># Fora ou dentro do projeto: confira e atualize a CLI
+specify self check
+specify self upgrade --dry-run
+specify self upgrade
+
+# Dentro do projeto: atualize arquivos da integração
+specify integration status
+specify integration upgrade &lt;key&gt;
+
+# Atualize componentes pelo respectivo dono
+specify extension update
+specify preset update &lt;preset-id&gt;
+specify workflow update [workflow-id]
+specify bundle update [bundle-id]</code></pre>
+  <p>Use <code>specify self upgrade --tag vX.Y.Z</code> para selecionar uma release. Faça commit/backup antes; confira release notes e diff. A rota normal para arquivos do projeto usa manifestos. Reserve <code>specify init --here --force</code> para recuperação: ela é mais ampla e não faz as mesmas verificações por arquivo.</p>
+
+  <h2>Quem é dono da atualização?</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Artefato</th><th>Comando</th><th>Verificação</th></tr></thead>
+    <tbody>
+      <tr><td>CLI</td><td><code>self upgrade</code></td><td><code>self check</code></td></tr>
+      <tr><td>Comandos da integração, scripts/templates centrais</td><td><code>integration upgrade &lt;key&gt;</code></td><td><code>integration status</code> e diff</td></tr>
+      <tr><td>Extensão independente</td><td><code>extension update [id]</code></td><td><code>extension list</code>; teste comandos e hooks</td></tr>
+      <tr><td>Preset independente</td><td><code>preset update &lt;preset-id&gt;</code></td><td><code>preset resolve &lt;arquivo&gt;</code>; inspecione o comando materializado</td></tr>
+      <tr><td>Workflow independente</td><td><code>workflow update [workflow-id]</code></td><td><code>workflow resolve &lt;id&gt;</code>; valide anchors e execute um teste</td></tr>
+      <tr><td>Bundle instalado</td><td><code>bundle update [bundle-id]</code></td><td><code>bundle info &lt;id&gt;</code> e teste os componentes atualizados</td></tr>
+    </tbody>
+  </table></div>
+  <p>Se um componente pertence a um bundle, prefira atualizar pelo bundle para reaplicar os pins do manifesto. Atualização de CLI não atualiza automaticamente presets, workflows, bundles nem extensões independentes. Extensões empacotadas podem exigir a CLI mais nova.</p>
+
+  <h2>Preset que acrescenta instrução a comando</h2>
+  <pre><code>comando efetivo = comando-base-atual + texto do preset (append)</code></pre>
+  <ol>
+    <li>Atualize a CLI.</li>
+    <li>Atualize os arquivos da integração.</li>
+    <li>Revise o preset contra o novo contrato do comando.</li>
+    <li>Atualize/reconcilie o preset, e confira o arquivo materializado na integração ativa.</li>
+    <li>Teste o comando e o artefato produzido.</li>
+  </ol>
+  <p>O trecho <code>append</code> tende a continuar junto ao novo texto-base após a recomposição, mas pode ficar obsoleto ou contraditório. <code>replace</code> mascara a implementação do núcleo; <code>wrap</code> depende de seu placeholder. A atualização de preset remove e instala novamente: se a instalação nova falhar, a anterior pode já ter sido removida. Mantenha backup/commit e confira a origem primeiro.</p>
+
+  <h2>Falhas plausíveis</h2>
+  <ul>
+    <li>Arquivo da integração modificado: atualização por manifesto pode bloquear. Revise o diff; não passe <code>--force</code> às cegas.</li>
+    <li>Template/override antigo: continua prevalecendo e pode ocultar a atualização do núcleo.</li>
+    <li>Overlay de workflow: pode falhar ao resolver se o workflow-base removeu/renomeou o step ID alvo.</li>
+    <li>Versão principal ou terceiro componente: contrato, requisitos ou esquema podem mudar. A compatibilidade dentro da mesma versão principal não é garantia para todas as extensões e customizações.</li>
+    <li>Comando duplicado no agente: confira pastas atuais e legadas e reinicie o agente/editor.</li>
+  </ul>
+
+  <p><a href="../lessons/0042-atualizar-spec-kit-sem-surpresas.html">Aula 42: atualizar o Spec Kit sem surpresas</a> · <a href="../lessons/0028-overrides-locais-spec-kit.html">Overrides locais</a> · <a href="./spec-kit-presets.html">Referência de presets</a></p>
+  <p class="small">Fontes: <a href="https://github.github.io/spec-kit/upgrade.html">Upgrade guide</a> · <a href="https://github.github.io/spec-kit/reference/presets.html">Presets</a> · <a href="https://github.github.io/spec-kit/reference/extensions.html">Extensions</a> · <a href="https://github.github.io/spec-kit/reference/workflows.html">Workflows</a> · <a href="https://github.github.io/spec-kit/reference/bundles.html">Bundles</a>.</p>
+</main>
+</body>
+</html>
