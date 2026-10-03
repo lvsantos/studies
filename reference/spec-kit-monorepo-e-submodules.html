@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Spec Kit em monorepos e submodules</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>Monorepo ou submodules?</h1>
+  <p class="lede">Para uma feature coordenada entre submodules, mantenha um projeto Spec Kit no pai e um só ciclo de artefatos.</p>
+
+  <div class="table-scroll"><table>
+    <thead><tr><th>Aspecto</th><th>Monorepo</th><th>Repos com submodules</th></tr></thead>
+    <tbody>
+      <tr><td>Projeto Spec Kit</td><td>Cada projeto isolado possui seu <code>.specify/</code>, constituição e <code>specs/</code>.</td><td>Para uma feature transversal, somente o pai precisa do <code>.specify/</code> e dos artefatos da feature.</td></tr>
+      <tr><td>Constitutions</td><td>Constituições locais por projeto; sem herança embutida.</td><td>Constitution transversal no pai; arquivo local mantido por cada repo filho e lido explicitamente.</td></tr>
+      <tr><td>Git</td><td>Um Git raiz significa branches compartilhados entre projetos.</td><td>Históricos e branches independentes; o pai registra um commit do submodule (gitlink).</td></tr>
+      <tr><td>Contrato</td><td>Referencie a mesma fonte autoritativa entre os projetos.</td><td>Publique versão ou mantenha cópia somente leitura com fonte e revisão imutável.</td></tr>
+      <tr><td>Coordenação</td><td>Use specs locais se os projetos tiverem ciclos independentes.</td><td>Uma spec/plan/tasks/implement pode coordenar a feature completa; commits e checks continuam por repo.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Monorepo</h2>
+  <pre><code>repo/
+  apps/web/.specify/       apps/web/specs/
+  apps/api/.specify/       apps/api/specs/
+  packages/ui/.specify/    packages/ui/specs/</code></pre>
+  <ul>
+    <li>Execute slash commands dentro do projeto para resolver o <code>.specify/</code> mais próximo.</li>
+    <li>Para scripts/CI, <code>SPECIFY_INIT_DIR</code> deve apontar para diretório existente que contenha <code>.specify/</code>; valide o destino.</li>
+    <li>Constituições são locais; não há herança embutida de uma constituição comum.</li>
+  </ul>
+
+  <h2>Repos independentes com submodules</h2>
+  <pre><code>produto/
+  .specify/memory/constitution.md   # regras transversais + instrução para ler as locais
+  specs/023-feature/{spec,plan,tasks}.md
+  modules/api/CONSTITUTION.md       # fonte local, versionada no repo api
+  modules/web/CONSTITUTION.md       # fonte local, versionada no repo web</code></pre>
+  <ol>
+    <li>Inicialize Spec Kit somente no pai e mantenha nele um único diretório da feature com <code>spec.md</code>, <code>plan.md</code> e <code>tasks.md</code>.</li>
+    <li>Use a constitution do pai para regras transversais e mande o agente ler as constitutions locais dos repos alterados. Spec Kit não as descobre nem combina automaticamente.</li>
+    <li>Em <code>plan.md</code>/<code>tasks.md</code>, mapeie tarefa → repo → constitution local → checks; inclua contratos e validação de integração.</li>
+    <li>Mantenha a constitution local dentro do repo dono (por exemplo, <code>CONSTITUTION.md</code>) e aprove alterações com seus responsáveis.</li>
+    <li>O gitlink do pai fixa o commit do submodule e, portanto, a revisão da constitution que o workspace consulta. Mudanças de código continuam sendo commits separados.</li>
+  </ol>
+  <pre><code>git clone --recurse-submodules URL
+git submodule update --init --recursive</code></pre>
+
+  <h2>Não confunda</h2>
+  <ul>
+    <li>O ciclo único é adequado quando existe uma feature coordenada; projetos com roadmaps independentes ainda podem manter Spec Kits separados.</li>
+    <li>Git submodules não juntam históricos: a execução única do agente não vira commit atômico entre repos.</li>
+    <li>Constitution local fora do contexto não será automaticamente aplicada; explicite o caminho e confirme a leitura.</li>
+    <li>Não duplique a constitution local na do pai: isso cria cópias concorrentes e drift.</li>
+  </ul>
+
+  <p><a href="../lessons/0049-speckit-monorepo-e-submodules.html">Lição 49</a> · <a href="../reference/spec-kit-contract-driven-development.html">Referência: contratos</a></p>
+  <p class="small">Fontes primárias: <a href="https://github.github.io/spec-kit/guides/monorepo.html#constitutions">guia do Spec Kit sobre monorepo e constitutions</a>, <a href="https://github.github.io/spec-kit/guides/contract-driven-development.html">guia de contratos</a> e <a href="https://git-scm.com/book/pt-br/v2/Ferramentas-do-Git-Subm%C3%B3dulos">Pro Git: submodules</a>.</p>
+</main>
+</body>
+</html>

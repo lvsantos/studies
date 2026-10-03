@@ -146,6 +146,12 @@
 
 - [Spec Kit: Contract-Driven Development](https://github.github.io/spec-kit/guides/contract-driven-development.html)
   Fonte primaria para identificar interfaces entre componentes, definir comportamento observavel e propriedade do contrato, integrar contratos ao fluxo `specify → plan → tasks → implement`, verificar provider e consumer e planejar releases compativeis. A documentacao esclarece que o Spec Kit nao sincroniza contratos nem orquestra releases automaticamente.
+- [Using Spec Kit in a Monorepo](https://github.github.io/spec-kit/guides/monorepo.html)
+  Guia primario para manter projetos Spec Kit independentes em subpastas, selecionar o alvo com `.specify/` ou `SPECIFY_INIT_DIR`, e entender que constitutions são locais sem herança embutida. Para uma feature única coordenada pelo pai, mantenha as constitutions dos submodules nos próprios repos e instrua o agente a lê-las.
+- [Git Tools - Submodules (Pro Git, português brasileiro)](https://git-scm.com/book/pt-br/v2/Ferramentas-do-Git-Subm%C3%B3dulos)
+  Referencia do Git para submodules: o repositório pai registra um commit fixo (gitlink), clonagem/atualização recursiva e coordenação de alterações entre repositórios independentes.
+- [Contract-Driven Development: Monorepo and multi-repository examples](https://github.github.io/spec-kit/guides/contract-driven-development.html#one-authoritative-owner)
+  Orientação primaria de ownership de contratos: referenciar o mesmo artefato no mesmo repositório; entre repositórios, publicar uma versão ou sincronizar cópias com origem e revisão fixadas.
 
 ## Wisdom
 

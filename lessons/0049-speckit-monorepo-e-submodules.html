@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 49 · Spec Kit em monorepo e submodules</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 49 · 5 minutos</p>
+  <h1>Escolha o contexto Spec Kit pelo projeto, não pelo Git</h1>
+  <p class="lede">Vitória de hoje: manter um único ciclo Spec Kit no repositório pai quando uma feature atravessa submodules e respeitar as regras de cada repo.</p>
+
+  <div class="panel">
+    <strong>A unidade de Spec Kit é a pasta com <code>.specify/</code></strong>
+    <p>Um monorepo pode conter vários projetos Spec Kit independentes, cada qual com sua constituição e pasta <code>specs/</code>. Executar os comandos de dentro de um projeto seleciona o <code>.specify/</code> mais próximo. O layout do Git não define as fronteiras de interface: se componentes colaboram, o contrato continua sendo acordado e testado. <a href="https://github.github.io/spec-kit/guides/monorepo.html">Guia oficial de monorepo</a>.</p>
+  </div>
+
+  <h2>Monorepo: contexto local, Git compartilhado</h2>
+  <pre><code>repo/
+  apps/web/.specify/       # specs e constituição do web
+  apps/api/.specify/       # specs e constituição da API
+  packages/ui/.specify/    # specs e constituição do pacote</code></pre>
+  <p>Rode o fluxo no diretório do projeto responsável. Em execução não interativa, <code>SPECIFY_INIT_DIR=apps/api</code> seleciona o projeto a partir da raiz, desde que o caminho exista e contenha <code>.specify/</code>. A variável precisa chegar ao shell que executa os scripts do agente; valide que os artefatos foram escritos na pasta esperada.</p>
+  <p>Com um único repositório Git na raiz, branches e commits continuam compartilhados por todo o monorepo. As specs são locais ao projeto selecionado; Git não cria uma branch isolada por subpasta. <a href="https://github.github.io/spec-kit/guides/monorepo.html#git-in-a-monorepo">Veja o detalhe de Git no guia</a>.</p>
+
+  <h2>Uma feature, um único ciclo</h2>
+  <ol>
+    <li><strong><code>specify</code>:</strong> descreva a feature no projeto pai e liste os repos/submodules que serão alterados.</li>
+    <li><strong><code>plan</code>:</strong> produza um plano único que atravesse as fronteiras, com contratos, caminhos e ownership claros.</li>
+    <li><strong><code>tasks</code>:</strong> mantenha uma lista única; marque cada tarefa com o repo-alvo, suas regras locais e os checks que deve cumprir.</li>
+    <li><strong><code>implement</code>:</strong> execute a mesma lista no workspace com submodules inicializados e valide os checks de cada repo e a integração final.</li>
+  </ol>
+  <p>Esse modelo funciona quando os repos compõem uma única mudança coordenada. Git ainda mantém commits e branches separados dentro de cada submodule; uma execução de <code>implement</code> não torna esses históricos um único commit. <a href="../lessons/0048-contract-driven-development.html">A lição anterior</a> detalha como acordar contratos entre os componentes.</p>
+
+  <h2>Constitutions: coordenação no pai, regras nos repos</h2>
+  <p>Inicialize o Spec Kit somente no repositório pai. Ele tem a spec e a constitution usadas pelo único ciclo; não inicialize outro projeto Spec Kit nos submodules para essa feature. O Spec Kit não descobre nem herda automaticamente constitutions por submodule: a constitution do pai não substitui as regras de cada repo.</p>
+  <pre><code>produto-repo/                 # projeto integrador, se fizer sentido
+  .specify/memory/constitution.md  # regras globais e instrução de coordenação
+  specs/023-feature/
+    spec.md
+    plan.md
+    tasks.md
+  modules/api/                 # submodule; outro repositório
+    CONSTITUTION.md              # regras locais, mantidas neste repo
+  modules/web/                 # outro submodule
+    CONSTITUTION.md</code></pre>
+  <ol>
+    <li>Deixe a constitution do pai com princípios transversais e uma regra explícita: antes de alterar um submodule, leia seu <code>CONSTITUTION.md</code> e siga seus checks.</li>
+    <li>Mantenha cada <code>CONSTITUTION.md</code> no repo que governa, com revisão dos responsáveis por aquele repo. Não copie seu conteúdo para o pai como segunda fonte de verdade.</li>
+    <li>Na <code>spec.md</code>/<code>plan.md</code>, liste os repos afetados e os caminhos das constitutions. Em <code>tasks.md</code>, associe cada tarefa e validação ao repo correspondente.</li>
+    <li>O agente precisa receber esses arquivos no contexto. A constitution do pai não os carrega automaticamente; inclua a instrução no contexto compartilhado e confirme durante o plano que foram lidos.</li>
+  </ol>
+  <p>Como o pai fixa um commit de cada submodule, a revisão escolhida também fixa a versão da constitution local vista pelo workspace. Mudanças nessas regras são commits no repo dono; depois atualize o gitlink do pai se a feature depender da nova revisão. <strong>Uma spec/plan/tasks cobre a mudança coordenada; os commits Git continuam separados por repo.</strong> Para checkout completo, use <code>git clone --recurse-submodules</code>. <a href="https://github.github.io/spec-kit/guides/monorepo.html#constitutions">Guia do Spec Kit sobre constitutions</a> · <a href="https://git-scm.com/book/pt-br/v2/Ferramentas-do-Git-Subm%C3%B3dulos">Pro Git sobre submodules</a>.</p>
+
+  <h2>Pratique: como carregar as regras locais?</h2>
+  <p>Uma feature no repo pai altera dois submodules, cada qual com seu próprio padrão de testes. Você quer um único ciclo Spec Kit. Como manter as regras locais sem criar projetos Spec Kit nos filhos?</p>
+  <div class="quiz-options" data-quiz>
+    <button type="button" data-correct="true" data-feedback="Isso. A constitution do pai orienta a coordenação; cada constitution local é mantida por seu repo e precisa ser lida explicitamente pelo agente no único ciclo.">Manter constitutions por repo e referenciar</button>
+    <button type="button" data-correct="false" data-feedback="Duplicar as regras cria fontes concorrentes e drift. Mantenha cada constitution no repo dono e faça o plano apontar para ela.">Duplicar todas as regras na raiz</button>
+    <button type="button" data-correct="false" data-feedback="Você não precisa inicializar Spec Kit nos submodules para executar uma feature coordenada pelo pai. Isso criaria contextos e ciclos separados.">Inicializar Spec Kit em cada submodule</button>
+    <p class="answer" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia <a href="https://github.github.io/spec-kit/guides/monorepo.html">Using Spec Kit in a Monorepo</a> e, para fronteiras entre projetos, <a href="https://github.github.io/spec-kit/guides/contract-driven-development.html">Contract-Driven Development</a>. Para o comportamento Git dos submodules, consulte o capítulo <a href="https://git-scm.com/book/pt-br/v2/Ferramentas-do-Git-Subm%C3%B3dulos">Submódulos do Pro Git</a>.</p>
+  </div>
+
+  <p><a href="../reference/spec-kit-monorepo-e-submodules.html">Referência rápida</a> · <a href="./0048-contract-driven-development.html">Lição 48: contratos</a> · <a href="./0047-lidar-com-features-complexas.html">Lição 47: features complexas</a></p>
+  <footer>Se você trouxer a árvore de diretórios e as constitutions atuais, posso ajudar a montar o mapa de regras por repo e a instrução de coordenação da constitution do pai.</footer>
+</main>
+</body>
+</html>
