@@ -18,6 +18,10 @@
   Fonte primaria para quando e como essa decisao aparece pela primeira vez em um projeto ja existente.
 - [Spec Kit customization guide](https://github.github.io/spec-kit/guides/customization.html)
   Fonte primaria para escolher entre extensoes, presets, overrides locais, workflows e bundles ao adaptar o Spec Kit.
+- [Spec Kit customization guide: bundles](https://github.github.io/spec-kit/guides/customization.html#bundles-role-based-setups)
+  Secao primaria para entender bundles como setups versionados por papel/equipe e decidir quando provisionar um conjunto completo em vez de instalar um componente isolado.
+- [Spec Kit bundles reference](https://github.github.io/spec-kit/reference/bundles.html)
+  Referencia primaria para manifestos, busca, inspecao, instalacao, atualizacao, remocao, catalogos, limites offline e publicacao de bundles.
 - [Spec Kit workflows reference](https://github.github.io/spec-kit/reference/workflows.html)
   Referencia primaria para definicoes YAML, entradas, tipos de passos, execucao, status, retomada, overlays e limites de seguranca dos workflows.
 - [Spec Kit first-party workflow catalog](https://github.com/github/spec-kit/blob/main/workflows/catalog.json)

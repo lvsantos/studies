@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Bundles do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>Bundles</h1>
+  <p class="lede">Unidades versionadas para provisionar um conjunto de componentes por papel ou equipe.</p>
+
+  <h2>Modelo mental</h2>
+  <pre><code>bundle.yml
+  ├── extensões: novas capacidades
+  ├── presets: instruções e formatos
+  ├── steps: etapas reutilizáveis
+  └── workflows: processos ordenados
+
+bundle = distribuição/composição
+         dos componentes declarados</code></pre>
+  <p>Bundle não adiciona comportamento de execução próprio: cada extensão, preset, step ou workflow continua sendo instalado pelo mecanismo correspondente.</p>
+
+  <h2>Escolha a peça</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Necessidade</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td>Adicionar comando, integração ou capacidade</td><td>Extension</td></tr>
+      <tr><td>Adaptar instrução ou formato existente</td><td>Preset</td></tr>
+      <tr><td>Ordenar etapas e gates de um processo</td><td>Workflow</td></tr>
+      <tr><td>Distribuir o setup completo de um papel/equipe</td><td>Bundle</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Comandos principais</h2>
+  <pre><code>specify bundle search [query]
+specify bundle info &lt;bundle_id&gt;
+specify bundle install &lt;bundle_id | path&gt;
+specify bundle list
+specify bundle update [&lt;bundle_id&gt; | --all]
+specify bundle remove &lt;bundle_id&gt;
+specify bundle init [&lt;bundle_id&gt;]
+specify bundle validate [--path &lt;dir-ou-manifesto&gt;]
+specify bundle build [--path &lt;dir&gt;] [--output &lt;dir&gt;]</code></pre>
+  <p><code>add</code> é alias de <code>install</code>. <code>search</code> e <code>info</code> funcionam fora de projeto; <code>install</code>/<code>init</code> podem inicializar um projeto. O manifesto local declara dependências, mas os payloads dos componentes ainda são resolvidos pelos catálogos ativos.</p>
+
+  <h2>Inspeção e governança</h2>
+  <ul>
+    <li>Use <code>info</code> para ver o conjunto expandido, versões fixadas, prioridades/estratégias de preset e indicador de confiança antes de instalar.</li>
+    <li>Bundles first-party do catálogo oficial são curados e marcados <code>verified</code>; bundles comunitários são descoberta por padrão e não equivalem a auditoria.</li>
+    <li>Revise a origem do bundle e também os catálogos de extensions, presets, workflows e steps que fornecem seus componentes.</li>
+    <li>Uma integração fixada deve corresponder à integração ativa do projeto; instalação não deve ser tratada como troca de integração.</li>
+    <li>Remoção limpa os componentes fornecidos pelo bundle, exceto os ainda necessários por outro bundle. Componentes independentes não são adotados.</li>
+    <li>Atualizações re-resolvem componentes; versões fixadas são aplicadas quando instalados ou atualizados/refrescados.</li>
+    <li>Instalação totalmente offline tem limites: bundles de catálogo e componentes não empacotados no Spec Kit podem precisar de rede.</li>
+  </ul>
+
+  <h2>Exemplos oficiais</h2>
+  <ul>
+    <li><strong><code>bugfix</code>:</strong> extensão <code>bug</code> + workflow <code>bugfix</code>.</li>
+    <li><strong><code>assess</code>:</strong> extensão <code>assess</code> + workflow <code>assess</code>.</li>
+    <li><strong><code>business-analyst</code> (exemplo):</strong> contexto do agente + preset + steps + workflow.</li>
+  </ul>
+
+  <p><a href="../lessons/0036-bundles-do-spec-kit.html">Lição: bundles do Spec Kit</a> · <a href="../lessons/0017-extensao-git-do-spec-kit.html">Extensão Git</a> · <a href="../lessons/0020-presets-do-spec-kit.html">Presets</a> · <a href="../lessons/0029-workflows-do-spec-kit.html">Workflows</a></p>
+  <p class="small">Fontes: <a href="https://github.github.io/spec-kit/guides/customization.html#bundles-role-based-setups">guia de customização</a> · <a href="https://github.github.io/spec-kit/reference/bundles.html">referência oficial</a> · <a href="https://github.com/github/spec-kit/tree/main/examples/bundles">manifestos de exemplo</a>.</p>
+</main>
+</body>
+</html>

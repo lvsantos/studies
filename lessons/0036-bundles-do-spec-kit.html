@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 36 · Bundles do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 36 · 10 minutos</p>
+  <h1>Bundles: provisionar um setup completo por papel</h1>
+  <p class="lede">Vitória de hoje: decidir quando instalar um bundle e explicar o que ele reúne sem confundi-lo com uma extensão, preset ou workflow.</p>
+
+  <div class="panel">
+    <strong>A ideia central</strong>
+    <p>Um bundle é um manifesto versionado que reúne componentes existentes do Spec Kit: extensões, presets, workflows e etapas de workflow. Ele instala o conjunto como uma unidade; não cria um novo motor nem substitui o comportamento próprio de cada componente.</p>
+    <p>O benefício aparece quando uma equipe ou papel precisa receber repetidamente o mesmo setup, com versões e dependências declaradas. Para uma única necessidade isolada, instalar só a peça necessária costuma ser mais simples.</p>
+  </div>
+
+  <h2>1. O que cada peça faz?</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Peça</th><th>Responsabilidade</th><th>Exemplo das aulas</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Extension</strong></td><td>Acrescenta comandos, integrações ou capacidades.</td><td>A extensão Git organiza branches e operações de versionamento.</td></tr>
+      <tr><td><strong>Preset</strong></td><td>Adapta instruções ou formatos de um processo existente.</td><td>Um preset pode exigir uma seção específica no plano.</td></tr>
+      <tr><td><strong>Workflow</strong></td><td>Ordena etapas e decisões, podendo pausar e retomar.</td><td><code>bugfix</code> organiza diagnóstico, revisão, correção e teste.</td></tr>
+      <tr><td><strong>Bundle</strong></td><td>Declara e instala um conjunto versionado dessas peças.</td><td>Preparar um setup de triagem de bugs para a equipe.</td></tr>
+    </tbody>
+  </table></div>
+  <p>As três primeiras peças respondem ao que o Spec Kit faz e como o faz. O bundle responde a outra pergunta: <strong>quais componentes este papel ou equipe deve receber juntos?</strong> Um bundle pode incluir uma extensão Git, mas a aula sobre Git descreve a capacidade; não significa que ela esteja incluída em todo bundle de desenvolvimento.</p>
+
+  <h2>2. Exemplos concretos</h2>
+  <p>O catálogo first-party inclui o bundle <code>bugfix</code>: ele combina a extensão <code>bug</code> com o workflow <code>bugfix</code>. Instalados juntos, os comandos que o workflow chama já vêm com o fluxo guiado de triagem, gate humano, correção e verificação.</p>
+  <p>O exemplo oficial <code>business-analyst</code> ilustra uma composição por papel: inclui <code>agent-context</code>, um preset de elicitação de requisitos, etapas de captura/rastreabilidade e um workflow que leva requisitos à spec. Já os exemplos de extensão Git, preset e workflow vistos nas outras aulas ajudam a reconhecer as categorias que poderiam ser combinadas num setup próprio.</p>
+  <p>Os exemplos de papéis no diretório oficial demonstram como escrever manifestos. Não presuma que todo exemplo esteja publicado no catálogo instalável: confira o resultado de <code>search</code> e <code>info</code>.</p>
+
+  <h2>3. Benefícios e limites</h2>
+  <ul>
+    <li><strong>Setup repetível:</strong> novas pessoas ou projetos recebem o mesmo conjunto declarado.</li>
+    <li><strong>Versões visíveis:</strong> o manifesto fixa as versões dos componentes para uma instalação reproduzível.</li>
+    <li><strong>Menos coordenação manual:</strong> não é preciso descobrir e instalar cada dependência uma a uma.</li>
+    <li><strong>Rastreio e manutenção:</strong> o Spec Kit registra quais componentes cada bundle trouxe para atualização e remoção controladas.</li>
+  </ul>
+  <p>Bundle não garante que a combinação seja adequada, segura ou compatível com qualquer projeto. <code>info</code> mostra os componentes resolvidos antes da instalação; ainda é preciso revisar suas origens, requisitos e efeitos. A instalação não troca uma integração já ativa para satisfazer um bundle incompatível.</p>
+  <p>Remover um bundle remove os componentes que ele forneceu, preservando o que outro bundle ainda usa. Componentes instalados independentemente não são adotados pelo bundle. Catálogos comunitários podem ser apenas para descoberta, e componentes referenciados ainda precisam ser resolvidos pelas fontes configuradas.</p>
+
+  <h2>4. Quando usar?</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Situação</th><th>Escolha</th></tr></thead>
+    <tbody>
+      <tr><td>Um novo time precisa do mesmo conjunto coordenado de extensões, presets e workflows.</td><td><strong>Bundle</strong></td></tr>
+      <tr><td>Quero somente branches Git para uma feature.</td><td><strong>Extension</strong></td></tr>
+      <tr><td>Quero adicionar uma regra de segurança ao formato do plano.</td><td><strong>Preset</strong> ou override local</td></tr>
+      <tr><td>Quero uma sequência com etapas e revisões humanas.</td><td><strong>Workflow</strong></td></tr>
+    </tbody>
+  </table></div>
+  <p>Regra prática: escolha bundle para padronizar <em>um setup completo que deve ser distribuído e mantido como conjunto</em>. Se ainda está experimentando, ou precisa de apenas uma capacidade, comece pela peça individual e componha o bundle depois que as dependências e o valor do setup estiverem claros.</p>
+
+  <h2>5. Inspecione antes de instalar</h2>
+  <p>Busque e leia o plano expandido do bundle antes de aplicar suas mudanças:</p>
+  <pre><code>specify bundle search bug
+specify bundle info bugfix
+specify bundle install bugfix
+specify bundle list
+specify bundle update bugfix</code></pre>
+  <p><code>info</code> pode ser usado fora de um projeto e mostra componentes, versões fixadas e indicador de confiança. <code>install</code> pode inicializar um projeto ainda não preparado. Antes de instalar um bundle de origem desconhecida, confira também os catálogos dos componentes que ele referencia; prefira uma origem confiável e examine cada componente.</p>
+
+  <h2>6. Pratique: peça ou pacote?</h2>
+  <p>Uma equipe quer padronizar a entrada de novos projetos. Cada setup precisa de uma extensão, um preset e um workflow específicos, nas versões acordadas, e deve poder ser instalado e atualizado como conjunto. Qual bloco resolve melhor essa necessidade?</p>
+  <label for="answer-bundle">Sua resposta</label>
+  <p><input id="answer-bundle" type="text" autocomplete="off" aria-describedby="feedback-bundle"></p>
+  <button type="button" id="check-bundle">Conferir</button>
+  <p id="feedback-bundle" class="answer panel" aria-live="polite"></p>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>A <a href="https://github.github.io/spec-kit/guides/customization.html#bundles-role-based-setups">seção de bundles no guia de customização</a> explica quando escolher essa peça. A <a href="https://github.github.io/spec-kit/reference/bundles.html">referência oficial de bundles</a> documenta manifesto, comandos, catálogos, atualização e remoção. Os <a href="https://github.com/github/spec-kit/tree/main/examples/bundles">manifestos de exemplo</a> mostram setups por papel.</p>
+  </div>
+
+  <p><a href="./0017-extensao-git-do-spec-kit.html">Extensão Git</a> · <a href="./0020-presets-do-spec-kit.html">Lição 20: presets</a> · <a href="./0029-workflows-do-spec-kit.html">Lição 29: workflows</a> · <a href="../reference/spec-kit-bundles.html">Referência rápida: bundles</a></p>
+  <footer>O professor pode ajudar a transformar um setup de equipe em uma lista de componentes, dependências e critérios para avaliar um bundle. Traga o papel, o fluxo e as ferramentas que precisam estar presentes.</footer>
+</main>
+<script>
+  const answerBundle = document.querySelector('#answer-bundle');
+  const feedbackBundle = document.querySelector('#feedback-bundle');
+  document.querySelector('#check-bundle').addEventListener('click', () => {
+    const answer = answerBundle.value.trim().toLowerCase();
+    feedbackBundle.innerHTML = ['bundle', 'um bundle', 'bundle do spec kit'].includes(answer)
+      ? '<strong>Isso.</strong> O bundle declara o conjunto e suas versões para instalação e manutenção coordenadas. Os componentes continuam executando suas funções próprias.'
+      : '<strong>Reveja a pista principal:</strong> a equipe quer distribuir e manter várias peças versionadas como um setup único.';
+    feedbackBundle.classList.add('visible');
+  });
+</script>
+</body>
+</html>
