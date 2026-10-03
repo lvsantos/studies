@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 31 · Workflow oficial speckit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 31 · 10 minutos · Workflow first-party</p>
+  <h1><code>speckit</code>: da ideia de feature à implementação</h1>
+  <p class="lede">Vitória de hoje: iniciar o ciclo SDD oficial sabendo quais entradas fornecer, onde revisar e o que um gate realmente faz.</p>
+
+  <div class="panel">
+    <strong>Quando escolher</strong>
+    <p>Use <code>speckit</code> quando você já decidiu construir uma feature e quer encadear especificação, plano, tarefas e implementação. Ele não decide se a ideia merece investimento; essa é a pergunta do workflow <a href="./0033-workflow-assess-oficial.html"><code>assess</code></a>.</p>
+  </div>
+
+  <h2>Entradas e pré-requisitos</h2>
+  <p>A definição oficial é mantida pelo GitHub. O workflow requer Spec Kit <code>&gt;=0.8.5</code> e uma integração capaz de executar os comandos core.</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Input</th><th>Obrigatório?</th><th>Uso</th></tr></thead>
+    <tbody>
+      <tr><td><code>spec</code></td><td>Sim</td><td>Descrição do que construir; é passada a specify, plan, tasks e implement.</td></tr>
+      <tr><td><code>integration</code></td><td>Não</td><td>Padrão <code>auto</code>, que usa a integração inicializada no projeto; pode ser explicitada, por exemplo <code>copilot</code>.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Em projeto inicializado com Copilot, uma chamada explícita fica assim:</p>
+  <pre><code>specify workflow run speckit \
+  --input spec="Adicionar exportação CSV ao histórico de ordens" \
+  --input integration=copilot</code></pre>
+  <p>O parâmetro <code>integration</code> do workflow é uma seleção de destino, não uma extensão a instalar. Os quatro comandos usados aqui são os comandos core do Spec Kit.</p>
+
+  <h2>Etapas e gates</h2>
+  <ol>
+    <li><strong><code>specify</code>:</strong> cria ou atualiza a especificação da feature.</li>
+    <li><strong><code>review-spec</code>:</strong> gate com <code>approve</code> ou <code>reject</code>, antes do plano.</li>
+    <li><strong><code>plan</code>:</strong> prepara o plano técnico associado à feature.</li>
+    <li><strong><code>review-plan</code>:</strong> gate com <code>approve</code> ou <code>reject</code>, antes das tarefas.</li>
+    <li><strong><code>tasks</code>:</strong> deriva tarefas do plano.</li>
+    <li><strong><code>implement</code>:</strong> executa a implementação.</li>
+  </ol>
+  <p>O gate não edita o documento e não valida sua qualidade automaticamente. Ele só pede uma decisão humana no ponto definido pelo YAML.</p>
+
+  <h2>O que acontece em cada resposta?</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Ponto</th><th><code>approve</code></th><th><code>reject</code></th></tr></thead>
+    <tbody>
+      <tr><td>Após <code>specify</code></td><td>Libera <code>plan</code>.</td><td><code>on_reject: abort</code> encerra esta execução antes do plano. Não dispara revisão automática da spec.</td></tr>
+      <tr><td>Após <code>plan</code></td><td>Libera <code>tasks</code> e depois <code>implement</code>.</td><td>Encerra esta execução antes de gerar tarefas e implementar.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Se um gate deixar a execução pausada, confira-a e retome <strong>a mesma execução</strong> pelo ID:</p>
+  <pre><code>specify workflow status &lt;run_id&gt;
+specify workflow resume &lt;run_id&gt;</code></pre>
+  <p>O estado fica em <code>.specify/workflows/runs/&lt;run_id&gt;/</code>. Resume continua do ponto registrado; não inicie outro <code>run</code> só para sair da pausa. Se rejeitar, o YAML oficial manda abortar, não oferece uma opção de editar nem um loop de retrabalho. O material já criado permanece para revisão; corrija-o conscientemente e escolha o próximo comando/execução apropriado, em vez de presumir que o workflow refez a etapa.</p>
+
+  <h2>Exemplo: o que revisar?</h2>
+  <p>Você pediu CSV no histórico de ordens. Na revisão da spec, confira quem exporta, quais filtros entram, formato, limites e critérios de aceite. Se o fluxo incluir dados pessoais ou financeiros, torne a política de acesso e exposição verificável. Aprove somente quando o documento refletir o pedido.</p>
+  <p>No gate seguinte, compare o plano com os critérios aceitos e verifique dependências e riscos antes de autorizar tasks e implementação. Um <code>approve</code> significa “pode prosseguir neste processo”; não equivale a uma garantia de que o resultado está correto.</p>
+
+  <h2>Prática de recuperação</h2>
+  <p>O run pausou em <code>review-plan</code>. Você percebeu que o plano ignora exportações vazias. Qual ação preserva a execução e evita começar do zero?</p>
+  <button type="button" data-answer="recover">Revelar resposta</button>
+  <div id="answer-recover" class="answer panel" aria-live="polite"></div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Compare a <a href="https://github.com/github/spec-kit/blob/main/workflows/speckit/workflow.yml">definição YAML first-party</a> com a <a href="https://github.github.io/spec-kit/reference/workflows.html">referência oficial de workflows</a>. Para o significado dos comandos core, consulte também a <a href="https://github.github.io/spec-kit/quickstart.html">SDD quickstart</a>.</p>
+  </div>
+  <p><a href="./0032-workflow-bugfix-oficial.html">Lição 32: bugfix</a> · <a href="./0033-workflow-assess-oficial.html">Lição 33: assess</a> · <a href="../lessons/0029-workflows-do-spec-kit.html">Lição 29: modelo geral de workflows</a> · <a href="../reference/spec-kit-workflows-oficiais.html">Quadro comparativo</a></p>
+  <footer>O professor pode ajudar a escrever entradas melhores e revisar os critérios de um gate. Traga sua ideia de feature e diga o que precisa estar claro antes de plan ou implement.</footer>
+</main>
+<script>
+  const answers = {
+    recover: '<strong>Edite/revise o plano e retome o mesmo run_id.</strong> Use <code>workflow status</code> para confirmar o ponto e <code>workflow resume &lt;run_id&gt;</code> para continuar. O gate apenas registra a decisão; ele não corrige o artefato por você.'
+  };
+  document.querySelectorAll('[data-answer]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const answer = document.querySelector(`#answer-${button.dataset.answer}`);
+      answer.innerHTML = answers[button.dataset.answer];
+      answer.classList.add('visible');
+    });
+  });
+</script>
+</body>
+</html>

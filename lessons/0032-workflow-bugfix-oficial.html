@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 32 · Workflow oficial bugfix</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 32 · 10 minutos · Workflow first-party</p>
+  <h1><code>bugfix</code>: diagnosticar antes de tocar no código</h1>
+  <p class="lede">Vitória de hoje: entender por que a revisão aparece antes da correção e por que workflow concluído não significa bug verificado.</p>
+
+  <div class="panel">
+    <strong>Quando escolher</strong>
+    <p>Use <code>bugfix</code> para comportamento existente que está quebrado. Se ainda está decidindo se uma ideia vale ser construída, use <a href="./0033-workflow-assess-oficial.html"><code>assess</code></a>; se a decisão de construir já está tomada, use <a href="./0031-workflow-speckit-oficial.html"><code>speckit</code></a>.</p>
+  </div>
+
+  <h2>Inputs e pré-requisitos</h2>
+  <p>O workflow requer Spec Kit <code>&gt;=0.9.0</code> e a extensão oficial opt-in <code>bug</code>, que fornece os comandos <code>speckit.bug.*</code>.</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Input</th><th>Obrigatório?</th><th>Uso</th></tr></thead>
+    <tbody>
+      <tr><td><code>report</code></td><td>Sim</td><td>Relato colado ou URL do bug/issue.</td></tr>
+      <tr><td><code>slug</code></td><td>Sim</td><td>Identificador curto, como <code>login-empty-password</code>.</td></tr>
+      <tr><td><code>integration</code></td><td>Não</td><td>Padrão <code>auto</code>; pode ser <code>copilot</code> se essa for a integração ativa.</td></tr>
+    </tbody>
+  </table></div>
+  <pre><code>specify extension add bug
+specify workflow run bugfix \
+  --input report="Login com senha vazia termina em erro 500; esperado: mensagem de validação" \
+  --input slug=login-empty-password \
+  --input integration=copilot</code></pre>
+
+  <h2>Etapas, artefatos e gate</h2>
+  <ol>
+    <li><strong><code>assess</code>:</strong> investiga se o relato é bug, localiza caminhos suspeitos e propõe remediação. Não altera o código-fonte.</li>
+    <li><strong><code>review-assessment</code>:</strong> gate <code>approve</code>/<code>reject</code> antes de qualquer mudança de código.</li>
+    <li><strong><code>fix</code>:</strong> aplica a remediação documentada e registra mudanças. É a única etapa deste trio que altera código.</li>
+    <li><strong><code>test</code>:</strong> roda a reprodução e testes relevantes, registrando evidências.</li>
+  </ol>
+  <p>Os relatórios ficam em <code>.specify/bugs/&lt;slug&gt;/</code>: <code>assessment.md</code>, <code>fix.md</code> e <code>test.md</code>. Use o mesmo slug nas três etapas para manter o diagnóstico, patch e validação ligados.</p>
+
+  <h2>Como o gate reage</h2>
+  <p><strong>Approve:</strong> libera <code>fix</code> e em seguida <code>test</code>, na mesma execução. Não há outro gate oficial depois do patch. Portanto, revisar o diff e o relatório final continua sendo responsabilidade sua.</p>
+  <p><strong>Reject:</strong> o YAML usa <code>on_reject: abort</code>. A execução para antes de editar código. Isso não reescreve <code>assessment.md</code>, não chama o agente para uma segunda hipótese e não tenta novamente o gate sozinho. Se a execução ficou pausada, <code>workflow status</code> e <code>workflow resume &lt;run_id&gt;</code> continuam o run; se o gate foi rejeitado, ele foi abortado, não “reprovado para retry”.</p>
+  <p>A extensão também protege relatórios existentes contra sobrescrita silenciosa. Corrija ou descarte explicitamente o diagnóstico, e não reutilize um slug existente como se ele fosse uma pasta temporária.</p>
+
+  <h2>Resultado do teste não é status do workflow</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Resultado em <code>test.md</code></th><th>Interpretação</th><th>Próximo passo</th></tr></thead>
+    <tbody>
+      <tr><td><code>verified</code></td><td>A reprodução e os requisitos de verificação foram exercitados com sucesso.</td><td>Revisar patch e evidências antes de integrar.</td></tr>
+      <tr><td><code>partial</code></td><td>Alguma evidência/reprodução não pôde ser concluída.</td><td>Fornecer o ambiente ou dado faltante e verificar novamente.</td></tr>
+      <tr><td><code>failed</code></td><td>A verificação encontrou problema ainda presente.</td><td>Revisitar diagnóstico/correção com a evidência e testar de novo.</td></tr>
+    </tbody>
+  </table></div>
+  <p>O comando <code>test</code> pode registrar um resultado de domínio sem falhar como etapa de execução. Logo, <code>workflow status</code> em <code>completed</code> quer dizer que a sequência terminou, não que <code>test.md</code> diz <code>verified</code>. A definição oficial não contém um loop automático fix → test → fix.</p>
+
+  <h2>Exemplo de decisão</h2>
+  <p>O relato diz que senha vazia produz HTTP 500. <code>assessment.md</code> aponta outra causa sem reproduzir o cenário. Não aprove só porque o arquivo existe: rejeite/pare antes do patch e peça evidência ou corrija o diagnóstico. Se aprovar, acompanhe as mudanças em <code>fix.md</code>, depois leia <code>test.md</code> e compare o resultado ao sintoma original.</p>
+
+  <h2>Prática de recuperação</h2>
+  <p>O workflow terminou com estado <code>completed</code>, mas <code>test.md</code> diz <code>partial</code> porque a reprodução não rodou. O bug está verificado?</p>
+  <button type="button" data-answer="test-result">Revelar resposta</button>
+  <div id="answer-test-result" class="answer panel" aria-live="polite"></div>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>Veja a <a href="https://github.com/github/spec-kit/blob/main/workflows/bugfix/workflow.yml">definição YAML first-party</a>, o <a href="https://github.com/github/spec-kit/blob/main/extensions/bug/README.md">README da extensão bug</a> e o <a href="https://github.github.io/spec-kit/reference/agentic-bugfix.html">contrato oficial dos comandos</a>.</p>
+  </div>
+  <p><a href="./0031-workflow-speckit-oficial.html">Lição 31: speckit</a> · <a href="./0033-workflow-assess-oficial.html">Lição 33: assess</a> · <a href="../lessons/0014-extensao-bugfix-do-spec-kit.html">Lição 14: extensão bug</a> · <a href="../reference/spec-kit-workflows-oficiais.html">Quadro comparativo</a></p>
+  <footer>O professor pode ajudar a avaliar se um relato sustenta um diagnóstico e se os testes provam a correção. Traga o sintoma, passos de reprodução e o trecho relevante do relatório.</footer>
+</main>
+<script>
+  const answers = {
+    'test-result': '<strong>Não.</strong> O run do motor completou, mas o resultado de verificação é <code>partial</code>. A reprodução original ainda precisa ser exercitada; só então a evidência pode sustentar <code>verified</code>.'
+  };
+  document.querySelectorAll('[data-answer]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const answer = document.querySelector(`#answer-${button.dataset.answer}`);
+      answer.innerHTML = answers[button.dataset.answer];
+      answer.classList.add('visible');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Workflows oficiais do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Definições first-party</p>
+  <h1>Três workflows, três perguntas</h1>
+  <p class="lede">Escolha pela natureza do trabalho, não pelo nome do comando.</p>
+
+  <div class="table-scroll"><table>
+    <thead><tr><th>Workflow</th><th>Pergunta</th><th>Inputs exigidos</th><th>Dependências</th></tr></thead>
+    <tbody>
+      <tr><td><a href="../lessons/0031-workflow-speckit-oficial.html"><code>speckit</code></a></td><td>Como entregar uma feature aprovada?</td><td><code>spec</code>; <code>integration</code> opcional, padrão <code>auto</code>.</td><td>Spec Kit &gt;=0.8.5; comandos core.</td></tr>
+      <tr><td><a href="../lessons/0032-workflow-bugfix-oficial.html"><code>bugfix</code></a></td><td>Como diagnosticar, corrigir e verificar comportamento quebrado?</td><td><code>report</code> e <code>slug</code>; <code>integration</code> opcional.</td><td>Spec Kit &gt;=0.9.0; extensão <code>bug</code>.</td></tr>
+      <tr><td><a href="../lessons/0033-workflow-assess-oficial.html"><code>assess</code></a></td><td>Vale investir nesta ideia?</td><td><code>idea</code> e <code>slug</code>; <code>integration</code> opcional.</td><td>Spec Kit &gt;=0.9.0; extensão <code>assess</code>.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Ordem, saídas e gates</h2>
+  <pre><code>speckit: specify → review-spec → plan → review-plan → tasks → implement
+bugfix:  assess → review-assessment → fix → test
+assess:  intake → research → define → shape → decide → review-verdict</code></pre>
+  <ul>
+    <li><code>speckit</code>: dois gates com opções <code>approve</code>/<code>reject</code>; rejeição usa <code>on_reject: abort</code>.</li>
+    <li><code>bugfix</code>: um gate entre diagnóstico e alteração de código; somente <code>fix</code> edita fonte. Resultado de teste: <code>verified</code>, <code>partial</code> ou <code>failed</code>.</li>
+    <li><code>assess</code>: um gate depois da decisão; veredito em <code>decision.md</code>: <code>go</code>, <code>needs-clarification</code> ou <code>kill</code>. Handoff para <code>specify</code> é manual.</li>
+  </ul>
+
+  <h2>Gate, run e veredito</h2>
+  <p><code>approve</code>/<code>reject</code> são opções de gate. Não são sinônimos dos vereditos de assessment, nem dos resultados de verificação de bug. Um run pode estar <code>completed</code> enquanto um artefato de domínio pede atenção; leia sempre <code>test.md</code> ou <code>decision.md</code>.</p>
+  <p>Quando a execução pausa, consulte e retome o mesmo <code>run_id</code>:</p>
+  <pre><code>specify workflow status
+specify workflow status &lt;run_id&gt;
+specify workflow resume &lt;run_id&gt;</code></pre>
+  <p>O workflow armazena execução em <code>.specify/workflows/runs/&lt;run_id&gt;/</code>. Os gates first-party descritos aqui não configuram um loop de edição; <code>reject</code> aborta a execução e não apaga artefatos já escritos.</p>
+
+  <div class="panel">
+    <strong>Definições e referências oficiais</strong>
+    <p><a href="https://github.com/github/spec-kit/blob/main/workflows/speckit/workflow.yml">speckit/workflow.yml</a> · <a href="https://github.com/github/spec-kit/blob/main/workflows/bugfix/workflow.yml">bugfix/workflow.yml</a> · <a href="https://github.com/github/spec-kit/blob/main/workflows/assess/workflow.yml">assess/workflow.yml</a> · <a href="https://github.github.io/spec-kit/reference/workflows.html">referência geral</a></p>
+  </div>
+  <p><a href="../lessons/0031-workflow-speckit-oficial.html">Aula speckit</a> · <a href="../lessons/0032-workflow-bugfix-oficial.html">Aula bugfix</a> · <a href="../lessons/0033-workflow-assess-oficial.html">Aula assess</a> · <a href="../lessons/0029-workflows-do-spec-kit.html">Modelo geral de workflows</a></p>
+</main>
+</body>
+</html>

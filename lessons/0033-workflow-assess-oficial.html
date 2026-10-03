@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 33 · Workflow oficial assess</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 33 · 12 minutos · Workflow first-party</p>
+  <h1><code>assess</code>: decidir antes de especificar</h1>
+  <p class="lede">Vitória de hoje: separar o veredito sobre uma ideia da aprovação humana do gate e fazer handoff para SDD só quando fizer sentido.</p>
+
+  <div class="panel">
+    <strong>A pergunta deste fluxo</strong>
+    <p><code>assess</code> responde “há evidência para investir nesta ideia?”; não responde “como implementar?”. Pode ser usado num projeto Spec Kit vazio, pois avalia a ideia e escreve apenas artefatos de assessment. Uma ideia rejeitada com boa justificativa também é um resultado útil.</p>
+  </div>
+
+  <h2>Inputs e pré-requisitos</h2>
+  <p>O workflow requer Spec Kit <code>&gt;=0.9.0</code> e a extensão oficial opt-in <code>assess</code>, que fornece seus cinco comandos.</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Input</th><th>Obrigatório?</th><th>Uso</th></tr></thead>
+    <tbody>
+      <tr><td><code>idea</code></td><td>Sim</td><td>Ideia em texto, URL, ticket ou apontamento para código existente.</td></tr>
+      <tr><td><code>slug</code></td><td>Sim</td><td>Nome curto em kebab-case para a pasta da ideia, por exemplo <code>offline-sync</code>.</td></tr>
+      <tr><td><code>integration</code></td><td>Não</td><td>Padrão <code>auto</code>; pode ser explicitado como <code>copilot</code>.</td></tr>
+    </tbody>
+  </table></div>
+  <pre><code>specify extension add assess
+specify workflow run assess \
+  --input idea="Permitir trabalhar offline e sincronizar ao reconectar" \
+  --input slug=offline-sync \
+  --input integration=copilot</code></pre>
+
+  <h2>Pipeline e artefatos</h2>
+  <ol>
+    <li><strong><code>intake</code> → <code>intake.md</code>:</strong> captura e normaliza a ideia bruta.</li>
+    <li><strong><code>research</code> → <code>research.md</code>:</strong> procura evidências a favor e contra, com origem/confiança.</li>
+    <li><strong><code>define</code> → <code>problem.md</code>:</strong> define usuários, problema, objetivos, não-objetivos, métricas e custo de inação.</li>
+    <li><strong><code>shape</code> → <code>concept.md</code>:</strong> compara opções conceituais, apetite e trade-offs.</li>
+    <li><strong><code>decide</code> → <code>decision.md</code>:</strong> registra scorecard, justificativa, veredito e possível handoff.</li>
+    <li><strong><code>review-verdict</code>:</strong> gate humano final com <code>approve</code>/<code>reject</code>; workflow para aqui.</li>
+  </ol>
+  <p>Todos os arquivos ficam sob <code>.specify/assessments/&lt;slug&gt;/</code>. As etapas são chamadas sequencialmente pelo workflow, embora os comandos da extensão admitam alguns usos diretos: <code>define</code> pode trabalhar sem intake/research; <code>shape</code> requer <code>problem.md</code>; um <code>go</code> defensável precisa de conceito e evidência adequada.</p>
+
+  <h2>Dois tipos diferentes de decisão</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Camada</th><th>Valores</th><th>O que significa</th></tr></thead>
+    <tbody>
+      <tr><td>Veredito de ideia em <code>decision.md</code></td><td><code>go</code>, <code>needs-clarification</code>, <code>kill</code></td><td>Conclusão sobre mérito/evidência da ideia.</td></tr>
+      <tr><td>Gate <code>review-verdict</code></td><td><code>approve</code>, <code>reject</code></td><td>Decisão humana sobre continuar/encerrar a execução do workflow.</td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>Approve não quer dizer go.</strong> Ele não altera o texto de <code>decision.md</code>, não recalcula o scorecard e não inicia <code>specify</code>. Se o veredito for <code>needs-clarification</code>, refine os artefatos com informação confirmada e revise <code>decision.md</code>; não regenere toda a pipeline por reflexo. Se for <code>kill</code>, registre a decisão e pare. Se for <code>go</code>, a passagem para SDD é manual e deliberada.</p>
+  <p><strong>Reject</strong> no gate final segue <code>on_reject: abort</code>: termina esta execução. Não apaga os relatórios nem converte o veredito em <code>kill</code>. Quando o gate deixou o run pausado, use <code>workflow status</code> e <code>workflow resume &lt;run_id&gt;</code> para decidir o gate da mesma execução; após rejeitar, não há retry automático configurado.</p>
+
+  <h2>Exemplo de handoff</h2>
+  <p>Para “offline sync”, suponha que a decisão conclua <code>go</code>. Leia <code>decision.md</code> e decida se quer transformar o resumo em uma especificação. Só então invoque <code>specify</code> à parte:</p>
+  <pre><code>/speckit-specify Use o handoff aprovado em .specify/assessments/offline-sync/decision.md para especificar a funcionalidade de trabalho offline.</code></pre>
+  <p>Se o resultado for <code>needs-clarification</code>, complete os desconhecidos nomeados nos artefatos, preserve as fontes e atualize a decisão dependente. Se for <code>kill</code>, o processo de discovery termina sem abrir uma feature. Nenhuma dessas decisões faz o workflow automaticamente iniciar a próxima etapa.</p>
+
+  <h2>Prática: o gate pode mudar o veredito?</h2>
+  <p><code>decision.md</code> recomenda <code>kill</code>. No gate final, alguém escolhe <code>approve</code>. O que acontece?</p>
+  <button type="button" data-answer="decision">Revelar resposta</button>
+  <div id="answer-decision" class="answer panel" aria-live="polite"></div>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>Leia a <a href="https://github.com/github/spec-kit/blob/main/workflows/assess/workflow.yml">definição YAML first-party</a>, o <a href="https://github.com/github/spec-kit/blob/main/extensions/assess/README.md">README da extensão assess</a> e o <a href="https://github.github.io/spec-kit/reference/agentic-assessment.html">contrato oficial de assessment</a>.</p>
+  </div>
+  <p><a href="./0031-workflow-speckit-oficial.html">Lição 31: speckit</a> · <a href="./0032-workflow-bugfix-oficial.html">Lição 32: bugfix</a> · <a href="../lessons/0015-extensao-assess-do-spec-kit.html">Lição 15: extensão assess</a> · <a href="../reference/spec-kit-workflows-oficiais.html">Quadro comparativo</a></p>
+  <footer>O professor pode ajudar a distinguir falta de evidência de uma ideia ruim, refinar os artefatos e decidir se um veredito go deve seguir para specify. Traga uma ideia concreta e as evidências disponíveis.</footer>
+</main>
+<script>
+  const answers = {
+    decision: '<strong>O run pode concluir após a aprovação do gate, mas o veredito continua kill.</strong> Approve aceita a continuação/encerramento normal do processo; não modifica decision.md nem dispara specify. Gate e veredito respondem perguntas diferentes.'
+  };
+  document.querySelectorAll('[data-answer]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const answer = document.querySelector(`#answer-${button.dataset.answer}`);
+      answer.innerHTML = answers[button.dataset.answer];
+      answer.classList.add('visible');
+    });
+  });
+</script>
+</body>
+</html>
