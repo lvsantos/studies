@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 46 · MCP server do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 46 · 6 minutos</p>
+  <h1>O MCP do Spec Kit ainda é uma ponte pequena</h1>
+  <p class="lede">Vitória de hoje: entender como um host MCP inicia o Specify CLI, quais ferramentas estão disponíveis e por que isso ainda não equivale a operar o Spec Kit pelo agente.</p>
+
+  <div class="panel">
+    <strong>Primeiro, o limite</strong>
+    <p><code>specify mcp</code> é experimental e, nesta versão, só permite consultar a versão do CLI. A interface e o inventário podem mudar antes de serem declarados estáveis.</p>
+  </div>
+
+  <h2>1. O que o comando inicia?</h2>
+  <pre><code>specify mcp</code></pre>
+  <p>Ele inicia um servidor MCP local usando <code>stdio</code>: o host MCP executa o comando como subprocesso e troca mensagens pelo processo. Não há transporte HTTP ou SSE, serviço em background, nem seleção de transporte. O CLI também não escreve banner, logs ou mensagens de inicialização em <code>stdout</code>, pois esse canal carrega o protocolo.</p>
+  <p>Portanto, o comando não é um servidor web para publicar na rede. É o host MCP, configurado à parte, que precisa saber iniciar <code>specify mcp</code>. A referência oficial não prescreve um arquivo de configuração universal: o formato depende do host.</p>
+
+  <h2>2. Três ferramentas, um comando permitido</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Ferramenta MCP</th><th>Função</th><th>Estado atual</th></tr></thead>
+    <tbody>
+      <tr><td><code>specify_list_commands</code></td><td>Lista comandos suportados via MCP.</td><td>O inventário inclui <code>version</code>.</td></tr>
+      <tr><td><code>specify_describe_command</code></td><td>Descreve um comando pontuado suportado.</td><td>Pode descrever <code>version</code>.</td></tr>
+      <tr><td><code>specify_run_command</code></td><td>Executa um comando suportado pelo Specify CLI.</td><td>Só aceita <code>version</code>; os demais retornam <code>unavailable_command</code>.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Na prática, a chamada de execução equivale a <code>specify version --json</code>, feita em um processo filho isolado que usa o mesmo ambiente Python do CLI ativo.</p>
+
+  <h2>3. Interpretar o resultado</h2>
+  <p>Quando funciona, o resultado é o objeto JSON direto da saída do CLI, com <code>cli_version</code>, <code>runtime</code>, <code>system</code> e <code>features</code>. Não espere um envelope genérico com campos <code>schema_version</code>, <code>ok</code> ou <code>result</code>.</p>
+  <p>Se o CLI falhar, a ferramenta retorna um erro MCP com <code>error.code</code>, <code>error.message</code> e <code>error.details</code>, extraído do erro JSON estruturado em <code>stderr</code>. Se a saída do processo estiver vazia, misturada, malformada ou não for JSON, o adaptador sinaliza <code>adapter_internal_error</code> sanitizado, sem inventar sucesso nem expor traceback.</p>
+
+  <h2>4. O que ainda não está exposto?</h2>
+  <ul>
+    <li>Descoberta de projetos ou leitura de specs, planos e tarefas;</li>
+    <li>criação ou mutação de artefatos;</li>
+    <li>instalação, atualização ou remoção de integrações e componentes;</li>
+    <li>execução de workflows, confirmações ou níveis de acesso.</li>
+  </ul>
+  <p>Isso evita uma conclusão tentadora, mas incorreta: ter um MCP server não significa que o agente já possa executar os comandos centrais do fluxo. Também não substitui <code>specify init --integration ...</code>; são superfícies diferentes.</p>
+
+  <h2>Pratique: o agente pode criar uma spec?</h2>
+  <p>Você configurou o host para iniciar <code>specify mcp</code>. Pode pedir ao agente que crie uma spec com <code>specify_run_command</code>?</p>
+  <button type="button" aria-expanded="false" aria-controls="recall-answer" onclick="const answer = document.querySelector('#recall-answer'); answer.classList.toggle('visible'); this.setAttribute('aria-expanded', answer.classList.contains('visible'))">Revelar resposta</button>
+  <div id="recall-answer" class="answer panel" aria-live="polite">
+    <p><strong>Não, pela interface MCP documentada atualmente.</strong> O único comando da CLI disponível é <code>version</code>, que consulta dados de versão e ambiente. Criar uma spec exigiria uma capacidade que ainda não está exposta nesse servidor.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>A <a href="https://github.github.io/spec-kit/reference/mcp.html">referência oficial de MCP</a> documenta o transporte, as ferramentas, o comando suportado e os formatos de resultado e erro.</p>
+  </div>
+
+  <p><a href="../reference/spec-kit-mcp.html">Abrir referência rápida</a> · <a href="./0045-autenticacao-do-spec-kit.html">Lição 45: autenticação do CLI</a> · <a href="./0003-fluxos-e-comandos-do-spec-kit.html">Lição: fluxos e comandos</a></p>
+  <footer>O professor pode ajudar a conferir se uma capacidade pertence ao MCP do Spec Kit, à integração do agente ou ao próprio CLI. Traga o nome da ferramenta e o comando que você espera executar.</footer>
+</main>
+</body>
+</html>

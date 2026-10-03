@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · MCP do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>MCP server</h1>
+  <p class="lede">Servidor experimental do Specify CLI: transporte local por stdio, com suporte atual limitado a consultar a versão.</p>
+
+  <h2>Inicialização</h2>
+  <pre><code>specify mcp</code></pre>
+  <ul>
+    <li>O host MCP inicia o comando como subprocesso local;</li>
+    <li>usa <code>stdio</code>; não oferece HTTP, SSE, daemon ou seleção de transporte;</li>
+    <li><code>stdout</code> é reservado para mensagens MCP, sem banner ou logs.</li>
+  </ul>
+  <p>A configuração para iniciar subprocessos é específica de cada host. A referência do Spec Kit não define um snippet universal para clientes.</p>
+
+  <h2>Ferramentas e escopo atual</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Ferramenta</th><th>Propósito</th></tr></thead>
+    <tbody>
+      <tr><td><code>specify_list_commands</code></td><td>Lista os comandos CLI aceitos via MCP.</td></tr>
+      <tr><td><code>specify_describe_command</code></td><td>Descreve um comando pontuado suportado.</td></tr>
+      <tr><td><code>specify_run_command</code></td><td>Executa um comando aceito pela interface MCP.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Nesta versão experimental, só <code>version</code> é suportado. Outros nomes retornam <code>unavailable_command</code>. A ferramenta de execução chama <code>specify version --json</code> em um processo filho isolado, no mesmo ambiente Python do CLI.</p>
+
+  <h2>Resultados e erros</h2>
+  <ul>
+    <li>Sucesso: objeto JSON direto com <code>cli_version</code>, <code>runtime</code>, <code>system</code> e <code>features</code>, sem envelope universal;</li>
+    <li>falha do CLI: erro MCP com <code>error.code</code>, <code>error.message</code> e <code>error.details</code>;</li>
+    <li>saída vazia, inválida ou não JSON: <code>adapter_internal_error</code> sanitizado.</li>
+  </ul>
+
+  <h2>Fora do escopo</h2>
+  <p>O servidor não expõe descoberta de projetos, artefatos, mutações, instalação ou atualização, workflows, confirmações ou níveis de acesso. Não confunda o servidor MCP com a integração do agente; <code>specify init --integration ...</code> continua sendo uma configuração separada.</p>
+  <p><strong>Aviso:</strong> a superfície MCP é experimental. Ferramentas e contratos podem mudar.</p>
+
+  <h2>Links</h2>
+  <p><a href="https://github.github.io/spec-kit/reference/mcp.html">Referência oficial completa</a> · <a href="../lessons/0046-mcp-servers-do-spec-kit.html">Lição 46: MCP servers do Spec Kit</a> · <a href="../lessons/0003-fluxos-e-comandos-do-spec-kit.html">Lição: fluxos e comandos</a></p>
+</main>
+</body>
+</html>
