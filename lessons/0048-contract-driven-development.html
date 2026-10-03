@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 48 · Contract-Driven Development</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 48 · 5 minutos</p>
+  <h1>Combine a interface antes de construir os dois lados</h1>
+  <p class="lede">Vitória de hoje: reconhecer quando uma feature do Spec Kit depende de um contrato e planejar como provar que os componentes concordam.</p>
+
+  <div class="panel">
+    <strong>Contrato não é só um schema</strong>
+    <p>Em Contract-Driven Development, os componentes concordam sobre o comportamento observável de uma interface; depois, cada lado implementa e verifica suas obrigações. Requisitos definem o comportamento desejado, o contrato define como componentes colaboram, e cada plano local decide como implementar. <a href="https://github.github.io/spec-kit/guides/contract-driven-development.html#what-the-contract-defines">Fonte oficial</a>.</p>
+  </div>
+
+  <h2>1. Procure a fronteira</h2>
+  <p>“Externo” significa fora da fronteira de implementação do componente, não necessariamente fora do repositório ou processo. Uma aplicação que importa um CSV produzido por outro sistema já tem uma interface: os dois lados precisam concordar sobre o arquivo e seu significado.</p>
+  <p>Para um importador de movimentações de renda fixa, o acordo pode definir colunas e formatos, validação de datas e valores, o que acontece com linhas inválidas, como duplicatas são tratadas e quais erros o consumidor consegue identificar. Um schema descreve a forma; as regras de comportamento completam o contrato.</p>
+
+  <h2>2. Faça o acordo entrar no fluxo</h2>
+  <ol>
+    <li><strong><code>specify</code>:</strong> registre a intenção do usuário e identifique quem fornece e quem consome a interface.</li>
+    <li><strong><code>plan</code>:</strong> o dono da interface propõe ou referencia o contrato autoritativo; consumidores participam da revisão antes de implementar pressupostos incompatíveis. O plano do Spec Kit pode materializar artefatos em <code>contracts/</code> para interfaces externas.</li>
+    <li><strong><code>tasks</code>:</strong> peça testes de contrato dos dois lados, incluindo entradas inválidas e comportamentos como repetição ou duplicidade. Testes do consumidor contra mocks ajudam, mas não provam que o provedor real está em conformidade.</li>
+    <li><strong><code>implement</code>:</strong> implemente e valide cada lado. Se o acordo estiver errado, corrija a fonte autoritativa e reconcilie os planos, testes e versões consumidores.</li>
+  </ol>
+  <p>Deixe explícito qual arquivo ou versão é a fonte oficial. Uma cópia em outro projeto é referência fixada, não uma segunda fonte editável; o Spec Kit não sincroniza cópias nem coordena releases automaticamente. <a href="https://github.github.io/spec-kit/guides/contract-driven-development.html#one-authoritative-owner">Veja propriedade e versionamento</a>.</p>
+
+  <h2>Pratique: o que vem primeiro?</h2>
+  <p>Dois componentes vão trocar arquivos de movimentações, mas cada equipe já está prestes a programar sua própria interpretação do formato. Qual é a melhor próxima ação?</p>
+  <div class="quiz-options" data-quiz>
+    <button type="button" data-correct="true" data-feedback="Isso. Acordem o contrato observável e sua versão antes que cada lado transforme uma suposição diferente em código.">Acordo primeiro</button>
+    <button type="button" data-correct="false" data-feedback="Ainda não. Validar uma interpretação local não garante que os dois lados concordem; primeiro alinhem a interface.">Validar entrada</button>
+    <button type="button" data-correct="false" data-feedback="Exemplos ajudam a explicar o acordo, mas não substituem a decisão conjunta sobre formatos, erros e comportamento.">Enviar exemplos</button>
+    <p class="answer" data-quiz-feedback aria-live="polite"></p>
+  </div>
+
+  <div class="panel">
+    <strong>Fonte primária</strong>
+    <p>Leia o <a href="https://github.github.io/spec-kit/guides/contract-driven-development.html">guia oficial de Contract-Driven Development</a>, especialmente “Using the Spec Kit workflow” e o exemplo de checkout entre serviços.</p>
+  </div>
+
+  <p><a href="../reference/spec-kit-contract-driven-development.html">Referência rápida</a> · <a href="./0047-lidar-com-features-complexas.html">Lição 47: features complexas</a> · <a href="./0006-plan-do-spec-kit.html">Lição: plan</a> · <a href="./0007-tasks-do-spec-kit.html">Lição: tasks</a></p>
+  <footer>Se algum ponto do contrato parecer abstrato, traga um exemplo de entrada, saída ou erro e pergunte ao professor como torná-lo verificável.</footer>
+</main>
+</body>
+</html>

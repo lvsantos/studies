@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Contract-Driven Development no Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>Contract-Driven Development</h1>
+  <p class="lede">Acorde a colaboração entre componentes na interface observável; mantenha cada implementação e plano locais.</p>
+
+  <h2>Quando definir um contrato</h2>
+  <p>Quando um componente fornece uma interface usada fora de sua fronteira de implementação: API, eventos, biblioteca, CLI, arquivos ou outra interação acordada. Isso também se aplica a módulos no mesmo repositório. O formato do contrato varia; nem toda interface precisa de um schema ou registro separado.</p>
+
+  <h2>O que acordar</h2>
+  <ul>
+    <li><strong>Entradas e saídas:</strong> formato, campos e validação.</li>
+    <li><strong>Comportamento:</strong> efeitos, erros e resultado de entradas inválidas.</li>
+    <li><strong>Interação:</strong> idempotência, ordem de eventos, tentativas e timeouts quando relevantes.</li>
+    <li><strong>Compatibilidade:</strong> versões suportadas, depreciação e migração.</li>
+    <li><strong>Evidência:</strong> exemplos e critérios de verificação para provedor e consumidores.</li>
+  </ul>
+
+  <h2>Fluxo no Spec Kit</h2>
+  <ol>
+    <li><code>specify</code>: registre o resultado desejado e identifique provedores, consumidores e interfaces.</li>
+    <li><code>plan</code>: proponha o contrato antes da implementação dependente; registre a fonte autoritativa e a versão aprovada. O Spec Kit pode criar artefatos da feature em <code>contracts/</code>, mas eles não são sincronizados automaticamente.</li>
+    <li><code>tasks</code>: inclua testes do provedor e do consumidor, casos negativos e validação de integração. Testes com mocks não substituem a verificação do provedor real.</li>
+    <li><code>implement</code>: construa e valide cada lado contra o mesmo acordo. Se ele mudar, atualize a fonte e reconcilie artefatos e cópias fixadas.</li>
+    <li>Release: associe versões implantadas às versões de contrato suportadas e ordene rollout, migração e rollback segundo as dependências.</li>
+  </ol>
+
+  <h2>Propriedade e cópias</h2>
+  <p>Defina uma fonte autoritativa, normalmente mantida pelo provedor da interface. Consumidores participam da aprovação, mas mudanças são deliberadas. No mesmo repositório, referencie o mesmo artefato; entre repositórios, publique uma versão ou mantenha cópia com origem e revisão imutável registradas. Uma versão fixada registra o acordo, mas não prova que a implantação ainda o cumpre.</p>
+
+  <h2>Perguntas de revisão</h2>
+  <ul>
+    <li>As equipes estão prestes a codificar pressupostos diferentes sobre a mesma fronteira?</li>
+    <li>O acordo descreve erros e semântica, não apenas o formato feliz?</li>
+    <li>Os testes verificam comportamento real do provedor e consumidor?</li>
+    <li>A versão e a fonte do contrato estão explícitas em cada projeto afetado?</li>
+    <li>O rollout preserva compatibilidade e um caminho de rollback?</li>
+  </ul>
+
+  <p><a href="../lessons/0048-contract-driven-development.html">Lição 48: Contract-Driven Development</a> · <a href="../lessons/0006-plan-do-spec-kit.html">Lição: plan</a> · <a href="../lessons/0007-tasks-do-spec-kit.html">Lição: tasks</a></p>
+  <p class="small">Fonte primária: <a href="https://github.github.io/spec-kit/guides/contract-driven-development.html">Spec Kit · Contract-Driven Development</a>.</p>
+</main>
+</body>
+</html>

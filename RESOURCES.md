@@ -144,6 +144,9 @@
  [Spec of Specs](https://github.github.io/spec-kit/concepts/spec-of-specs.html)
   Analise independente que define os tres niveis de SDD (spec-first, spec-anchored, spec-as-source) e traz uma visao critica sobre limitacoes praticas do Spec Kit.
 
+- [Spec Kit: Contract-Driven Development](https://github.github.io/spec-kit/guides/contract-driven-development.html)
+  Fonte primaria para identificar interfaces entre componentes, definir comportamento observavel e propriedade do contrato, integrar contratos ao fluxo `specify → plan → tasks → implement`, verificar provider e consumer e planejar releases compativeis. A documentacao esclarece que o Spec Kit nao sincroniza contratos nem orquestra releases automaticamente.
+
 ## Wisdom
 
 - [GitHub Discussions for Spec Kit](https://github.com/github/spec-kit/discussions)
