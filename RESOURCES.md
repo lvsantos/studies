@@ -50,6 +50,10 @@
   Contrato oficial dos comandos, pré-requisitos entre estágios, artefatos, evidências e handoff opcional para SDD.
 - [Spec Kit workflow execution and resume reference](https://github.github.io/spec-kit/reference/workflows.html)
   Fonte primária para inputs, gates, estados persistidos, `workflow status` e `workflow resume`.
+- [Spec Kit workflow system architecture](https://github.com/github/spec-kit/blob/main/workflows/ARCHITECTURE.md)
+  Fonte primária para o modelo de execução, steps built-in, expressões, resolução de inputs e persistência; consulte ao desenhar um workflow próprio.
+- [Spec Kit workflow publishing guide](https://github.com/github/spec-kit/blob/main/workflows/PUBLISHING.md)
+  Fonte primária para estruturar e testar um pacote de workflow, publicar release versionada no repositório do autor e submeter metadados ao catálogo comunitário por PR. A revisão comunitária verifica formato/completude, não audita sistematicamente a segurança.
 - [Project-local overrides and resolution](https://github.github.io/spec-kit/guides/customization.html#project-local-overrides-and-resolution)
   Secao primaria sobre o caminho `.specify/templates/overrides/`, precedencia dos overrides locais e a diferenca entre resolver templates/scripts e materializar comandos na integracao ativa.
 - [Spec Kit presets reference](https://github.github.io/spec-kit/reference/presets.html)

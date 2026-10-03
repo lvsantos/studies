@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 35 · Publicar um workflow do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 35 · 12 minutos</p>
+  <h1>Publicar seu workflow: release e catálogo comunitário</h1>
+  <p class="lede">Vitória de hoje: deixar um workflow instalável a partir do seu repositório e decidir se também vale submetê-lo para descoberta no catálogo comunitário.</p>
+
+  <div class="panel">
+    <strong>Pacote e descoberta são etapas diferentes</strong>
+    <p>Seu repositório hospeda o workflow e suas releases. O catálogo comunitário do Spec Kit aponta para uma URL versionada para que as pessoas encontrem o pacote em <code>specify workflow search</code>. Publicar no GitHub não o coloca automaticamente no catálogo; entrar no catálogo também não transforma o workflow em código auditado ou endossado.</p>
+    <p>Esse modelo é parecido com os exemplos de <a href="./0019-publicar-extensao-do-spec-kit.html">publicação de extensão</a> e <a href="./0027-publicar-preset-spec-kit.html">publicação de preset</a>, mas cada tipo tem seu próprio arquivo, catálogo e comando.</p>
+  </div>
+
+  <h2>1. Organize o repositório próprio</h2>
+  <p>Partindo do workflow <code>feature-review</code> da <a href="./0034-criar-workflow-proprio-spec-kit.html">lição anterior</a>, mantenha o pacote pequeno e compreensível:</p>
+  <pre><code>spec-kit-workflow-feature-review/
+├── workflow.yml
+├── README.md
+├── LICENSE
+└── CHANGELOG.md</code></pre>
+  <p>O guia oficial pede YAML válido, README com descrição, entradas e grafo de etapas, licença, versão SemVer e teste em projetos reais. O changelog é recomendado. Explique dependências, quais integrações foram testadas e qualquer uso de shell, arquivos ou credenciais.</p>
+
+  <h2>2. Teste antes de criar a release</h2>
+  <p>Use a pasta local em um projeto de laboratório. Inspecione a definição e execute o fluxo completo, incluindo pelo menos uma aprovação e uma rejeição de gate:</p>
+  <pre><code>specify workflow info ./workflow.yml
+specify workflow run ./workflow.yml \
+  --input spec="Adicionar exportação CSV ao histórico de ordens" \
+  --input integration=copilot</code></pre>
+  <p>Confirme que a pausa, a retomada e as saídas correspondem ao README. <code>info</code> valida a definição e exibe metadados; não executa os steps nem analisa o conteúdo de <code>shell.run</code>.</p>
+
+  <h2>3. Publique uma versão no seu repositório</h2>
+  <p>Atualize <code>workflow.version</code> e o <code>CHANGELOG.md</code>, faça commit e crie uma tag correspondente. Por exemplo:</p>
+  <pre><code>git add workflow.yml README.md LICENSE CHANGELOG.md
+git commit -m "Release feature-review 1.0.0"
+git tag v1.0.0
+git push origin main --tags</code></pre>
+  <p>O endereço raw do YAML deve apontar para a tag, não para <code>main</code>, para que a versão não mude silenciosamente:</p>
+  <pre><code>https://raw.githubusercontent.com/acme/spec-kit-workflow-feature-review/v1.0.0/workflow.yml</code></pre>
+  <p>Teste esse mesmo endereço em um projeto Spec Kit limpo. A instalação direta não depende de inclusão em catálogo:</p>
+  <pre><code>specify workflow add feature-review --from \
+  https://raw.githubusercontent.com/acme/spec-kit-workflow-feature-review/v1.0.0/workflow.yml
+specify workflow list
+specify workflow remove feature-review</code></pre>
+
+  <h2>4. Se quiser aparecer na busca comunitária</h2>
+  <p>A listagem comunitária é para descoberta e, por padrão, não permite instalar por ID. O pacote continua hospedado no seu repositório; você contribui com os metadados que apontam para a release:</p>
+  <ol>
+    <li>Faça fork de <code>github/spec-kit</code> e crie uma branch.</li>
+    <li>Edite <code>workflows/catalog.community.json</code>; insira seu item em <code>workflows</code> na ordem alfabética do ID.</li>
+    <li>Inclua URL raw com tag, repositório, licença, requisito mínimo, tags e datas coerentes com a release.</li>
+    <li>Abra um pull request para <code>github/spec-kit</code> com o YAML validado, README, licença e evidência de teste.</li>
+    <li>Responda às verificações dos mantenedores; não presuma que a entrada já está disponível antes da aprovação e publicação do PR.</li>
+  </ol>
+  <p>O formato do catálogo é JSON. Um item reduzido se parece com isto:</p>
+  <pre><code>{
+  "feature-review": {
+    "id": "feature-review",
+    "name": "Feature Review",
+    "description": "Gera uma spec, pede revisão e cria o plano",
+    "author": "Acme Engineering",
+    "version": "1.0.0",
+    "url": "https://raw.githubusercontent.com/acme/spec-kit-workflow-feature-review/v1.0.0/workflow.yml",
+    "repository": "https://github.com/acme/spec-kit-workflow-feature-review",
+    "license": "MIT",
+    "requires": { "speckit_version": ">=0.8.5" },
+    "tags": ["sdd", "review"],
+    "created_at": "2026-10-03T00:00:00Z",
+    "updated_at": "2026-10-03T00:00:00Z"
+  }
+}</code></pre>
+  <p>O exemplo usa dados ilustrativos: troque autor, URL, requisitos e datas pelos dados reais. Ao lançar outra versão, publique nova tag e abra outro PR atualizando <code>version</code> e <code>url</code> do catálogo.</p>
+
+  <h2>5. Entenda o que a revisão comunitária significa</h2>
+  <p>O processo verifica principalmente formato e completude: definição válida, etapas coerentes, entradas compreensíveis e documentação. Isso não é auditoria sistemática de segurança. Um step <code>shell</code> executa com os privilégios do usuário; leia o YAML publicado e revise cada campo <code>run</code> antes de instalar, mesmo que esteja listado no catálogo.</p>
+  <p>Se sua equipe controla uma lista instalável própria, o catálogo organizacional é outra opção de distribuição. Não confunda essa política com o catálogo comunitário padrão, que serve para descobrir workflows e não autoriza instalação por ID.</p>
+
+  <h2>6. Pratique: release ou catálogo?</h2>
+  <p>Uma colega instala seu workflow pela URL raw versionada, mas ele não aparece na busca comunitária. Qual ação falta?</p>
+  <label for="answer-catalog">Sua resposta</label>
+  <p><input id="answer-catalog" type="text" autocomplete="off" aria-describedby="feedback-catalog"></p>
+  <button type="button" id="check-catalog">Conferir</button>
+  <p id="feedback-catalog" class="answer panel" aria-live="polite"></p>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>Use o <a href="https://github.com/github/spec-kit/blob/main/workflows/PUBLISHING.md">Workflow Publishing Guide</a> para estrutura, release e submissão. A <a href="https://github.github.io/spec-kit/reference/workflows.html">referência oficial</a> cobre comandos e catálogos; a <a href="https://github.com/github/spec-kit/blob/main/workflows/ARCHITECTURE.md">arquitetura</a> explica o modelo de execução.</p>
+  </div>
+
+  <p><a href="./0034-criar-workflow-proprio-spec-kit.html">Lição anterior: criar o workflow</a> · <a href="./0030-workflows-comunitarios-spec-kit.html">Lição 30: avaliar workflows comunitários</a> · <a href="./0019-publicar-extensao-do-spec-kit.html">Comparar com extensões</a> · <a href="../reference/spec-kit-workflows.html">Referência rápida</a></p>
+  <footer>Traga o README, a URL da release e a entrada proposta para o catálogo. O professor pode revisar se a versão publicada, as dependências e os metadados apontam para o mesmo pacote.</footer>
+</main>
+<script>
+  const answerCatalog = document.querySelector('#answer-catalog');
+  const feedbackCatalog = document.querySelector('#feedback-catalog');
+  document.querySelector('#check-catalog').addEventListener('click', () => {
+    const answer = answerCatalog.value.trim().toLowerCase();
+    feedbackCatalog.innerHTML = ['pull request', 'pr', 'catalogo comunitario', 'catálogo comunitário'].includes(answer)
+      ? '<strong>Isso.</strong> Publique a release no seu repositório e submeta um PR atualizando o catálogo comunitário; hospedar o pacote, por si só, não o adiciona à busca.'
+      : '<strong>Ainda não.</strong> A release já está acessível. Falta pedir a inclusão dos metadados no catálogo comunitário.';
+    feedbackCatalog.classList.add('visible');
+  });
+</script>
+</body>
+</html>

@@ -46,6 +46,15 @@ specify workflow enable &lt;id&gt;
 specify workflow remove &lt;id&gt;</code></pre>
   <p>Para experimentar YAML local: <code>specify workflow run ./workflow.yml --input chave=valor</code>. A execução de um arquivo local é a exceção que pode rodar fora de um projeto inicializado; outros comandos normalmente exigem <code>specify init</code>.</p>
 
+  <h2>Criar e publicar</h2>
+  <ol>
+    <li>Desenhe entradas, steps, gates e pré-requisitos; mantenha IDs únicos e expressões apontando para dados disponíveis.</li>
+    <li>Teste com <code>specify workflow info ./workflow.yml</code> e execute num projeto de laboratório, inclusive pausas e retomadas.</li>
+    <li>Hospede <code>workflow.yml</code>, README e licença num repositório; publique uma tag SemVer e use a URL raw versionada para instalação direta com <code>specify workflow add &lt;id&gt; --from &lt;url&gt;</code>.</li>
+    <li>Para descoberta comunitária, abra PR atualizando <code>workflows/catalog.community.json</code> no repositório <code>github/spec-kit</code>; ordene por ID e mantenha versão/URL alinhadas à release.</li>
+  </ol>
+  <p>O catálogo comunitário é discovery-only por padrão. A revisão verifica forma e completude, não é auditoria de segurança; leia steps <code>shell</code> antes de instalar.</p>
+
   <h2>Workflows oficiais para reconhecer</h2>
   <ul>
     <li><strong><code>speckit</code>:</strong> specify → revisão → plan → revisão → tasks → implement.</li>
@@ -61,8 +70,8 @@ specify workflow remove &lt;id&gt;</code></pre>
     <li>Um gate é um ponto de decisão humana, não uma revisão automática do próximo comando.</li>
   </ul>
 
-  <p><a href="../lessons/0029-workflows-do-spec-kit.html">Lição: workflows do Spec Kit</a> · <a href="../lessons/0012-extensions-do-spec-kit.html">Extensions</a> · <a href="../lessons/0020-presets-do-spec-kit.html">Presets</a></p>
-  <p class="small">Fontes: <a href="https://github.github.io/spec-kit/reference/workflows.html">referência oficial</a> · <a href="https://github.com/github/spec-kit/tree/main/workflows">definições oficiais</a>.</p>
+  <p><a href="../lessons/0029-workflows-do-spec-kit.html">Lição: workflows do Spec Kit</a> · <a href="../lessons/0034-criar-workflow-proprio-spec-kit.html">Criar workflow</a> · <a href="../lessons/0035-publicar-workflow-spec-kit.html">Publicar workflow</a> · <a href="../lessons/0012-extensions-do-spec-kit.html">Extensions</a> · <a href="../lessons/0020-presets-do-spec-kit.html">Presets</a></p>
+  <p class="small">Fontes: <a href="https://github.github.io/spec-kit/reference/workflows.html">referência oficial</a> · <a href="https://github.com/github/spec-kit/tree/main/workflows">definições oficiais</a> · <a href="https://github.com/github/spec-kit/blob/main/workflows/PUBLISHING.md">publicação</a>.</p>
 </main>
 </body>
 </html>

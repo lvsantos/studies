@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 34 · Criar um workflow próprio no Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 34 · 12 minutos</p>
+  <h1>Criar um workflow próprio: da sequência ao YAML</h1>
+  <p class="lede">Vitória de hoje: transformar um processo que você já repete em uma definição testável, com entradas explícitas e revisão no ponto certo.</p>
+
+  <div class="panel">
+    <strong>Workflow não é extensão nem preset</strong>
+    <p>Use um workflow quando o que falta é definir <em>em que ordem</em> etapas existentes acontecem e onde o processo deve parar para uma decisão humana. Uma extensão fornece comandos ou integração que ainda não existem; um preset adapta comandos ou templates existentes. Consulte também as aulas sobre <a href="./0018-criar-extensao-propria-do-spec-kit.html">criar extensão</a> e <a href="./0026-criar-preset-proprio-spec-kit.html">criar preset</a>.</p>
+    <p>O exemplo desta aula executa <code>specify</code>, pausa para revisar a spec e só então chama <code>plan</code>. Ele usa comandos e tipos de etapa já fornecidos pelo Spec Kit.</p>
+  </div>
+
+  <h2>1. Desenhe o processo antes do arquivo</h2>
+  <p>Escreva a sequência em linguagem simples e responda cinco perguntas:</p>
+  <ol>
+    <li><strong>Qual é o resultado?</strong> Criar uma spec e um plano para uma feature.</li>
+    <li><strong>Quais dados entram?</strong> Uma descrição da feature e a integração a usar.</li>
+    <li><strong>Quais passos são necessários?</strong> Chamar <code>speckit.specify</code> e depois <code>speckit.plan</code>.</li>
+    <li><strong>Onde uma pessoa precisa decidir?</strong> Depois de ler a spec e antes do plano.</li>
+    <li><strong>Quais são os pré-requisitos?</strong> Projeto inicializado e uma versão do Spec Kit compatível.</li>
+  </ol>
+  <p>Esse desenho pequeno já vira um workflow útil. Comece pelas etapas que mudam o resultado; não adicione loops, shell ou branches só porque o motor os suporta.</p>
+
+  <h2>2. Declare identidade, entradas e etapas</h2>
+  <p>Crie <code>workflow.yml</code>. O ID identifica o workflow, a versão segue SemVer e cada etapa recebe um ID único. Este exemplo requer Spec Kit <code>&gt;=0.8.5</code>, que resolve <code>integration: auto</code> para a integração inicializada no projeto:</p>
+  <pre><code>schema_version: "1.0"
+
+workflow:
+  id: "feature-review"
+  name: "Feature Review"
+  version: "0.1.0"
+  author: "Sua equipe"
+  description: "Gera uma spec, pede revisão e cria o plano"
+
+requires:
+  speckit_version: ">=0.8.5"
+
+inputs:
+  spec:
+    type: string
+    required: true
+    prompt: "O que você quer construir?"
+  integration:
+    type: string
+    default: "auto"
+
+steps:
+  - id: specify
+    command: speckit.specify
+    integration: "{{ inputs.integration }}"
+    input:
+      args: "{{ inputs.spec }}"
+  - id: review-spec
+    type: gate
+    message: "Revise a spec antes de continuar para o plano."
+    options: [approve, reject]
+    on_reject: abort
+  - id: plan
+    command: speckit.plan
+    integration: "{{ inputs.integration }}"
+    input:
+      args: "{{ inputs.spec }}"</code></pre>
+  <p>Os valores de entradas e as saídas de etapas anteriores podem ser referenciados com expressões como <code>{{ inputs.spec }}</code>. Um gate pausa a execução para revisão; <code>approve</code> libera o próximo passo e <code>reject</code> encerra este run. A definição, não o gate, determina o que acontece em cada resposta.</p>
+
+  <h2>3. Valide no projeto de laboratório</h2>
+  <p>Em um projeto iniciado com <code>specify init</code>, primeiro peça ao CLI para inspecionar o YAML e depois rode uma execução real:</p>
+  <pre><code>specify workflow info ./workflow.yml
+specify workflow run ./workflow.yml \
+  --input spec="Adicionar exportação CSV ao histórico de ordens" \
+  --input integration=copilot</code></pre>
+  <p>Quando o gate pausar, leia a spec gerada antes de aprovar. Confira o estado e retome o mesmo run:</p>
+  <pre><code>specify workflow status &lt;run_id&gt;
+specify workflow resume &lt;run_id&gt;</code></pre>
+  <p>Teste também a rejeição. O resultado esperado é o run abortado antes de <code>plan</code>, não uma revisão automática nem a remoção dos arquivos que <code>specify</code> já criou. A validação de <code>info</code> confere a definição; não substitui o teste das etapas com a integração que você pretende suportar.</p>
+
+  <h2>4. Revise o contrato antes de compartilhar</h2>
+  <ul>
+    <li>IDs do workflow e das etapas são estáveis e únicos; entradas obrigatórias, padrões e opções estão claros.</li>
+    <li>Pré-requisitos e integrações declarados correspondem ao que você testou.</li>
+    <li>Expressões só apontam para entradas ou etapas anteriores.</li>
+    <li>Gates explicam o que revisar e o significado de aprovar/rejeitar.</li>
+    <li>O README explica propósito, entradas, etapas, limitações e compatibilidade.</li>
+  </ul>
+  <div class="panel">
+    <strong>Segurança do YAML</strong>
+    <p>Um step <code>shell</code> executa comandos locais com os privilégios do usuário, sem sandbox. Valores interpolados em <code>run</code> não recebem escape automático. Evite shell se um step declarativo resolve o caso; se for indispensável, limite os valores aceitos, explique a operação no README e revise exatamente o YAML que será distribuído.</p>
+  </div>
+
+  <h2>5. Pratique: encontre a fonte da verdade</h2>
+  <p>Você pretende publicar a versão <code>1.0.0</code>, mas o YAML local ainda declara <code>workflow.version: "0.9.0"</code>. Antes de criar a tag e a release, qual arquivo e campo você atualiza?</p>
+  <label for="answer-source">Sua resposta</label>
+  <p><input id="answer-source" type="text" autocomplete="off" aria-describedby="feedback-source"></p>
+  <button type="button" id="check-source">Conferir</button>
+  <p id="feedback-source" class="answer panel" aria-live="polite"></p>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>A <a href="https://github.github.io/spec-kit/reference/workflows.html">referência de workflows</a> descreve YAML, entradas, validação e execução. A <a href="https://github.com/github/spec-kit/blob/main/workflows/ARCHITECTURE.md">arquitetura oficial</a> explica steps built-in, expressões e persistência do run.</p>
+  </div>
+
+  <p><a href="./0029-workflows-do-spec-kit.html">Lição 29: modelo geral</a> · <a href="./0030-workflows-comunitarios-spec-kit.html">Lição 30: descobrir workflows</a> · <a href="./0035-publicar-workflow-spec-kit.html">Próxima: publicar o workflow</a> · <a href="../reference/spec-kit-workflows.html">Referência rápida</a></p>
+  <footer>Traga sua sequência real, a definição <code>workflow.yml</code> e a saída de <code>specify workflow info</code>. O professor pode ajudar a localizar o menor conjunto de etapas e o gate que protege seu processo.</footer>
+</main>
+<script>
+  const answerSource = document.querySelector('#answer-source');
+  const feedbackSource = document.querySelector('#feedback-source');
+  document.querySelector('#check-source').addEventListener('click', () => {
+    const answer = answerSource.value.trim().toLowerCase();
+    feedbackSource.innerHTML = ['workflow.yml', 'workflow.version', 'version'].includes(answer)
+      ? '<strong>Isso.</strong> Atualize o campo <code>workflow.version</code> em <code>workflow.yml</code> para <code>1.0.0</code>, teste e só então crie a release. Se o workflow estiver no catálogo, mantenha também os metadados dele alinhados a essa release.'
+      : '<strong>Ainda não.</strong> Atualize o campo <code>workflow.version</code> dentro de <code>workflow.yml</code>; o catálogo deve refletir essa versão depois.';
+    feedbackSource.classList.add('visible');
+  });
+</script>
+</body>
+</html>
