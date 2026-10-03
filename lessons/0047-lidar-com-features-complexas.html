@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 47 · Lidar com features complexas no Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 47 · 6 minutos</p>
+  <h1>Feature grande não pede, automaticamente, mais specs</h1>
+  <p class="lede">Vitória de hoje: escolher a menor mudança de fluxo que mantém uma implementação coerente e verificável, sem perder de vista o épico inteiro.</p>
+
+  <div class="panel">
+    <strong>O problema costuma aparecer na implementação</strong>
+    <p>Uma feature pode passar bem por <code>specify</code>, <code>plan</code> e <code>tasks</code>, mas perder consistência durante uma execução longa de <code>implement</code>. A documentação aponta o esgotamento da janela de contexto como uma causa comum: o agente pode perder partes do plano ou ignorar tarefas. A resposta é reduzir o contexto ativo por execução, não necessariamente reescrever a feature. <a href="https://github.github.io/spec-kit/concepts/complex-features.html">Fonte oficial</a>.</p>
+  </div>
+
+  <h2>1. Suba a escada só quando precisar</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Sinal observado</th><th>Próxima estratégia</th><th>Custo relativo</th></tr></thead>
+    <tbody>
+      <tr><td>A execução inteira é longa, mas as fases cabem</td><td>Peça ao <code>implement</code> para executar um intervalo de tarefas ou uma fase e parar.</td><td>Menor</td></tr>
+      <tr><td>Há tarefas marcadas <code>[P]</code> que são independentes</td><td>Delegue essas tarefas a subagentes, se o seu agente oferecer suporte.</td><td>Intermediário</td></tr>
+      <tr><td>A feature é grande e tem trabalho paralelo</td><td>Limite a fase atual e delegue somente as tarefas paralelas.</td><td>Intermediário</td></tr>
+      <tr><td>Uma única fase ainda excede o contexto</td><td>Decomponha em sub-features, cada uma com seu próprio ciclo Spec Kit.</td><td>Maior</td></tr>
+    </tbody>
+  </table></div>
+  <p>As tarefas concluídas recebem <code>[X]</code> em <code>tasks.md</code>, permitindo retomar na próxima execução. A decomposição em várias specs adiciona mais coordenação; reserve-a para quando limitar tarefas e delegar não forem suficientes. <a href="https://github.github.io/spec-kit/concepts/complex-features.html#which-approach-to-choose">Compare as opções na documentação</a>.</p>
+
+  <h2>2. Quando decompor: faça uma roadmap rasa</h2>
+  <p>“Spec of specs” não é uma nova ferramenta ou um comando especial. É uma passagem curta de decomposição antes de especificar cada fatia:</p>
+  <ol>
+    <li>Descreva o épico inteiro em uma ou duas frases.</li>
+    <li>Proponha poucas fatias coerentes, cada uma implementável e demonstrável por si.</li>
+    <li>Declare o que entra em cada fatia e o que fica para as outras.</li>
+    <li>Registre dependências e ordene os pré-requisitos primeiro.</li>
+    <li>Salve a roadmap no controle de versão; depois rode o fluxo Spec Kit normal para cada fatia.</li>
+  </ol>
+  <p>A roadmap preserva a visão global, mas não deve tentar fazer o trabalho de cada <code>spec.md</code>: o desenho detalhado acontece quando cada fatia entra em seu próprio <code>specify → plan → tasks → implement</code>. <a href="https://github.github.io/spec-kit/concepts/spec-of-specs.html#the-roadmap-pass">Veja o processo oficial</a>.</p>
+
+  <h2>3. Mantenha os dois sentidos de rastreabilidade</h2>
+  <p>Cada linha recebe um ID estável, intenção, limite de escopo, dependências, status e caminho da sub-spec. Quando ela existir, a tabela aponta para a pasta da fatia. A <code>spec.md</code> filha aponta de volta à roadmap e ao ID correspondente. Assim, o contexto local fica pequeno sem apagar de qual parte do épico ele veio.</p>
+  <pre><code>Épico: portal de cobrança
+  R1 histórico de faturas       sem dependências
+R2 formas de pagamento        depende de R1
+R3 troca de plano             depende de R1 e R2</code></pre>
+  <p>Os IDs usados por sub-specs não devem mudar. Se o escopo do épico mudar, atualize primeiro a roadmap e reconcilie as sub-specs afetadas; se uma fatia ainda for grande demais, aplique a mesma técnica recursivamente, mas só nesse caso. A <a href="../reference/spec-kit-complex-features.html">referência rápida</a> traz os campos e o esqueleto da tabela.</p>
+
+  <h2>Pratique: qual é a menor intervenção?</h2>
+  <p>O plano tem quatro fases. Cada fase cabe no contexto, mas uma execução única das quatro costuma perder tarefas ao final. Qual é o primeiro ajuste a tentar?</p>
+  <button type="button" aria-expanded="false" aria-controls="recall-answer" onclick="const answer = document.querySelector('#recall-answer'); answer.classList.toggle('visible'); this.setAttribute('aria-expanded', answer.classList.contains('visible'))">Revelar resposta</button>
+  <div id="recall-answer" class="answer panel" aria-live="polite">
+    <p><strong>Limite a execução a uma fase ou a um intervalo de tarefas.</strong> É a estratégia mais simples e de menor overhead; as marcações <code>[X]</code> permitem continuar depois. Não há motivo ainda para criar várias specs: nenhuma fase, isoladamente, excede o contexto.</p>
+  </div>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>Leia <a href="https://github.github.io/spec-kit/concepts/complex-features.html">Handling Complex Features</a> para escolher entre limitar tarefas, delegar e decompor. Leia <a href="https://github.github.io/spec-kit/concepts/spec-of-specs.html">Spec of Specs</a> para o formato da roadmap, os links de ida e volta e o ciclo por sub-feature.</p>
+  </div>
+
+  <p><a href="../reference/spec-kit-complex-features.html">Abrir referência rápida</a> · <a href="./0046-mcp-servers-do-spec-kit.html">Lição 46: MCP do Spec Kit</a> · <a href="./0008-implement-do-spec-kit.html">Lição: implement</a></p>
+  <footer>O professor pode ajudar a decompor uma feature real ou avaliar se o limite está na execução, numa fase ou no escopo da própria spec. Traga o plano e as tarefas que estão ficando grandes.</footer>
+</main>
+</body>
+</html>

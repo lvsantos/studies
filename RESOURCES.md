@@ -138,9 +138,10 @@
   README oficial da extensao bundled e opt-in para branches, validacao, remotes e commits automatizados.
 - [Spec Kit authentication reference](https://github.github.io/spec-kit/reference/authentication.html)
   Referencia primaria da autenticacao HTTP opt-in do Specify CLI para catalogos, downloads de extensoes e verificacoes de releases; documenta hosts, provedores, esquemas e protecao de credenciais.
-- [Spec Kit MCP server reference](https://github.github.io/spec-kit/reference/mcp.html)
   Referencia primaria do servidor MCP experimental do Specify CLI; documenta o transporte stdio, as tres ferramentas genericas, o suporte atual apenas a `version` e os formatos de resultado e erro.
+ [Handling Complex Features](https://github.github.io/spec-kit/concepts/complex-features.html)
 - [Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl (Birgitta Bockeler, martinfowler.com)](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
+ [Spec of Specs](https://github.github.io/spec-kit/concepts/spec-of-specs.html)
   Analise independente que define os tres niveis de SDD (spec-first, spec-anchored, spec-as-source) e traz uma visao critica sobre limitacoes praticas do Spec Kit.
 
 ## Wisdom

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referência · Features complexas no Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Referência rápida · Spec Kit</p>
+  <h1>Features complexas</h1>
+  <p class="lede">Reduza o contexto ativo antes de aumentar a estrutura do processo. Use uma spec of specs somente quando uma fase ainda for grande demais.</p>
+
+  <h2>Escada de decisão</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Problema</th><th>Resposta</th></tr></thead>
+    <tbody>
+      <tr><td>Muitas tarefas numa execução longa</td><td>Limite por faixa de tarefas ou por fase; retome depois a partir das marcações <code>[X]</code>.</td></tr>
+      <tr><td>Tarefas independentes marcadas <code>[P]</code></td><td>Delegue a subagentes se o agente suportar; cada um deve receber uma tarefa e o contexto relevante.</td></tr>
+      <tr><td>Feature grande com fases e paralelismo</td><td>Combine limite por fase com delegação das tarefas paralelas.</td></tr>
+      <tr><td>Uma fase isolada ainda não cabe</td><td>Decomponha o épico em sub-features com specs independentes.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Ordem importa: spec of specs tem o maior overhead. Tente primeiro limitar o escopo de cada execução; delegue quando houver independência e suporte. <a href="https://github.github.io/spec-kit/concepts/complex-features.html">Fonte: Handling Complex Features</a>.</p>
+
+  <h2>Passagem de decomposição</h2>
+  <ol>
+    <li>Resuma o épico em uma ou duas frases.</li>
+    <li>Escolha poucas fatias coerentes e demonstráveis de forma independente.</li>
+    <li>Defina intenção e limites: o que entra e o que fica para outra fatia.</li>
+    <li>Declare dependências e ordene pré-requisitos primeiro.</li>
+    <li>Registre a roadmap e especifique cada fatia no fluxo normal.</li>
+  </ol>
+
+  <h2>Campos da roadmap</h2>
+  <p><code>ID | Sub-feature | Intent | Scope boundary | Depends on | Status | Sub-spec</code></p>
+  <p>Mantenha IDs estáveis depois que uma sub-spec os referenciar. Use status como <code>planned</code>, <code>in-progress</code> e <code>done</code>. Cada sub-spec deve citar o arquivo da roadmap e seu ID; a roadmap deve apontar de volta ao diretório da sub-spec.</p>
+  <pre><code># Roadmap: &lt;nome do épico&gt;
+
+| ID | Sub-feature | Intent | Scope boundary | Depends on | Status | Sub-spec |
+|----|-------------|--------|----------------|------------|--------|----------|
+| R1 | &lt;fatia&gt; | &lt;resultado&gt; | &lt;entra / fica fora&gt; | — | planned | — |
+| R2 | &lt;fatia&gt; | &lt;resultado&gt; | &lt;entra / fica fora&gt; | R1 | planned | — |</code></pre>
+  <pre><code>**Input**: Parent roadmap: `specs/&lt;epic&gt;/roadmap.md` → entry **R2**.
+&lt;intenção e escopo desta fatia&gt;</code></pre>
+
+  <h2>Operar e reconciliar</h2>
+  <ul>
+    <li>Selecione uma fatia cujas dependências estejam concluídas.</li>
+    <li>Execute <code>specify → plan → tasks → implement</code> para essa fatia.</li>
+    <li>Atualize o status e o caminho da sub-spec na roadmap.</li>
+    <li>Se escopo ou dependências mudarem, atualize primeiro a roadmap e reconcilie as sub-specs afetadas.</li>
+    <li>Decomponha recursivamente só quando uma sub-feature continuar grande demais.</li>
+  </ul>
+  <p>Para fatias independentes em paralelo, use worktrees separados: o estado da feature ativa não deve colidir entre execuções.</p>
+
+  <p><a href="../lessons/0047-lidar-com-features-complexas.html">Lição 47: lidar com features complexas</a> · <a href="../lessons/0008-implement-do-spec-kit.html">Lição: implement</a></p>
+  <p class="small">Fontes: <a href="https://github.github.io/spec-kit/concepts/complex-features.html">Handling Complex Features</a> · <a href="https://github.github.io/spec-kit/concepts/spec-of-specs.html">Spec of Specs</a>.</p>
+</main>
+</body>
+</html>
