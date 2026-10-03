@@ -22,6 +22,10 @@
   Secao primaria para entender bundles como setups versionados por papel/equipe e decidir quando provisionar um conjunto completo em vez de instalar um componente isolado.
 - [Spec Kit bundles reference](https://github.github.io/spec-kit/reference/bundles.html)
   Referencia primaria para manifestos, busca, inspecao, instalacao, atualizacao, remocao, catalogos, limites offline e publicacao de bundles.
+- [Spec Kit Community Bundles](https://github.github.io/spec-kit/community/bundles.html)
+  Fonte primaria para descobrir bundles comunitarios, entender o que a revisao do catalogo cobre e verificar a resolucao dos componentes e os requisitos de submissao. A presenca no catalogo nao representa auditoria nem endosso.
+- [Spec Kit community bundle catalog](https://github.com/github/spec-kit/blob/main/bundles/catalog.community.json)
+  Catalogo atual de descoberta; em 2026-10-03 lista `agentstandards`, `sicario-spec` e `specassay`, com metadados de papel, versao e contagem de componentes.
 - [Spec Kit workflows reference](https://github.github.io/spec-kit/reference/workflows.html)
   Referencia primaria para definicoes YAML, entradas, tipos de passos, execucao, status, retomada, overlays e limites de seguranca dos workflows.
 - [Spec Kit first-party workflow catalog](https://github.com/github/spec-kit/blob/main/workflows/catalog.json)

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 37 · Bundles comunitários do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 37 · 8 minutos</p>
+  <h1>Bundle comunitário: um setup, várias peças, uma revisão</h1>
+  <p class="lede">Vitória de hoje: descobrir o que um bundle comunitário reúne, identificar o problema de equipe que ele resolve e escolher uma forma responsável de instalá-lo.</p>
+
+  <div class="panel">
+    <strong>O que muda com um bundle?</strong>
+    <p>Um bundle é um manifesto versionado que agrupa componentes existentes do Spec Kit para um papel ou uma equipe: extensions, presets, workflows e steps. Ele distribui esse setup como uma unidade; não substitui nem altera o funcionamento próprio de cada componente.</p>
+    <p>Isso ajuda quando vários projetos precisam começar com o mesmo conjunto, nas versões acordadas. Em vez de cada pessoa procurar e instalar peças separadas, o time pode inspecionar e provisionar uma composição declarada. O ganho é consistência e menos coordenação manual, não uma garantia automática de qualidade.</p>
+  </div>
+
+  <h2>1. Reconheça as peças dentro do pacote</h2>
+  <p>As aulas anteriores mostraram capacidades diferentes que poderiam fazer parte de um setup:</p>
+  <ul>
+    <li>A <a href="./0017-extensao-git-do-spec-kit.html">extension Git</a> organiza branches e operações de versionamento; é uma capacidade, não um processo completo.</li>
+    <li>Um <a href="./0030-workflows-comunitarios-spec-kit.html">workflow comunitário</a> ordena comandos e checkpoints; a ficha do catálogo não revela sozinha se os gates atendem à equipe.</li>
+    <li>Uma <a href="./0013-extensoes-da-comunidade-do-spec-kit.html">extension comunitária</a> acrescenta comandos ou integrações, mas exige revisão própria.</li>
+  </ul>
+  <p>Um bundle hipotético para um time de desenvolvimento poderia combinar componentes escolhidos dessas categorias. Isso não quer dizer que exista um bundle publicado com essa composição: use <code>info</code> para ver o conjunto e as versões que o bundle real declara.</p>
+
+  <h2>2. Descubra e inspecione</h2>
+  <p>O catálogo comunitário embutido é <strong>discovery-only</strong>. Você pode pesquisar e consultar detalhes, mas a origem não autoriza instalação por ID:</p>
+  <pre><code>specify bundle search architecture
+specify bundle info agentstandards
+specify bundle catalog list</code></pre>
+  <p><code>info</code> mostra o conjunto expandido de componentes e suas versões fixadas: é uma prévia do plano de instalação. Na consulta de 03/10/2026, o catálogo lista três exemplos:</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Bundle</th><th>Papel / conteúdo declarado</th><th>Pergunta de revisão</th></tr></thead>
+    <tbody>
+      <tr><td><code>agentstandards</code></td><td>Governança de arquitetura; 1 extension, 1 preset e 1 workflow.</td><td>O conselho multi-vendor e o gate de tarefas combinam com o agente e as regras do time?</td></tr>
+      <tr><td><code>sicario-spec</code></td><td>Segurança e governança; 1 extension e 11 presets.</td><td>Quais padrões os presets aplicam e quais comandos a extension executa?</td></tr>
+      <tr><td><code>specassay</code></td><td>Rastreabilidade; 1 extension e 1 preset.</td><td>O gate e os IDs duráveis se encaixam nos artefatos e no processo atual?</td></tr>
+    </tbody>
+  </table></div>
+  <p>Os itens aparecem como não verificados. A revisão do catálogo comunitário confere se os metadados da submissão estão completos e corretos; não audita, endossa nem dá suporte ao código do bundle ou às peças que ele instala.</p>
+
+  <h2>3. Revise também as dependências</h2>
+  <p>O bundle aponta para componentes; cada um continua vindo do mecanismo e da origem correspondentes. Por isso, revise o manifesto, o repositório e a release versionada do bundle, além dos catálogos de extensions, presets, workflows e steps usados pelas referências.</p>
+  <p>Se um componente não estiver no bundle nem instalado, ele precisa resolver em um catálogo ativo. Uma origem de bundle aprovada não aprova automaticamente essas outras origens. Confira a política e a procedência de cada catálogo antes de aceitar a instalação.</p>
+
+  <h2>4. Escolha uma origem de instalação</h2>
+  <p>Depois da revisão, a equipe pode distribuir o artefato versionado por uma origem que ela controla e marcou explicitamente como instalável. Outra opção é instalar um ZIP revisado localmente:</p>
+  <pre><code># Exemplo: catálogo curado pela equipe, não o catálogo comunitário padrão
+specify bundle catalog add https://example.org/spec-kit/bundles.json --id team-bundles --policy install-allowed
+specify bundle install security-team
+
+# Alternativa: artefato local revisado
+specify bundle install ./security-team-1.2.0.zip
+specify bundle list</code></pre>
+  <p>O ZIP local evita depender de um catálogo de bundles para localizar o manifesto, mas não resolve magicamente componentes externos: eles ainda precisam estar incluídos, instalados ou disponíveis nos catálogos ativos. A política <code>install-allowed</code> permite instalar daquela origem; não é certificado de segurança.</p>
+
+  <h2>5. Pratique: o que o catálogo atesta?</h2>
+  <p>Você encontra um bundle comunitário marcado como “Documented”, com manifesto e release acessíveis. Isso significa que o código foi auditado e aprovado pelo Spec Kit?</p>
+  <button type="button" data-answer="bundle-review">Revelar resposta</button>
+  <div id="answer-bundle-review" class="answer panel" aria-live="polite"></div>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>A página de <a href="https://github.github.io/spec-kit/community/bundles.html">Community Bundles</a> explica a política de descoberta, o escopo de revisão e a resolução de componentes. Confira também o <a href="https://github.com/github/spec-kit/blob/main/bundles/catalog.community.json">catálogo comunitário</a> e a <a href="https://github.github.io/spec-kit/reference/bundles.html">referência de comandos e catálogos</a>.</p>
+  </div>
+
+  <p><a href="./0036-bundles-do-spec-kit.html">Lição 36: bundles em geral</a> · <a href="./0030-workflows-comunitarios-spec-kit.html">Workflows comunitários</a> · <a href="./0017-extensao-git-do-spec-kit.html">Extension Git</a> · <a href="./0013-extensoes-da-comunidade-do-spec-kit.html">Extensions comunitárias</a> · <a href="../reference/spec-kit-bundles.html">Referência rápida: bundles</a></p>
+  <footer>O professor pode ajudar a decompor um bundle em componentes, comparar as origens e montar uma checklist de adoção para o seu time. Traga o papel, os comandos necessários e os gates que não podem faltar.</footer>
+</main>
+<script>
+  const answers = {
+    'bundle-review': '<strong>Não.</strong> “Documented” indica documentação disponível, não auditoria de segurança. O catálogo comunitário valida metadados; revise o manifesto, o código e as origens dos componentes antes de instalar.'
+  };
+  document.querySelectorAll('[data-answer]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const answer = document.querySelector(`#answer-${button.dataset.answer}`);
+      answer.innerHTML = answers[button.dataset.answer];
+      answer.classList.add('visible');
+    });
+  });
+</script>
+</body>
+</html>
