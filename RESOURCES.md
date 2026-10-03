@@ -34,6 +34,22 @@
   Guia oficial sobre execucao, catalogos, instalação, estado e retomada; esclarece que o catalogo comunitario e mantido por autores independentes e nao e auditado ou endossado.
 - [Spec Kit workflows directory](https://github.com/github/spec-kit/tree/main/workflows)
   Definicoes oficiais dos workflows `speckit`, `bugfix` e `assess`, alem dos catalogos e guias de arquitetura/publicacao; use para conferir como as sequencias reais encadeiam comandos e gates.
+- [Spec Kit bundled workflow: speckit](https://github.com/github/spec-kit/blob/main/workflows/speckit/workflow.yml)
+  YAML first-party do ciclo SDD completo: entradas `spec`/`integration`, comandos core e gates de revisão antes de plan e tasks.
+- [Spec Kit bundled workflow: bugfix](https://github.com/github/spec-kit/blob/main/workflows/bugfix/workflow.yml)
+  YAML first-party de triagem e correção de bug; conferir junto da extensão `bug`, pois seus comandos exigem essa extensão.
+- [Spec Kit bundled workflow: assess](https://github.com/github/spec-kit/blob/main/workflows/assess/workflow.yml)
+  YAML first-party para avaliar ideias antes do SDD; inclui gate final e handoff deliberadamente manual para `specify`.
+- [Spec Kit Bug Fixing Quickstart](https://github.github.io/spec-kit/guides/bugfix.html)
+  Guia oficial com pré-requisitos, exemplo por slug e distinção entre assess, fix e test, incluindo resultados verified/partial/failed.
+- [Spec Kit Agentic Bug Fix reference](https://github.github.io/spec-kit/reference/agentic-bugfix.html)
+  Contrato oficial dos comandos de bug fix, arquivos de saída e limites de escrita no código-fonte.
+- [Spec Kit Idea Assessment Quickstart](https://github.github.io/spec-kit/guides/assessment.html)
+  Exemplo oficial de intake a decide, critérios dos vereditos e resolução de dúvidas por edição/refinamento dos artefatos.
+- [Spec Kit Agentic Idea Assessment reference](https://github.github.io/spec-kit/reference/agentic-assessment.html)
+  Contrato oficial dos comandos, pré-requisitos entre estágios, artefatos, evidências e handoff opcional para SDD.
+- [Spec Kit workflow execution and resume reference](https://github.github.io/spec-kit/reference/workflows.html)
+  Fonte primária para inputs, gates, estados persistidos, `workflow status` e `workflow resume`.
 - [Project-local overrides and resolution](https://github.github.io/spec-kit/guides/customization.html#project-local-overrides-and-resolution)
   Secao primaria sobre o caminho `.specify/templates/overrides/`, precedencia dos overrides locais e a diferenca entre resolver templates/scripts e materializar comandos na integracao ativa.
 - [Spec Kit presets reference](https://github.github.io/spec-kit/reference/presets.html)
