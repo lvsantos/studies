@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 38 · Bundle oficial assess</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 38 · 8 minutos · Bundle first-party</p>
+  <h1><code>assess</code>: empacotar a decisão antes do SDD</h1>
+  <p class="lede">Vitória de hoje: explicar o que o bundle instala, como suas peças cooperam e por que um veredito <code>go</code> ainda não inicia uma feature.</p>
+
+  <div class="panel">
+    <strong>O problema que resolve</strong>
+    <p>Uma ideia ainda incerta não precisa começar pelo <code>specify</code>. O bundle first-party <code>assess</code> reúne as ferramentas para registrar a ideia, buscar evidências, definir o problema, comparar conceitos e chegar a uma decisão revisável.</p>
+    <p>É first-party: está no catálogo oficial de bundles e aparece como verificado. Não confunda isso com o catálogo de exemplos por papel da lição <a href="./0040-bundles-exemplos-spec-kit.html">0040</a>.</p>
+  </div>
+
+  <h2>1. O que ele instala</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Componente</th><th>Versão declarada</th><th>Função</th></tr></thead>
+    <tbody>
+      <tr><td>Extension <code>assess</code></td><td><code>1.0.1</code></td><td>Fornece os comandos <code>intake</code>, <code>research</code>, <code>define</code>, <code>shape</code> e <code>decide</code>.</td></tr>
+      <tr><td>Workflow <code>assess</code></td><td><code>1.0.0</code></td><td>Ordena os comandos e acrescenta o gate humano <code>review-verdict</code>.</td></tr>
+    </tbody>
+  </table></div>
+  <p>O manifesto <code>bundles/assess/bundle.yml</code> declara essas duas dependências, o ID/nome/versão do bundle e Spec Kit mínimo <code>&gt;=0.9.0</code>. Não fornece preset nem step separado. Compare com a <a href="./0015-extensao-assess-do-spec-kit.html">extensão assess</a>: a capacidade é a mesma; o bundle adiciona a distribuição coordenada com o workflow.</p>
+
+  <h2>2. O funcionamento interno</h2>
+  <ol>
+    <li><strong>Intake:</strong> normaliza a ideia em <code>intake.md</code>.</li>
+    <li><strong>Research:</strong> registra evidências e fontes em <code>research.md</code>.</li>
+    <li><strong>Define:</strong> descreve problema, usuários, objetivos e métricas em <code>problem.md</code>.</li>
+    <li><strong>Shape:</strong> compara conceitos e trade-offs em <code>concept.md</code>.</li>
+    <li><strong>Decide:</strong> registra scorecard, justificativa e veredito em <code>decision.md</code>.</li>
+    <li><strong>Review gate:</strong> um humano aprova ou rejeita a conclusão do assessment.</li>
+  </ol>
+  <p>Os arquivos ficam em <code>.specify/assessments/&lt;slug&gt;/</code>. O veredito da ideia (<code>go</code>, <code>needs-clarification</code>, <code>kill</code>) é diferente da resposta do gate (<code>approve</code>/<code>reject</code>). Aprovar não muda o veredito nem chama <code>specify</code>: se houver <code>go</code>, o handoff para SDD é deliberadamente manual.</p>
+  <p>Essa é a diferença entre o workflow <a href="./0033-workflow-assess-oficial.html">assess</a>, que define a sequência, e a extensão da <a href="./0015-extensao-assess-do-spec-kit.html">lição 15</a>, que fornece as operações de cada etapa. O bundle instala ambos para que a sequência possa chamar os comandos.</p>
+
+  <h2>3. Inspecione e instale</h2>
+  <pre><code>specify bundle info assess
+specify bundle install assess
+specify bundle list</code></pre>
+  <p><code>info</code> expande o manifesto em componentes e versões; essa prévia representa o plano de instalação. O instalador entrega cada peça pelo mecanismo próprio, verifica compatibilidade da integração e registra a proveniência do que o bundle forneceu. A instalação do ID do catálogo busca o manifesto pela rede; o suporte offline se aplica a componentes empacotados/locais, não a qualquer download de catálogo.</p>
+  <p>Depois, use o workflow com uma ideia e um slug próprios:</p>
+  <pre><code>specify workflow run assess \
+  --input idea="Permitir uso offline e sincronizar ao reconectar" \
+  --input slug=offline-sync</code></pre>
+  <p>Use <code>specify bundle remove assess</code> para remover as peças atribuídas ao bundle; uma peça ainda usada por outro bundle permanece. Uma extensão instalada independentemente não é adotada pelo bundle nem removida por ele.</p>
+
+  <h2>4. Pratique: o que significa aprovar?</h2>
+  <p><code>decision.md</code> contém <code>go</code>. A pessoa aprova <code>review-verdict</code>. Qual resultado isso produz por si só?</p>
+  <button type="button" data-answer="handoff">Revelar resposta</button>
+  <div id="answer-handoff" class="answer panel" aria-live="polite"></div>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>Confira o <a href="https://github.com/github/spec-kit/tree/main/bundles/assess">manifest e README do bundle</a>, o <a href="https://github.com/github/spec-kit/blob/main/workflows/assess/workflow.yml">workflow YAML</a> e a <a href="https://github.github.io/spec-kit/reference/bundles.html">referência de bundles</a>. Para os comandos e artefatos, veja também a <a href="https://github.github.io/spec-kit/reference/agentic-assessment.html">referência de assessment</a>.</p>
+  </div>
+  <p><a href="./0039-bundle-bugfix-oficial.html">Próxima: bundle bugfix</a> · <a href="./0033-workflow-assess-oficial.html">Workflow assess</a> · <a href="./0015-extensao-assess-do-spec-kit.html">Extension assess</a> · <a href="./0022-constitution-sync-spec-kit.html">Preset: constitution-sync</a> · <a href="../reference/spec-kit-bundles.html">Referência rápida</a></p>
+  <footer>O professor pode ajudar a decidir se uma ideia tem evidência suficiente para ir a specify ou precisa de esclarecimento. Traga o veredito e a evidência que o sustenta.</footer>
+</main>
+<script>
+  const answers = {
+    handoff: '<strong>Nenhum handoff automático.</strong> O gate registra a decisão humana sobre continuar; não altera <code>decision.md</code> e não executa <code>specify</code>. Leia o resultado e inicie SDD explicitamente se ainda fizer sentido.'
+  };
+  document.querySelectorAll('[data-answer]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const answer = document.querySelector(`#answer-${button.dataset.answer}`);
+      answer.innerHTML = answers[button.dataset.answer];
+      answer.classList.add('visible');
+    });
+  });
+</script>
+</body>
+</html>

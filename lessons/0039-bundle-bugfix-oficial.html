@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 39 · Bundle oficial bugfix</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 39 · 8 minutos · Bundle first-party</p>
+  <h1><code>bugfix</code>: diagnóstico, gate, reparo e prova</h1>
+  <p class="lede">Vitória de hoje: identificar o conjunto que o bundle fornece e separar “workflow concluído” de “bug verificado”.</p>
+
+  <div class="panel">
+    <strong>Quando usar</strong>
+    <p>Use este bundle quando há comportamento existente quebrado e você quer uma sequência governada para investigar antes de alterar código. Ele é first-party e verificado no catálogo oficial. Para decidir se uma ideia nova merece investimento, use <a href="./0038-bundle-assess-oficial.html">assess</a>, não bugfix.</p>
+  </div>
+
+  <h2>1. O que ele instala</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Componente</th><th>Versão declarada</th><th>Responsabilidade</th></tr></thead>
+    <tbody>
+      <tr><td>Extension <code>bug</code></td><td><code>1.0.0</code></td><td>Comandos <code>speckit.bug.assess</code>, <code>fix</code> e <code>test</code>.</td></tr>
+      <tr><td>Workflow <code>bugfix</code></td><td><code>1.0.0</code></td><td>Orquestra diagnóstico, revisão humana, correção e verificação.</td></tr>
+    </tbody>
+  </table></div>
+  <p>O manifesto fixa as duas versões e requer Spec Kit <code>&gt;=0.9.0</code>; não inclui preset nem step independente. A extensão fornece as operações; o workflow decide ordem e ponto de aprovação. Esse empacotamento não muda a lógica descrita na <a href="./0014-extensao-bugfix-do-spec-kit.html">lição 14</a> nem o fluxo da <a href="./0032-workflow-bugfix-oficial.html">lição 32</a>.</p>
+
+  <h2>2. O workflow por dentro</h2>
+  <ol>
+    <li><strong><code>assess</code>:</strong> investiga o relato, propõe causa e remediação; não altera código-fonte.</li>
+    <li><strong><code>review-assessment</code>:</strong> gate humano. <code>approve</code> permite avançar; <code>reject</code> aborta antes do patch.</li>
+    <li><strong><code>fix</code>:</strong> aplica a remediação e registra mudanças. É a etapa que altera código.</li>
+    <li><strong><code>test</code>:</strong> roda a reprodução/testes relevantes e registra evidências.</li>
+  </ol>
+  <p>Os relatórios são gravados em <code>.specify/bugs/&lt;slug&gt;/</code>: <code>assessment.md</code>, <code>fix.md</code> e <code>test.md</code>. Mantenha o mesmo slug nas entradas. A extensão e seu workflow funcionam juntos como os itens das <a href="./0014-extensao-bugfix-do-spec-kit.html">lições de extensão</a> e <a href="./0032-workflow-bugfix-oficial.html">workflow</a>, respectivamente.</p>
+  <p>O status do run mede execução das etapas; o relatório de teste mede evidência sobre o bug. Um run <code>completed</code> com resultado <code>partial</code> não prova a correção. Os resultados de domínio são <code>verified</code>, <code>partial</code> e <code>failed</code>.</p>
+
+  <h2>3. Inspecione e execute</h2>
+  <pre><code>specify bundle info bugfix
+specify bundle install bugfix
+specify bundle list</code></pre>
+  <p>Após inspecionar o plano expandido e instalar o bundle, forneça o relato e um slug:</p>
+  <pre><code>specify workflow run bugfix \
+  --input report="Login com senha vazia termina em erro 500" \
+  --input slug=login-empty-password</code></pre>
+  <p>O instalador resolve cada componente pela sua origem e rotina próprias, mantém registro de quais itens o bundle forneceu e recusa conflitos de integração. A remoção preserva componentes ainda necessários a outro bundle e não remove componentes independentes. Na instalação por ID do catálogo first-party, o manifesto é buscado online; inspecione os componentes antes de rodar o processo.</p>
+
+  <h2>4. Pratique: run completo, bug resolvido?</h2>
+  <p>O run terminou em <code>completed</code>, mas <code>test.md</code> diz <code>partial</code>: a reprodução original não pôde ser executada. O que foi comprovado?</p>
+  <button type="button" data-answer="proof">Revelar resposta</button>
+  <div id="answer-proof" class="answer panel" aria-live="polite"></div>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>Leia o <a href="https://github.com/github/spec-kit/tree/main/bundles/bugfix">manifest e README do bundle</a>, o <a href="https://github.com/github/spec-kit/blob/main/workflows/bugfix/workflow.yml">workflow YAML</a>, o <a href="https://github.com/github/spec-kit/blob/main/extensions/bug/README.md">README da extensão</a> e a <a href="https://github.github.io/spec-kit/reference/bundles.html">referência de bundles</a>.</p>
+  </div>
+  <p><a href="./0038-bundle-assess-oficial.html">Bundle assess</a> · <a href="./0032-workflow-bugfix-oficial.html">Workflow bugfix</a> · <a href="./0014-extensao-bugfix-do-spec-kit.html">Extension bug</a> · <a href="./0017-extensao-git-do-spec-kit.html">Extension Git</a> · <a href="../reference/spec-kit-bundles.html">Referência rápida</a></p>
+  <footer>O professor pode ajudar a revisar o relatório de avaliação ou interpretar por que um teste ficou parcial. Traga o sintoma, o slug e o resultado de test.</footer>
+</main>
+<script>
+  const answers = {
+    proof: '<strong>Foi concluída a sequência, não a prova do reparo.</strong> <code>partial</code> significa que falta evidência. O estado do workflow não transforma uma verificação incompleta em <code>verified</code>.'
+  };
+  document.querySelectorAll('[data-answer]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const answer = document.querySelector(`#answer-${button.dataset.answer}`);
+      answer.innerHTML = answers[button.dataset.answer];
+      answer.classList.add('visible');
+    });
+  });
+</script>
+</body>
+</html>

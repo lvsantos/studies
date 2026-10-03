@@ -34,6 +34,14 @@
   Lista workflows comunitarios para descoberta. A presenca no catalogo nao substitui a leitura da definicao versionada nem uma revisao independente.
 - [Spec Kit first-party workflow step catalog](https://github.com/github/spec-kit/blob/main/workflows/step-catalog.json)
   Catalogo oficial separado para tipos de steps reutilizaveis; a consulta de 2026-09-26 mostra a lista vazia.
+- [Spec Kit first-party bundle catalog](https://github.com/github/spec-kit/blob/main/bundles/catalog.json)
+  Fonte para confirmar os bundles first-party atualmente publicados e seus metadados verificados; use para distinguir IDs instaláveis por catálogo de manifests demonstrativos.
+- [Spec Kit assess bundle](https://github.com/github/spec-kit/tree/main/bundles/assess)
+  Manifest e README oficiais do bundle de Idea Assessment; detalham a composição extension `assess` + workflow `assess`, versões e handoff manual para `specify`.
+- [Spec Kit bugfix bundle](https://github.com/github/spec-kit/tree/main/bundles/bugfix)
+  Manifest e README oficiais do bundle de correção; detalham a composição extension `bug` + workflow `bugfix`, gate humano, comandos e remoção.
+- [Spec Kit example bundles](https://github.com/github/spec-kit/tree/main/examples/bundles)
+  Quatro manifests de papel (business analyst, developer, product manager e security researcher) para estudar composição; são exemplos no repositório, não entradas do catálogo first-party. Verifique se os componentes declarados existem em catálogos ativos.
 - [Spec Kit community workflow step catalog](https://github.com/github/spec-kit/blob/main/workflows/step-catalog.community.json)
   Catalogo comunitario separado de steps; a consulta de 2026-09-26 mostra a lista vazia. Ao avaliar uma entrada futura, revise o Python que o CLI importa.
 - [Spec Kit workflow step design](https://github.com/github/spec-kit/blob/main/design/workflow-step.md)

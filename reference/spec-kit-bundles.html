@@ -57,12 +57,27 @@ specify bundle build [--path &lt;dir&gt;] [--output &lt;dir&gt;]</code></pre>
     <li>Instalação totalmente offline tem limites: bundles de catálogo e componentes não empacotados no Spec Kit podem precisar de rede.</li>
   </ul>
 
-  <h2>Exemplos oficiais</h2>
+  <h2>Bundles first-party</h2>
   <ul>
-    <li><strong><code>bugfix</code>:</strong> extensão <code>bug</code> + workflow <code>bugfix</code>.</li>
-    <li><strong><code>assess</code>:</strong> extensão <code>assess</code> + workflow <code>assess</code>.</li>
-    <li><strong><code>business-analyst</code> (exemplo):</strong> contexto do agente + preset + steps + workflow.</li>
+    <li><strong><code>bugfix</code>:</strong> extension <code>bug@1.0.0</code> + workflow <code>bugfix@1.0.0</code>; requer Spec Kit <code>&gt;=0.9.0</code>.</li>
+    <li><strong><code>assess</code>:</strong> extension <code>assess@1.0.1</code> + workflow <code>assess@1.0.0</code>; requer Spec Kit <code>&gt;=0.9.0</code>.</li>
   </ul>
+  <p>São os dois IDs first-party do catálogo padrão, marcados <code>verified</code>. <code>bundle info</code> mostra o plano expandido. O workflow não é substituído pelo bundle: ele continua chamando os comandos fornecidos pela extension correspondente.</p>
+
+  <h2>Manifests de exemplo (não são bundles first-party)</h2>
+  <p>Os diretórios em <code>examples/bundles</code> demonstram composição por papel; não fazem parte do catálogo first-party e não são instaláveis por ID apenas por existirem no repositório. Os manifests precisam ter todas as dependências resolvidas por componentes incluídos, já instalados ou catálogos ativos:</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Exemplo</th><th>Composição declarada</th></tr></thead>
+    <tbody>
+      <tr><td><code>business-analyst</code></td><td><code>agent-context</code>, preset de elicitação, 2 steps e workflow de requisitos para spec.</td></tr>
+      <tr><td><code>developer</code></td><td><code>agent-context</code>, preset de planejamento, 2 steps e workflow de spec para implementação.</td></tr>
+      <tr><td><code>product-manager</code></td><td><code>agent-context</code>, preset de discovery, 2 steps e workflow de spec para roadmap.</td></tr>
+      <tr><td><code>security-researcher</code></td><td><code>agent-context</code>, preset de compliance (priority 5), 2 steps e workflow secure SDD.</td></tr>
+    </tbody>
+  </table></div>
+  <pre><code>specify bundle validate --path examples/bundles/developer
+specify bundle build --path examples/bundles/developer --output dist/</code></pre>
+  <p>Use-os para aprender/autorar manifests; confirme no catálogo e nas origens configuradas se cada ID referenciado existe antes de tentar instalar o ZIP gerado.</p>
 
   <h2>Bundles comunitarios</h2>
   <p>O catalogo comunitario embutido e <code>discovery-only</code>: <code>search</code> e <code>info</code> funcionam, mas instalar pelo ID exige uma origem explicitamente <code>install-allowed</code>. Isso e uma politica de origem, nao uma verificacao de seguranca.</p>
@@ -74,7 +89,7 @@ specify bundle catalog list
 specify bundle install ./sicario-spec-reviewed.zip</code></pre>
   <p>Mesmo instalando um manifesto/ZIP local, extensions, presets, workflows e steps que nao estejam incluidos ou instalados ainda precisam resolver nos catalogos ativos correspondentes. Revise tambem essas origens.</p>
 
-  <p><a href="../lessons/0036-bundles-do-spec-kit.html">Lição: bundles do Spec Kit</a> · <a href="../lessons/0037-bundles-comunitarios-do-spec-kit.html">Lição: bundles comunitários</a> · <a href="../lessons/0017-extensao-git-do-spec-kit.html">Extensão Git</a> · <a href="../lessons/0020-presets-do-spec-kit.html">Presets</a> · <a href="../lessons/0029-workflows-do-spec-kit.html">Workflows</a></p>
+  <p><a href="../lessons/0036-bundles-do-spec-kit.html">Lição 36: visão geral</a> · <a href="../lessons/0037-bundles-comunitarios-do-spec-kit.html">Lição 37: bundles comunitários</a> · <a href="../lessons/0038-bundle-assess-oficial.html">Lição 38: assess</a> · <a href="../lessons/0039-bundle-bugfix-oficial.html">Lição 39: bugfix</a> · <a href="../lessons/0040-bundles-exemplos-spec-kit.html">Lição 40: exemplos por papel</a> · <a href="../lessons/0043-gerenciar-artefatos-de-features-concluidas.html">Lição 43: persistência de artefatos</a></p>
   <p class="small">Fontes: <a href="https://github.github.io/spec-kit/guides/customization.html#bundles-role-based-setups">guia de customização</a> · <a href="https://github.github.io/spec-kit/reference/bundles.html">referência oficial</a> · <a href="https://github.github.io/spec-kit/community/bundles.html">bundles comunitários</a> · <a href="https://github.com/github/spec-kit/blob/main/bundles/catalog.community.json">catálogo comunitário</a> · <a href="https://github.com/github/spec-kit/tree/main/examples/bundles">manifestos de exemplo</a>.</p>
 </main>
 </body>

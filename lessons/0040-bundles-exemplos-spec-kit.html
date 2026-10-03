@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lição 40 · Bundles de exemplo do Spec Kit</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Lição 40 · 10 minutos · Manifests demonstrativos</p>
+  <h1>Bundles por papel: leia o manifest sem confundi-lo com catálogo</h1>
+  <p class="lede">Vitória de hoje: comparar quatro composições exemplificativas e detectar o que precisa existir nos catálogos antes de tratá-las como instaláveis.</p>
+
+  <div class="panel">
+    <strong>Importante: são apenas exemplos</strong>
+    <p>Os diretórios em <code>examples/bundles</code> são manifests e READMEs para demonstrar como empacotar uma configuração por papel. <strong>Não são os bundles first-party publicados no catálogo instalável</strong> e não devem ser descritos como bundles oficiais prontos para instalar por ID. O catálogo first-party contém <code>assess</code> e <code>bugfix</code>; compare com as <a href="./0038-bundle-assess-oficial.html">lições 38</a> e <a href="./0039-bundle-bugfix-oficial.html">39</a>.</p>
+  </div>
+
+  <h2>1. O padrão que os exemplos demonstram</h2>
+  <p>Os quatro manifests compartilham schema <code>1.0</code>, versão do bundle <code>1.0.0</code>, autor <code>spec-kit-examples</code>, licença MIT, requisito Spec Kit <code>&gt;=0.9.0</code> e nenhuma ferramenta/MCP adicional declarada. Todos são agnósticos à integração: herdam a integração ativa do projeto.</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Manifest de exemplo</th><th>Extension</th><th>Preset / steps / workflow</th></tr></thead>
+    <tbody>
+      <tr><td><code>business-analyst</code></td><td><code>agent-context@1.0.2</code></td><td><code>requirements-elicitation@1.0.0</code> (priority 10, append); steps <code>capture-requirements</code>, <code>trace-acceptance-criteria</code>; workflow <code>requirements-to-spec@1.0.0</code>.</td></tr>
+      <tr><td><code>developer</code></td><td><code>agent-context@1.0.2</code></td><td><code>implementation-planning@1.0.0</code> (priority 10, append); steps <code>plan-implementation</code>, <code>break-down-tasks</code>; workflow <code>spec-to-implementation@1.0.0</code>.</td></tr>
+      <tr><td><code>product-manager</code></td><td><code>agent-context@1.0.2</code></td><td><code>product-discovery@1.0.0</code> (priority 10, append); steps <code>draft-spec</code>, <code>review-spec</code>; workflow <code>spec-to-roadmap@1.0.0</code>.</td></tr>
+      <tr><td><code>security-researcher</code></td><td><code>agent-context@1.0.2</code></td><td><code>security-compliance@1.0.0</code> (priority 5, append); steps <code>threat-model</code>, <code>security-review</code>; workflow <code>secure-sdd@1.0.0</code>.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Leia os componentes como nas aulas anteriores: extension acrescenta capacidade (<a href="./0016-extensao-agent-context-do-spec-kit.html">agent-context</a>); preset compõe instruções/artefatos (veja <a href="./0022-constitution-sync-spec-kit.html">22</a>, <a href="./0023-lean-spec-kit.html">23</a>, <a href="./0024-scaffold-presets-spec-kit.html">24</a> e <a href="./0025-self-test-spec-kit.html">25</a>); steps e workflow organizam procedimentos (compare <a href="./0031-workflow-speckit-oficial.html">31</a>, <a href="./0032-workflow-bugfix-oficial.html">32</a> e <a href="./0033-workflow-assess-oficial.html">33</a>). Esses exemplos não instalam os componentes cobertos por essas aulas: cada manifest referencia seus próprios IDs.</p>
+
+  <h2>2. O que acontece na instalação?</h2>
+  <p>O bundle entrega o manifesto, não necessariamente os arquivos/payloads de cada componente. O CLI lê <code>provides</code>, expande as dependências, verifica versões e integração, e encaminha cada item ao instalador de extension, preset, step ou workflow. As versões de extension/preset/workflow estão fixadas nos manifests acima; os steps não declaram versão ali e são resolvidos exclusivamente por catálogos de steps.</p>
+  <p>Por isso, nomes como <code>requirements-elicitation</code> ou <code>secure-sdd</code> são referências declaradas, não prova de que esses pacotes estão publicados ou presentes no clone. Se as origens ativas não fornecerem um componente, a validação não pode garantir a instalação. Um bundle ZIP local também não embute automaticamente dependências externas.</p>
+  <p>Este modelo de composição lembra o exemplo <code>business-analyst</code> da <a href="./0036-bundles-do-spec-kit.html">lição 36</a>, mas aqui estão listados os quatro manifests atuais. Em contraste, a <a href="./0037-bundles-comunitarios-do-spec-kit.html">lição 37</a> cobre itens submetidos a catálogo comunitário: descoberta comunitária e exemplos no repositório são categorias diferentes.</p>
+
+  <h2>3. Validar e empacotar como autor</h2>
+  <p>Use o clone do repositório do Spec Kit para validar um manifest e gerar seu artefato:</p>
+  <pre><code>specify bundle validate --path examples/bundles/developer
+specify bundle build --path examples/bundles/developer --output dist/</code></pre>
+  <p>A validação verifica estrutura e referências usando componentes incluídos/instalados e catálogos alcançáveis; referências impossíveis de verificar podem virar avisos. O build gera um ZIP versionado com o manifest. Antes de instalar o artefato, confirme que todos os IDs apontam para releases existentes, que os catálogos necessários estão configurados e que o resultado corresponde ao papel pretendido.</p>
+  <p>Para um caso real, revise especialmente a precedência: no exemplo security-researcher o preset usa priority <code>5</code>, antes dos presets de prioridade maior. A estratégia <code>append</code> acrescenta orientação em vez de substituir a camada inferior. Compare estratégias com o <a href="./0024-scaffold-presets-spec-kit.html">scaffold de presets</a>.</p>
+
+  <h2>4. Pratique: exemplo ou bundle oficial?</h2>
+  <p>Um arquivo <code>examples/bundles/developer/bundle.yml</code> existe no repositório e descreve um setup completo. Isso basta para concluir que <code>specify bundle install developer</code> funciona pelo catálogo first-party?</p>
+  <button type="button" data-answer="catalog">Revelar resposta</button>
+  <div id="answer-catalog" class="answer panel" aria-live="polite"></div>
+
+  <div class="panel">
+    <strong>Fontes primárias</strong>
+    <p>Consulte os <a href="https://github.com/github/spec-kit/tree/main/examples/bundles">quatro diretórios de exemplo</a>, seus manifests e READMEs, e a <a href="https://github.github.io/spec-kit/reference/bundles.html">referência de bundles</a> para validar, construir e resolver dependências. O <a href="https://github.com/github/spec-kit/blob/main/bundles/catalog.json">catálogo first-party</a> é a fonte para distinguir os IDs oficiais instaláveis.</p>
+  </div>
+  <p><a href="./0036-bundles-do-spec-kit.html">Lição 36: visão geral</a> · <a href="./0037-bundles-comunitarios-do-spec-kit.html">Lição 37: bundles comunitários</a> · <a href="./0038-bundle-assess-oficial.html">Bundle assess</a> · <a href="./0039-bundle-bugfix-oficial.html">Bundle bugfix</a> · <a href="../reference/spec-kit-bundles.html">Referência rápida</a></p>
+  <footer>O professor pode ajudar a revisar um manifest de bundle e encontrar em quais catálogos cada dependência precisa existir. Traga o YAML e as origens de catálogo que o projeto usa.</footer>
+</main>
+<script>
+  const answers = {
+    catalog: '<strong>Não.</strong> A pasta é um exemplo de manifesto; sua existência não registra o ID no catálogo first-party. Valide/build pelo caminho local, confira as fontes de dependências e instale apenas depois dessa revisão.'
+  };
+  document.querySelectorAll('[data-answer]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const answer = document.querySelector(`#answer-${button.dataset.answer}`);
+      answer.innerHTML = answers[button.dataset.answer];
+      answer.classList.add('visible');
+    });
+  });
+</script>
+</body>
+</html>
